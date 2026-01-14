@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Partners</title>
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --danger:#dc2626;
+      --success:#16a34a;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    header h1{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:rgba(255,255,255,.18);
+    }
+    .btn.primary{ background:#fff; color:var(--primary); }
+    .btn:hover{ opacity:.92; }
+
+    main{
+      max-width:1200px;
+      margin:24px auto 48px;
+      padding:0 18px;
+    }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 16px 36px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+    }
+    .toolbar{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:14px;
+    }
+    .toolbar input{
+      flex:1 1 260px;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:14px;
+      background:#f8fafc;
+      outline:none;
+    }
+    .toolbar input:focus{
+      border-color:rgba(43,33,189,.5);
+      box-shadow:0 0 0 3px rgba(43,33,189,.12);
+      background:#fff;
+    }
+    .muted{ color:var(--muted); font-size:13px; }
+    .list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:14px;
+    }
+    .item{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:#f8fafc;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .item:hover{
+      transform:translateY(-2px);
+      box-shadow:0 18px 36px rgba(0,0,0,.08);
+    }
+    .item header{
+      background:transparent;
+      color:inherit;
+      padding:0;
+      box-shadow:none;
+      justify-content:space-between;
+    }
+    .item h3{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:10px;
+      font-size:12px;
+      font-weight:800;
+      background:#eef2ff;
+      color:#312e81;
+    }
+    .pill.red{ background:rgba(220,38,38,.1); color:#991b1b; }
+    .pill.green{ background:rgba(22,163,74,.12); color:#166534; }
+    .tag{
+      display:inline-block;
+      padding:4px 8px;
+      margin:2px;
+      background:#e2e8f0;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:700;
+      color:#334155;
+    }
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      border-top:1px solid var(--border);
+      padding-top:8px;
+    }
+    .danger{
+      background:var(--danger);
+      color:#fff;
+      border:0;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .danger:hover{ opacity:.9; }
+    .empty{
+      text-align:center;
+      padding:40px 10px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .status{
+      display:none;
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    .status.error{
+      background:rgba(220,38,38,.08);
+      color:#b91c1c;
+      border:1px solid rgba(220,38,38,.2);
+    }
+    .status.success{
+      background:rgba(22,163,74,.08);
+      color:#15803d;
+      border:1px solid rgba(22,163,74,.2);
+    }
+    .loading{
+      text-align:center;
+      padding:30px 0;
+      font-weight:800;
+      color:var(--muted);
+    }
+
+    @media(max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .actions{ width:100%; }
+      .btn{ width:100%; text-align:center; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Reserva Admin — Partners v1.0</h1>
+    <div class="actions">
+      <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
+      <button class="btn primary" onclick="location.href='partner-create.html'">+ Add Partner</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="toolbar">
+        <input id="search" placeholder="Search by name, tags, district..." />
+        <div class="muted" id="countLabel"></div>
+      </div>
+      <div id="statusBox" class="status"></div>
+      <div id="loading" class="loading">Loading partners…</div>
+      <div id="list" class="list"></div>
+      <div id="empty" class="empty" style="display:none;">No partners found.</div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      onSnapshot,
+      doc,
+      deleteDoc,
+      query,
+      orderBy,
+      updateDoc,
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+      authDomain: "reserva-b3312.firebaseapp.com",
+      projectId: "reserva-b3312",
+      storageBucket: "reserva-b3312.firebasestorage.app",
+      messagingSenderId: "482735599992",
+      appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+      measurementId: "G-TPVHX48X13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const searchInput = document.getElementById("search");
+    const listEl = document.getElementById("list");
+    const loadingEl = document.getElementById("loading");
+    const emptyEl = document.getElementById("empty");
+    const statusBox = document.getElementById("statusBox");
+    const countLabel = document.getElementById("countLabel");
+
+    let partners = [];
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+      subscribe();
+    });
+
+    const subscribe = () => {
+      const q = query(collection(db, "partners"), orderBy("partnerName"));
+      onSnapshot(q, (snap) => {
+        partners = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        console.log("Partners snapshot", partners);
+        render();
+      }, (err) => {
+        showStatus(err.message || "Failed to load partners", true);
+        loadingEl.style.display = "none";
+      });
+    };
+
+    const showStatus = (msg, isError=false) => {
+      statusBox.textContent = msg;
+      statusBox.style.display = "block";
+      statusBox.className = "status " + (isError ? "error" : "success");
+      setTimeout(() => { statusBox.style.display = "none"; }, 3200);
+    };
+
+    const render = () => {
+      loadingEl.style.display = "none";
+      listEl.innerHTML = "";
+
+      const term = searchInput.value.trim().toLowerCase();
+      const filtered = partners.filter((p) => {
+        if (!term) return true;
+        const text = [
+          p.partnerName,
+          p.partnerMarketTheme,
+          p.district,
+          ...(p.categoryTags || []),
+          ...(p.languagesSpoken || []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return text.includes(term);
+      });
+
+      countLabel.textContent = `${filtered.length} partners`;
+
+      if (!filtered.length) {
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
+
+      filtered.forEach((p) => {
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const tagsArr = Array.isArray(p.categoryTags) ? p.categoryTags : [];
+        const langsArr = Array.isArray(p.languagesSpoken) ? p.languagesSpoken : [];
+        const tags = tagsArr.map((t) => `<span class="tag">${t}</span>`).join("");
+        const langs = langsArr.map((t) => `<span class="tag">${t}</span>`).join("");
+        const status = p.isActive !== false ? "Active" : "Inactive";
+        const verified = p.verified ? `<span class="pill green">Verified</span>` : `<span class="pill">Pending</span>`;
+
+        item.innerHTML = `
+          <header>
+            <div>
+              <h3>${p.partnerName || "—"}</h3>
+              <div class="muted">${p.partnerMarketTheme || "—"} • ${p.district || "No district"}</div>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+              ${verified}
+              <span class="pill ${status === "Active" ? "green" : "red"}">${status}</span>
+            </div>
+          </header>
+          <div class="muted">${p.description || "No description provided."}</div>
+          ${tags ? `<div>${tags}</div>` : ""}
+          ${langs ? `<div>${langs}</div>` : ""}
+          <div class="footer">
+            <div class="muted">Rating: ${p.ratingAverage ?? "—"} (${p.ratingCount ?? 0}) • Bookings: ${p.bookingCount ?? 0}</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn" data-toggle="active">${status === "Active" ? "Set Inactive" : "Set Active"}</button>
+              <button class="btn" data-toggle="verified">${p.verified ? "Unverify" : "Verify"}</button>
+              <button class="danger" data-id="${p.id}">Delete</button>
+            </div>
+          </div>
+        `;
+
+        item.addEventListener("click", () => {
+          window.location.href = `partner-detail.html?id=${encodeURIComponent(p.id)}`;
+        });
+
+        item.querySelector(".danger").addEventListener("click", async (event) => {
+          event.stopPropagation();
+          const confirmDelete = confirm(`Delete ${p.partnerName || "this partner"}?`);
+          if (!confirmDelete) return;
+          try {
+            await deleteDoc(doc(db, "partners", p.id));
+            showStatus("Partner deleted");
+          } catch (err) {
+            showStatus(err.message || "Delete failed", true);
+          }
+        });
+
+        item.querySelector("[data-toggle='active']").addEventListener("click", async (event) => {
+          event.stopPropagation();
+          try {
+            await updateDoc(doc(db, "partners", p.id), { isActive: !(p.isActive !== false) });
+            showStatus("Status updated");
+          } catch (err) {
+            showStatus(err.message || "Update failed", true);
+          }
+        });
+
+        item.querySelector("[data-toggle='verified']").addEventListener("click", async (event) => {
+          event.stopPropagation();
+          try {
+            await updateDoc(doc(db, "partners", p.id), { verified: !p.verified });
+            showStatus("Verification updated");
+          } catch (err) {
+            showStatus(err.message || "Update failed", true);
+          }
+        });
+
+        listEl.appendChild(item);
+      });
+    };
+
+    searchInput.addEventListener("input", render);
+  </script>
+</body>
+</html>

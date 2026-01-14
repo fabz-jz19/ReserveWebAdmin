@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Add Partner</title>
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    header h1{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+
+    .back{
+      border:0;
+      background:rgba(255,255,255,.15);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    main{
+      max-width:1200px;
+      margin:24px auto 48px;
+      padding:0 18px;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:18px;
+      padding:22px;
+      box-shadow:0 18px 45px rgba(0,0,0,.06);
+      margin-bottom:20px;
+      border:1px solid var(--border);
+    }
+
+    .card h2{
+      margin:0 0 12px;
+      font-size:17px;
+      font-weight:900;
+    }
+
+    form{
+      display:grid;
+      gap:18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+      gap:14px 16px;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      margin-bottom:6px;
+      letter-spacing:.01em;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:14px;
+      background:#f8fafc;
+      outline:none;
+      transition:border-color .12s ease, box-shadow .12s ease;
+    }
+
+    textarea{ min-height:90px; resize:vertical; }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:rgba(43,33,189,.5);
+      box-shadow:0 0 0 3px rgba(43,33,189,.12);
+      background:#fff;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .checkbox{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:0;
+      background:var(--primary);
+      color:#fff;
+      font-size:15px;
+      font-weight:900;
+      border-radius:14px;
+      cursor:pointer;
+      box-shadow:0 12px 25px rgba(43,33,189,.2);
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    button:hover{
+      background:var(--primary-dark);
+      transform:translateY(-1px);
+      box-shadow:0 14px 28px rgba(43,33,189,.25);
+    }
+
+    .status{
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:800;
+      font-size:13px;
+      display:none;
+    }
+    .status.error{
+      background:rgba(220,38,38,.08);
+      color:#b91c1c;
+      border:1px solid rgba(220,38,38,.2);
+    }
+    .status.success{
+      background:rgba(22,163,74,.08);
+      color:#15803d;
+      border:1px solid rgba(22,163,74,.2);
+    }
+
+    .helper{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .day-row{
+      display:grid;
+      grid-template-columns:90px 1fr 1fr 1fr;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#f8fafc;
+    }
+    .day-row .checkbox{ margin:0; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      background:#eef2ff;
+      color:#312e81;
+      border-radius:10px;
+      font-weight:800;
+      font-size:12px;
+    }
+    .pill button{
+      width:auto;
+      padding:6px 8px;
+      background:#312e81;
+      box-shadow:none;
+      font-size:12px;
+    }
+    .pill button:hover{ background:#1f1a5e; }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:12px;
+    }
+    .list-item{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#f8fafc;
+    }
+    .list-item button{ cursor:pointer; }
+    .list-item h4{
+      margin:0 0 6px;
+      font-size:14px;
+    }
+    .muted{ color:var(--muted); font-size:12px; }
+
+    @media(max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .back{ width:100%; text-align:center; }
+      .day-row{ grid-template-columns:1fr 1fr; }
+      .day-row input:nth-child(2),
+      .day-row input:nth-child(3),
+      .day-row input:nth-child(4){
+        grid-column:1 / -1;
+      }
+      button{ width:100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 id="pageTitle">Reserva Admin — Add Partner</h1>
+    <button class="back" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+  </header>
+
+  <main>
+    <form id="partnerForm">
+
+      <div class="card">
+        <h2>Basic Info</h2>
+        <div class="grid">
+          <div>
+            <label>Partner Name *</label>
+            <input name="partnerName" required placeholder="Spa Zen" />
+          </div>
+          <div>
+            <label>Market Theme *</label>
+            <select name="partnerMarketTheme" required>
+              <option value="">Select theme</option>
+              <option value="SPA">Spa</option>
+              <option value="DENTAL">Dental</option>
+              <option value="HAIR_SALON">Hair Salon</option>
+              <option value="FITNESS">Fitness</option>
+              <option value="RESTAURANT">Restaurant</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div>
+            <label>BRN Number</label>
+            <input name="brnNumber" placeholder="C123456" />
+          </div>
+          <div>
+            <label>District</label>
+            <select name="district">
+              <option value="">Select district</option>
+              <option value="PORT_LOUIS">Port Louis</option>
+              <option value="PLAINE_WILHEMS">Plaines Wilhems</option>
+              <option value="RIVIERE_DU_REMPART">Rivière du Rempart</option>
+              <option value="SAVANNE">Savanne</option>
+              <option value="GRAND_PORT">Grand Port</option>
+              <option value="PAMPLEMOUSSES">Pamplemousses</option>
+              <option value="BLACK_RIVER">Black River</option>
+              <option value="FLACQ">Flacq</option>
+              <option value="MOKA">Moka</option>
+            </select>
+          </div>
+          <div>
+            <label>Priority Rank</label>
+            <input name="priorityRank" type="number" min="0" placeholder="0" />
+          </div>
+          <div>
+            <label>Address *</label>
+            <input name="address" required placeholder="123 Marine Drive, Flic en Flac" />
+          </div>
+          <div>
+            <label>Description *</label>
+            <textarea name="description" required placeholder="Short description of the partner"></textarea>
+          </div>
+          <div>
+            <label>Category Tags</label>
+            <select name="categoryTags" multiple size="5">
+              <option value="spa">Spa</option>
+              <option value="wellness">Wellness</option>
+              <option value="hair">Hair</option>
+              <option value="dental">Dental</option>
+              <option value="fitness">Fitness</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="helper">Use Ctrl/Cmd+Click to select multiple</div>
+          </div>
+          <div>
+            <label>Languages Spoken</label>
+            <select name="languagesSpoken" multiple size="5">
+              <option value="English">English</option>
+              <option value="French">French</option>
+              <option value="Creole">Creole</option>
+              <option value="Spanish">Spanish</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="helper">Use Ctrl/Cmd+Click to select multiple</div>
+          </div>
+          <div class="row">
+            <label class="checkbox">
+              <input type="checkbox" name="verified" />
+              Verified
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="advancePaymentRequired" />
+              Advance payment required
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="isActive" checked />
+              Active
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Media</h2>
+        <div class="grid">
+          <div>
+            <label>Upload Photos (up to 5)</label>
+            <input type="file" id="imagesUpload" accept="image/*" multiple />
+            <div class="helper">Upload or add URLs; you can remove any before saving.</div>
+            <div class="row" style="gap:8px; margin-top:8px;">
+              <input id="imageUrlInput" placeholder="https://photo..." />
+              <button type="button" id="addImageUrlBtn" style="width:auto;">Add URL</button>
+            </div>
+            <div id="uploadedList" class="list" style="margin-top:10px;"></div>
+          </div>
+          <div>
+            <label>Video Links</label>
+            <textarea name="videoLinks" placeholder="One URL per line"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Location</h2>
+        <div class="grid">
+          <div>
+            <label>Latitude</label>
+            <input name="latitude" type="number" step="any" placeholder="-20.1609" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input name="longitude" type="number" step="any" placeholder="57.5012" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Contact & Social</h2>
+        <div class="grid">
+          <div>
+            <label>Email</label>
+            <input name="email" type="email" placeholder="info@partner.mu" />
+          </div>
+          <div>
+            <label>Phone</label>
+            <input name="phoneNumber" placeholder="+230..." />
+          </div>
+          <div>
+            <label>Website</label>
+            <input name="website" placeholder="https://partner.mu" />
+          </div>
+          <div>
+            <label>Contact Person Name</label>
+            <input name="contactPersonName" placeholder="Jane Doe" />
+          </div>
+          <div>
+            <label>Contact Person Email</label>
+            <input name="contactPersonEmail" type="email" placeholder="jane@partner.mu" />
+          </div>
+          <div>
+            <label>Contact Person Phone *</label>
+            <input name="contactPersonPhone" required placeholder="+230..." />
+          </div>
+          <div>
+            <label>Facebook</label>
+            <input name="facebook" placeholder="https://facebook.com/..." />
+          </div>
+          <div>
+            <label>Instagram</label>
+            <input name="instagram" placeholder="https://instagram.com/..." />
+          </div>
+          <div>
+            <label>TikTok</label>
+            <input name="tiktok" placeholder="https://tiktok.com/..." />
+          </div>
+          <div>
+            <label>Authentication Mail</label>
+            <input name="authenticationMail" type="email" placeholder="auth@partner.mu" />
+          </div>
+          <div>
+            <label>Account Number</label>
+            <input name="accountNumber" placeholder="IBAN / account no." />
+          </div>
+          <div>
+            <label>Mobile Number</label>
+            <input name="mobileNumber" placeholder="+230..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Policies & Payments</h2>
+        <div class="grid">
+          <div>
+            <label>Cancellation Policy</label>
+            <textarea name="cancellationPolicy" placeholder="Describe the cancellation rules"></textarea>
+          </div>
+          <div>
+            <label>Min Booking Notice (minutes)</label>
+            <input name="minBookingNoticeMinutes" type="number" min="0" placeholder="120" />
+          </div>
+          <div>
+            <label>Max Guests</label>
+            <input name="maxGuests" type="number" min="1" placeholder="4" />
+          </div>
+          <div>
+            <label>Accepted Payments</label>
+            <div class="row">
+              <label class="checkbox"><input type="checkbox" name="payments" value="CREDIT_CARD" />Credit Card</label>
+              <label class="checkbox"><input type="checkbox" name="payments" value="JUICE" />Juice</label>
+              <label class="checkbox"><input type="checkbox" name="payments" value="BANK_TRANSFER" />Bank Transfer</label>
+              <label class="checkbox"><input type="checkbox" name="payments" value="CASH" />Cash</label>
+              <label class="checkbox"><input type="checkbox" name="payments" value="PAY_AT_AGENCY" />Pay at agency</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Working Schedule (required)</h2>
+        <div class="grid">
+          <div>
+            <label>Weekly Schedule</label>
+            <div class="helper">Set hours (dropdown) and optional single break per day</div>
+            <div class="list">
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Monday</div>
+                <label class="checkbox"><input type="checkbox" name="MONDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="MONDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="MONDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="MONDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="MONDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Tuesday</div>
+                <label class="checkbox"><input type="checkbox" name="TUESDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="TUESDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="TUESDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="TUESDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="TUESDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Wednesday</div>
+                <label class="checkbox"><input type="checkbox" name="WEDNESDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="WEDNESDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="WEDNESDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="WEDNESDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="WEDNESDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Thursday</div>
+                <label class="checkbox"><input type="checkbox" name="THURSDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="THURSDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="THURSDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="THURSDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="THURSDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Friday</div>
+                <label class="checkbox"><input type="checkbox" name="FRIDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="FRIDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="FRIDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="FRIDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="FRIDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Saturday</div>
+                <label class="checkbox"><input type="checkbox" name="SATURDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="SATURDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="SATURDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="SATURDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="SATURDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+              <div class="day-row">
+                <div class="label" style="font-size:14px; font-weight:900;">Sunday</div>
+                <label class="checkbox"><input type="checkbox" name="SUNDAY_isOpen" /> Open</label>
+                <div>
+                  <div class="label">Start time</div>
+                  <select name="SUNDAY_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">End time</div>
+                  <select name="SUNDAY_end" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch start</div>
+                  <select name="SUNDAY_break_start" class="time-select"></select>
+                </div>
+                <div>
+                  <div class="label">Lunch end</div>
+                  <select name="SUNDAY_break_end" class="time-select"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <div class="card">
+    <h2>Products (optional)</h2>
+    <div class="grid">
+      <div>
+        <label>Product Id</label>
+        <input name="productId" placeholder="auto if blank" />
+      </div>
+      <div>
+        <label>Product Name *</label>
+        <input name="productName" placeholder="Full Body Massage" />
+      </div>
+      <div>
+        <label>Category *</label>
+        <input name="productCategoryName" placeholder="Spa" />
+      </div>
+      <div>
+        <label>Price (MUR) *</label>
+        <input name="productPrice" type="number" step="0.01" min="0" placeholder="1500" />
+      </div>
+      <div>
+        <label>Currency</label>
+        <input name="productCurrency" value="MUR" />
+      </div>
+      <div>
+        <label>Duration (minutes)</label>
+        <input name="durationMinutes" type="number" min="0" placeholder="60" />
+      </div>
+      <div>
+        <label>Availability Slots</label>
+        <input name="availabilitySlots" placeholder="10:00, 11:00" />
+        <div class="helper">Comma-separated HH:mm</div>
+      </div>
+      <div>
+        <label>Description</label>
+        <textarea name="productDescription" placeholder="Describe the service"></textarea>
+      </div>
+      <div>
+        <label>Product Category</label>
+        <select name="productCategory">
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <div class="row">
+        <label class="checkbox"><input type="checkbox" name="isAddOn" /> Add-on product</label>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px; justify-content:flex-end;">
+      <button type="button" id="addProductBtn" style="width:auto;">Add Product</button>
+    </div>
+    <div id="productsList" class="list"></div>
+  </div>
+
+      <div class="status" id="status"></div>
+      <button type="submit" id="submitBtn">Save Partner</button>
+    </form>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+      authDomain: "reserva-b3312.firebaseapp.com",
+      projectId: "reserva-b3312",
+      storageBucket: "reserva-b3312.firebasestorage.app",
+      messagingSenderId: "482735599992",
+      appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+      measurementId: "G-TPVHX48X13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const form = document.getElementById("partnerForm");
+  const statusBox = document.getElementById("status");
+  const submitBtn = document.getElementById("submitBtn");
+  const productsList = document.getElementById("productsList");
+  const addProductBtn = document.getElementById("addProductBtn");
+  const pageTitle = document.getElementById("pageTitle");
+  const imagesUpload = document.getElementById("imagesUpload");
+  const uploadedList = document.getElementById("uploadedList");
+  const imageUrlInput = document.getElementById("imageUrlInput");
+  const addImageUrlBtn = document.getElementById("addImageUrlBtn");
+
+  const params = new URLSearchParams(location.search);
+  const editingId = params.get("id");
+  let existingCreatedAt = null;
+  let existingData = null;
+  const docRef = editingId ? doc(db, "partners", editingId) : doc(collection(db, "partners"));
+
+  onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+      if (editingId) {
+        pageTitle.textContent = "Reserva Admin — Edit Partner";
+        submitBtn.textContent = "Update Partner";
+        await loadPartner(editingId);
+      }
+    });
+
+    const parseList = (value) =>
+      (value || "")
+        .split(/,|\\n/)
+        .map((v) => v.trim())
+        .filter(Boolean);
+
+    const parseNumber = (value) => {
+      if (!value && value !== 0) return null;
+      const num = Number(value);
+      return Number.isNaN(num) ? null : num;
+    };
+
+    const days = [
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY",
+      "SUNDAY",
+    ];
+
+    const timeOptions = [];
+    for (let h = 0; h < 24; h++) {
+      ["00", "30"].forEach((m) => timeOptions.push(`${h.toString().padStart(2, "0")}:${m}`));
+    }
+    document.querySelectorAll(".time-select").forEach((sel) => {
+      const empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = "--";
+      sel.appendChild(empty);
+      timeOptions.forEach((t) => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+    });
+
+    let products = [];
+    let editingProductIndex = null;
+    let uploadedImages = [];
+
+    const renderUploadedImages = () => {
+      uploadedList.innerHTML = "";
+      uploadedImages.forEach((url, idx) => {
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div>
+            <h4>Image ${idx + 1}</h4>
+            <div class="muted">${url}</div>
+          </div>
+          <button type="button" data-idx="${idx}" class="remove-upload">Remove</button>
+        `;
+        uploadedList.appendChild(item);
+      });
+    };
+
+    const refFromDownloadUrl = (url) => {
+      try {
+        const u = new URL(url);
+        const fullPath = decodeURIComponent(u.pathname.split("/o/")[1]);
+        return ref(storage, fullPath);
+      } catch {
+        return null;
+      }
+    };
+
+    const removeImageAt = async (idx) => {
+      if (idx < 0 || idx >= uploadedImages.length) return;
+      const url = uploadedImages[idx];
+      const isStorageUrl = url && url.includes("firebasestorage");
+      if (isStorageUrl) {
+        try {
+          const fileRef = refFromDownloadUrl(url);
+          if (fileRef) await deleteObject(fileRef);
+        } catch (err) {
+          console.warn("Failed to delete from storage", err);
+        }
+      }
+      uploadedImages.splice(idx, 1);
+      renderUploadedImages();
+    };
+
+    uploadedList.addEventListener("click", async (event) => {
+      const btn = event.target.closest(".remove-upload");
+      if (!btn) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const idx = Number(btn.dataset.idx);
+      if (Number.isNaN(idx)) return;
+      await removeImageAt(idx);
+    });
+
+    const uploadImages = async (files) => {
+      const remaining = 5 - uploadedImages.length;
+      const slice = Array.from(files).slice(0, remaining);
+      if (!slice.length) {
+        statusBox.textContent = "You reached the limit of 5 images.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+      statusBox.textContent = "Uploading images...";
+      statusBox.className = "status";
+      statusBox.style.display = "block";
+      for (const file of slice) {
+        const storageRef = ref(storage, `partners/${docRef.id}/gallery/${Date.now()}-${file.name}`);
+        const snap = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snap.ref);
+        uploadedImages.push(url);
+      }
+      statusBox.textContent = "Images uploaded.";
+      statusBox.classList.add("success");
+      renderUploadedImages();
+    };
+
+    imagesUpload.addEventListener("change", async (e) => {
+      if (!e.target.files?.length) return;
+      try {
+        await uploadImages(e.target.files);
+      } catch (err) {
+        statusBox.textContent = err.message || "Failed to upload images.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+      } finally {
+        imagesUpload.value = "";
+      }
+    });
+
+    addImageUrlBtn.addEventListener("click", () => {
+      statusBox.style.display = "none";
+      statusBox.className = "status";
+      const url = imageUrlInput.value.trim();
+      if (!url) return;
+      if (!isValidUrl(url)) {
+        statusBox.textContent = "Please enter a valid URL.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+      if (uploadedImages.length >= 5) {
+        statusBox.textContent = "You reached the limit of 5 images.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+      uploadedImages.push(url);
+      imageUrlInput.value = "";
+      renderUploadedImages();
+    });
+
+    const loadPartner = async (id) => {
+      try {
+        const snap = await getDoc(doc(db, "partners", id));
+        if (!snap.exists()) {
+          statusBox.textContent = "Partner not found.";
+          statusBox.classList.add("error");
+          statusBox.style.display = "block";
+          return;
+        }
+        const p = snap.data();
+        existingData = p;
+        existingCreatedAt = p.createdAt || null;
+        const set = (name, value) => {
+          const el = form.querySelector(`[name='${name}']`);
+          if (el) el.value = value ?? "";
+        };
+
+        set("partnerName", p.partnerName);
+        set("partnerMarketTheme", p.partnerMarketTheme);
+        set("brnNumber", p.brnNumber);
+        set("priorityRank", p.priorityRank);
+        set("address", p.address);
+        set("description", p.description);
+        set("email", p.email);
+        set("phoneNumber", p.phoneNumber);
+        set("website", p.website);
+        set("contactPersonName", p.contactPersonName);
+        set("contactPersonEmail", p.contactPersonEmail);
+        set("contactPersonPhone", p.contactPersonPhone);
+        set("authenticationMail", p.authenticationMail);
+        set("accountNumber", p.accountNumber);
+        set("mobileNumber", p.mobileNumber);
+        set("district", p.district);
+        set("cancellationPolicy", p.cancellationPolicy);
+        set("minBookingNoticeMinutes", p.minBookingNoticeMinutes);
+        set("maxGuests", p.maxGuests);
+        set("timezone", p.workingSchedule?.timezone);
+        set("latitude", p.pinLocation?.latitude);
+        set("longitude", p.pinLocation?.longitude);
+        if (Array.isArray(p.categoryTags)) {
+          const sel = form.querySelector("select[name='categoryTags']");
+          p.categoryTags.forEach((v) => {
+            const opt = sel.querySelector(`option[value='${v}']`);
+            if (opt) opt.selected = true;
+          });
+        }
+        if (Array.isArray(p.languagesSpoken)) {
+          const sel = form.querySelector("select[name='languagesSpoken']");
+          p.languagesSpoken.forEach((v) => {
+            const opt = sel.querySelector(`option[value='${v}']`);
+            if (opt) opt.selected = true;
+          });
+        }
+        set("videoLinks", Array.isArray(p.videoLinks) ? p.videoLinks.join("\n") : p.videoLinks || "");
+
+        form.querySelector("input[name='verified']").checked = !!p.verified;
+        form.querySelector("input[name='advancePaymentRequired']").checked = !!p.advancePaymentRequired;
+        form.querySelector("input[name='isActive']").checked = p.isActive !== false;
+
+        const paymentsArr = Array.isArray(p.acceptedPayments)
+          ? p.acceptedPayments
+          : (typeof p.acceptedPayments === "string" && p.acceptedPayments.trim())
+              ? p.acceptedPayments.split(/,|\n/).map((v) => v.trim()).filter(Boolean)
+              : [];
+        paymentsArr.forEach((pay) => {
+          const el = form.querySelector(`input[name='payments'][value='${pay}']`);
+          if (el) el.checked = true;
+        });
+
+        days.forEach((day) => {
+          const info = p.workingSchedule?.weekly?.[day];
+          form.querySelector(`input[name='${day}_isOpen']`).checked = !!info?.isOpen;
+          const startSel = form.querySelector(`select[name='${day}_start']`);
+          const endSel = form.querySelector(`select[name='${day}_end']`);
+          const breakStartSel = form.querySelector(`select[name='${day}_break_start']`);
+          const breakEndSel = form.querySelector(`select[name='${day}_break_end']`);
+          if (startSel) startSel.value = info?.start || "";
+          if (endSel) endSel.value = info?.end || "";
+          const br = (info?.breaks || [])[0];
+          if (breakStartSel) breakStartSel.value = br?.start || "";
+          if (breakEndSel) breakEndSel.value = br?.end || "";
+        });
+
+        const slots = Array.isArray(p.products) ? p.products : [];
+        products = slots;
+        renderProducts();
+
+        if (Array.isArray(p.partnerImages)) {
+          uploadedImages = p.partnerImages.slice(0,5);
+        } else if (typeof p.partnerImages === "string") {
+          uploadedImages = p.partnerImages
+            .split(/[|,]/)
+            .map((u) => u.trim())
+            .filter(Boolean)
+            .slice(0,5);
+        }
+        renderUploadedImages();
+
+        statusBox.textContent = "Loaded partner for editing.";
+        statusBox.classList.add("success");
+        statusBox.style.display = "block";
+      } catch (err) {
+        statusBox.textContent = err.message || "Failed to load partner.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+      }
+    };
+
+    const renderProducts = () => {
+      productsList.innerHTML = "";
+      if (!products.length) return;
+      products.forEach((p, idx) => {
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div>
+            <h4>${p.productName} — ${p.currency} ${p.price}</h4>
+            <div class="muted">Category: ${p.category} • Product Category: ${p.productCategory}</div>
+            <div class="muted">Duration: ${p.durationMinutes ?? "N/A"} • Slots: ${(p.availabilitySlots || []).join(", ") || "N/A"}</div>
+          </div>
+          <div class="row" style="gap:6px;">
+            <button type="button" data-action="edit" data-idx="${idx}">Edit</button>
+            <button type="button" data-action="remove" data-idx="${idx}">Remove</button>
+          </div>
+        `;
+        const removeBtn = item.querySelector("[data-action='remove']");
+        const editBtn = item.querySelector("[data-action='edit']");
+        removeBtn.addEventListener("click", () => {
+          products.splice(idx, 1);
+          renderProducts();
+        });
+        editBtn.addEventListener("click", () => {
+          const set = (name, value) => {
+            const el = form.querySelector(`[name='${name}']`);
+            if (el) el.value = value ?? "";
+          };
+          set("productId", p.productId);
+          set("productName", p.productName);
+          set("productCategoryName", p.category);
+          set("productPrice", p.price);
+          set("productCurrency", p.currency);
+          set("durationMinutes", p.durationMinutes);
+          set("availabilitySlots", (p.availabilitySlots || []).join(", "));
+          form.querySelector("textarea[name='productDescription']").value = p.description || "";
+          const pc = form.querySelector("select[name='productCategory']");
+          if (pc) pc.value = p.productCategory || "OTHER";
+          form.querySelector("input[name='isAddOn']").checked = !!p.isAddOn;
+          editingProductIndex = idx;
+          addProductBtn.textContent = "Save Product";
+        });
+        productsList.appendChild(item);
+      });
+    };
+
+    addProductBtn.addEventListener("click", () => {
+      statusBox.style.display = "none";
+      statusBox.className = "status";
+      const data = new FormData(form);
+      const get = (key) => (data.get(key) || "").toString().trim();
+
+      const price = parseNumber(get("productPrice"));
+      if (!get("productName") || price === null) {
+        statusBox.textContent = "Product name and price are required to add a product.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+
+      const duration = parseNumber(get("durationMinutes"));
+      const availabilitySlots = parseList(get("availabilitySlots"));
+      const productId =
+        get("productId") ||
+        (window.crypto?.randomUUID ? crypto.randomUUID() : `prod-${Date.now()}`);
+
+      const newProd = {
+        productId,
+        productName: get("productName"),
+        category: get("productCategoryName") || "General",
+        description: get("productDescription") || null,
+        price,
+        currency: get("productCurrency") || "MUR",
+        durationMinutes: duration,
+        availabilitySlots,
+        isAddOn: data.get("isAddOn") === "on",
+        productCategory: get("productCategory") || "OTHER",
+      };
+
+      if (editingProductIndex !== null) {
+        products[editingProductIndex] = newProd;
+        editingProductIndex = null;
+        addProductBtn.textContent = "Add Product";
+      } else {
+        products.push(newProd);
+      }
+
+      form.querySelector("input[name='productId']").value = "";
+      form.querySelector("input[name='productName']").value = "";
+      form.querySelector("input[name='productCategoryName']").value = "";
+      form.querySelector("input[name='productPrice']").value = "";
+      form.querySelector("input[name='durationMinutes']").value = "";
+      form.querySelector("input[name='availabilitySlots']").value = "";
+      form.querySelector("textarea[name='productDescription']").value = "";
+      form.querySelector("input[name='isAddOn']").checked = false;
+
+      renderProducts();
+    });
+
+    const timeRe = /^([01]\d|2[0-3]):[0-5]\d$/;
+    const isValidTime = (val) => !val || timeRe.test(val);
+    const isValidUrl = (val) => {
+      if (!val) return true;
+      try { new URL(val); return true; } catch { return false; }
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusBox.style.display = "none";
+      statusBox.className = "status";
+
+      const data = new FormData(form);
+      const get = (key) => (data.get(key) || "").toString().trim();
+
+      const languagesSpoken = Array.from(
+        form.querySelector("select[name='languagesSpoken']").selectedOptions
+      ).map((o) => o.value);
+      const categoryTags = Array.from(
+        form.querySelector("select[name='categoryTags']").selectedOptions
+      ).map((o) => o.value);
+      const videoLinks = parseList(get("videoLinks"));
+      const partnerImages = uploadedImages.filter(Boolean).slice(0,5);
+      const partnerImagesString = partnerImages.length ? partnerImages.join("|") : null;
+      const payments = Array.from(
+        form.querySelectorAll("input[name='payments']:checked")
+      ).map((el) => el.value);
+
+      const weekly = {};
+      let hasWeekly = false;
+      let invalid = false;
+      days.forEach((day) => {
+        const isOpen = form.querySelector(`input[name='${day}_isOpen']`).checked;
+        const start = get(`${day}_start`);
+        const end = get(`${day}_end`);
+        const breakStart = get(`${day}_break_start`);
+        const breakEnd = get(`${day}_break_end`);
+
+        if (isOpen && (!start || !end)) {
+          statusBox.textContent = `${day}: start and end are required when open.`;
+          statusBox.classList.add("error");
+          statusBox.style.display = "block";
+          invalid = true;
+          return;
+        }
+        if ((breakStart && !breakEnd) || (!breakStart && breakEnd)) {
+          statusBox.textContent = `${day}: break needs start and end.`;
+          statusBox.classList.add("error");
+          statusBox.style.display = "block";
+          invalid = true;
+          return;
+        }
+        if ([start, end, breakStart, breakEnd].some((t) => t && !isValidTime(t))) {
+          statusBox.textContent = `${day}: time must be HH:mm.`;
+          statusBox.classList.add("error");
+          statusBox.style.display = "block";
+          invalid = true;
+          return;
+        }
+
+        if (isOpen) {
+          weekly[day] = {
+            isOpen,
+            start,
+            end,
+            breaks: breakStart && breakEnd ? [{ start: breakStart, end: breakEnd }] : [],
+          };
+          hasWeekly = true;
+        }
+      });
+      if (invalid) return;
+
+      const lat = parseNumber(get("latitude"));
+      const lng = parseNumber(get("longitude"));
+      const pinLocation =
+        lat !== null && lng !== null ? { latitude: lat, longitude: lng } : null;
+
+      if (!hasWeekly) {
+        statusBox.textContent = "Working schedule is required. Mark at least one day open with hours.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Save Partner";
+        return;
+      }
+
+      const workingSchedule = {
+        timezone: get("timezone") || "UTC",
+        weekly,
+        closedDates: [],
+      };
+
+      const docRef = editingId ? doc(db, "partners", editingId) : doc(collection(db, "partners"));
+      const nowIso = new Date().toISOString();
+      const payload = {
+        partnerId: editingId || docRef.id,
+        partnerName: get("partnerName"),
+        partnerMarketTheme: get("partnerMarketTheme"),
+        brnNumber: get("brnNumber") || null,
+        status: existingData?.status || "ACTIVE",
+        createdAt: existingCreatedAt || nowIso,
+        updatedAt: nowIso,
+        partnerLogo: null,
+        partnerImages: partnerImagesString,
+        videoLinks,
+        coverImage: null,
+        address: get("address"),
+        pinLocation,
+        description: get("description"),
+        workingHours: null,
+        workingSchedule,
+        languagesSpoken,
+        categoryTags,
+        products,
+        cancellationPolicy: get("cancellationPolicy") || null,
+        minBookingNoticeMinutes: parseNumber(get("minBookingNoticeMinutes")),
+        maxGuests: parseNumber(get("maxGuests")),
+        advancePaymentRequired: data.get("advancePaymentRequired") === "on",
+        verified: data.get("verified") === "on",
+        acceptedPayments: payments,
+        ratingAverage: existingData?.ratingAverage ?? null,
+        ratingCount: existingData?.ratingCount ?? 0,
+        reviews: existingData?.reviews ?? [],
+        socialLinks:
+          get("facebook") || get("instagram") || get("tiktok")
+            ? {
+                facebook: get("facebook") || null,
+                instagram: get("instagram") || null,
+                tiktok: get("tiktok") || null,
+              }
+            : null,
+        email: get("email") || null,
+        phoneNumber: get("phoneNumber") || null,
+        website: get("website") || null,
+        contactPersonName: get("contactPersonName") || null,
+        contactPersonEmail: get("contactPersonEmail") || null,
+        contactPersonPhone: get("contactPersonPhone"),
+        clickCount: existingData?.clickCount ?? 0,
+        bookingCount: existingData?.bookingCount ?? 0,
+        priorityRank: parseNumber(get("priorityRank")) || 0,
+        isActive: data.get("isActive") === "on",
+        district: get("district") || null,
+        fcmToken: existingData?.fcmToken ?? null,
+        authenticationMail: get("authenticationMail") || null,
+        accountNumber: get("accountNumber") || null,
+        mobileNumber: get("mobileNumber") || null,
+      };
+
+      if (!payload.partnerName || !payload.partnerMarketTheme || !payload.address || !payload.contactPersonPhone) {
+        statusBox.textContent = "Please fill all required fields.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+
+      if (!isValidUrl(payload.partnerLogo) || !isValidUrl(payload.coverImage)) {
+        statusBox.textContent = "Logo/Cover must be valid URLs.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Saving...";
+      try {
+        const serverFields = editingId
+          ? { updatedAtServer: serverTimestamp() }
+          : { createdAtServer: serverTimestamp(), updatedAtServer: serverTimestamp() };
+
+        await setDoc(docRef, {
+          ...payload,
+          // server timestamps stored alongside ISO strings for easier sorting
+          ...serverFields,
+        });
+        if (!editingId) {
+          form.reset();
+          form.querySelector("input[name='isActive']").checked = true;
+          products = [];
+          renderProducts();
+          existingCreatedAt = null;
+          existingData = null;
+        }
+        statusBox.textContent = editingId
+          ? `Partner updated (id: ${docRef.id}).`
+          : `Partner created (id: ${docRef.id}).`;
+        statusBox.classList.add("success");
+        statusBox.style.display = "block";
+      } catch (err) {
+        statusBox.textContent = err.message || "Failed to save partner.";
+        statusBox.classList.add("error");
+        statusBox.style.display = "block";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Save Partner";
+      }
+    });
+  </script>
+</body>
+</html>

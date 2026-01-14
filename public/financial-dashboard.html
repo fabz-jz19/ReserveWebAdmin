@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Financial Dashboard</title>
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --danger:#dc2626;
+      --success:#16a34a;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    header h1{ margin:0; font-size:20px; font-weight:900; }
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .btn{
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:rgba(255,255,255,.18);
+    }
+    .btn.primary{ background:#fff; color:var(--primary); }
+    .btn:hover{ opacity:.92; }
+    main{
+      max-width:1200px;
+      margin:24px auto 48px;
+      padding:0 18px;
+      display:grid;
+      gap:16px;
+    }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 16px 36px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+    }
+    .card h2{ margin:0 0 10px; font-size:17px; font-weight:900; }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:10px 14px;
+    }
+    .stat{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+    }
+    .stat .label{ color:var(--muted); font-size:12px; text-transform:uppercase; font-weight:800; }
+    .stat .value{ font-size:20px; font-weight:900; margin-top:6px; }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .toolbar input, .toolbar select{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      font-size:13px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    th, td{
+      text-align:left;
+      padding:8px 6px;
+      border-bottom:1px solid var(--border);
+      font-size:13px;
+    }
+    th{ color:var(--muted); text-transform:uppercase; letter-spacing:.02em; font-weight:800; }
+    .muted{ color:var(--muted); font-size:12px; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:10px;
+      background:#eef2ff;
+      color:#312e81;
+      font-size:11px;
+      font-weight:800;
+    }
+    .loading, .empty{ text-align:center; padding:20px 0; color:var(--muted); font-weight:800; }
+
+    @media(max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .actions{ width:100%; }
+      .btn{ width:100%; text-align:center; }
+      .toolbar{ flex-direction:column; align-items:stretch; }
+      .toolbar input, .toolbar select{ width:100%; }
+      table, thead, tbody, th, td, tr { display:block; }
+      th{ display:none; }
+      td{ border:0; padding:6px 0; }
+      tr{ border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:10px; background:#f8fafc; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Financial Dashboard</h1>
+    <div class="actions">
+      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn" onclick="location.href='partners-list.html'">Partners</button>
+      <button class="btn" onclick="location.href='users-list.html'">Users</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Summary</h2>
+      <div class="grid">
+        <div class="stat">
+          <div class="label">Total Revenue</div>
+          <div class="value" id="totalRevenue">MUR 0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Total Bookings</div>
+          <div class="value" id="totalBookings">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Avg Ticket</div>
+          <div class="value" id="avgTicket">MUR 0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Partners Booked</div>
+          <div class="value" id="partnersCount">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Filters</h2>
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="Search client, phone, bookingId, partnerId" />
+        <input type="date" id="startDate" />
+        <input type="date" id="endDate" />
+        <button class="btn primary" id="clearFilters" type="button">Clear</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Bookings</h2>
+      <div id="loading" class="loading">Loading bookings…</div>
+      <div id="empty" class="empty" style="display:none;">No bookings found.</div>
+      <table id="bookingsTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Booking</th>
+            <th>Client</th>
+            <th>Partner</th>
+            <th>Services</th>
+            <th>Total</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Partner Breakdown</h2>
+      <div id="partnerEmpty" class="empty" style="display:none;">No partner data.</div>
+      <table id="partnerTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th>Bookings</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+      authDomain: "reserva-b3312.firebaseapp.com",
+      projectId: "reserva-b3312",
+      storageBucket: "reserva-b3312.firebasestorage.app",
+      messagingSenderId: "482735599992",
+      appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+      measurementId: "G-TPVHX48X13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const totalRevenueEl = document.getElementById("totalRevenue");
+    const totalBookingsEl = document.getElementById("totalBookings");
+    const avgTicketEl = document.getElementById("avgTicket");
+    const partnersCountEl = document.getElementById("partnersCount");
+    const loadingEl = document.getElementById("loading");
+    const emptyEl = document.getElementById("empty");
+    const table = document.getElementById("bookingsTable");
+    const tbody = table.querySelector("tbody");
+    const partnerTable = document.getElementById("partnerTable");
+    const partnerTbody = partnerTable.querySelector("tbody");
+    const partnerEmpty = document.getElementById("partnerEmpty");
+    const searchInput = document.getElementById("search");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+    const clearBtn = document.getElementById("clearFilters");
+
+    let bookings = [];
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+      subscribe();
+    });
+
+    const subscribe = () => {
+      const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snap) => {
+        bookings = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        render();
+      }, (err) => {
+        loadingEl.textContent = err.message || "Failed to load bookings.";
+      });
+    };
+
+    const normalizeDate = (value) => {
+      if (!value) return null;
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? null : date.getTime();
+    };
+
+    const formatDate = (ms) => {
+      if (!ms) return "—";
+      const date = new Date(ms);
+      return date.toLocaleString();
+    };
+
+    const computeTotal = (b) => {
+      if (Array.isArray(b.service)) {
+        return b.service.reduce((sum, s) => {
+          const price = Number(s.price) || 0;
+          const qty = Number(s.quantity) || 1;
+          return sum + price * qty;
+        }, 0);
+      }
+      return Number(b.totalPrice || b.price || 0);
+    };
+
+    const render = () => {
+      const term = searchInput.value.trim().toLowerCase();
+      const startMs = normalizeDate(startDateInput.value);
+      const endMs = normalizeDate(endDateInput.value);
+
+      const filtered = bookings.filter((b) => {
+        const created = Number(b.createdAt) || 0;
+        if (startMs && created < startMs) return false;
+        if (endMs && created > endMs + 24 * 60 * 60 * 1000) return false;
+        if (!term) return true;
+        const text = [
+          b.bookingId,
+          b.clientName,
+          b.clientPhone,
+          b.partnerId,
+          (b.service || []).map((s) => s.description || s.productName).join(" "),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return text.includes(term);
+      });
+
+      const totals = filtered.reduce(
+        (acc, b) => {
+          const t = computeTotal(b);
+          acc.revenue += t;
+          acc.bookings += 1;
+          acc.partners.add(b.partnerId);
+          return acc;
+        },
+        { revenue: 0, bookings: 0, partners: new Set() }
+      );
+      totalRevenueEl.textContent = `MUR ${totals.revenue.toFixed(2)}`;
+      totalBookingsEl.textContent = totals.bookings;
+      avgTicketEl.textContent = totals.bookings
+        ? `MUR ${(totals.revenue / totals.bookings).toFixed(2)}`
+        : "MUR 0";
+      partnersCountEl.textContent = totals.partners.size;
+
+      loadingEl.style.display = "none";
+      tbody.innerHTML = "";
+
+      if (!filtered.length) {
+        table.style.display = "none";
+        emptyEl.style.display = "block";
+        return;
+      }
+      table.style.display = "table";
+      emptyEl.style.display = "none";
+
+      filtered.forEach((b) => {
+        const tr = document.createElement("tr");
+        const total = computeTotal(b);
+        tr.innerHTML = `
+          <td>
+            <div>${b.bookingId || b.id}</div>
+            <div class="muted">${b.bookedForMyself ? "Self" : "Gift"}</div>
+          </td>
+          <td>
+            <div>${b.clientName || "—"}</div>
+            <div class="muted">${b.clientPhone || "—"}</div>
+          </td>
+          <td>
+            <div>${b.partnerId || "—"}</div>
+            <div class="muted">${(b.service?.[0]?.partnerMarketTheme) || ""}</div>
+          </td>
+          <td>
+            <div>${(b.service || []).length} services</div>
+            <div class="muted">${(b.service || []).map((s) => s.productCategory || s.productName || "").join(", ")}</div>
+          </td>
+          <td><strong>MUR ${total.toFixed(2)}</strong></td>
+          <td>${formatDate(b.createdAt)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const partnerAgg = new Map();
+      filtered.forEach((b) => {
+        const total = computeTotal(b);
+        const id = b.partnerId || "Unknown";
+        const entry = partnerAgg.get(id) || { revenue: 0, bookings: 0 };
+        entry.revenue += total;
+        entry.bookings += 1;
+        partnerAgg.set(id, entry);
+      });
+
+      partnerTbody.innerHTML = "";
+      if (!partnerAgg.size) {
+        partnerTable.style.display = "none";
+        partnerEmpty.style.display = "block";
+      } else {
+        partnerTable.style.display = "table";
+        partnerEmpty.style.display = "none";
+        [...partnerAgg.entries()]
+          .sort((a,b) => b[1].revenue - a[1].revenue)
+          .forEach(([id, entry]) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${id}</td>
+              <td>${entry.bookings}</td>
+              <td>MUR ${entry.revenue.toFixed(2)}</td>
+            `;
+            row.onclick = () => location.href = `partner-detail.html?id=${encodeURIComponent(id)}`;
+            partnerTbody.appendChild(row);
+          });
+      }
+    };
+
+    searchInput.addEventListener("input", render);
+    startDateInput.addEventListener("change", render);
+    endDateInput.addEventListener("change", render);
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      startDateInput.value = "";
+      endDateInput.value = "";
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Users</title>
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    header h1{ margin:0; font-size:20px; font-weight:900; }
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .btn{
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:rgba(255,255,255,.18);
+    }
+    .btn.primary{ background:#fff; color:var(--primary); }
+    main{
+      max-width:1100px;
+      margin:24px auto 48px;
+      padding:0 18px;
+    }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 16px 36px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .toolbar input{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      font-size:13px;
+      flex:1 1 260px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    th, td{
+      text-align:left;
+      padding:10px 8px;
+      border-bottom:1px solid var(--border);
+      font-size:13px;
+    }
+    th{ color:var(--muted); text-transform:uppercase; letter-spacing:.02em; font-weight:800; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:10px;
+      background:#eef2ff;
+      color:#312e81;
+      font-size:11px;
+      font-weight:800;
+    }
+    .pill.green{ background:rgba(22,163,74,.12); color:#166534; }
+    .muted{ color:var(--muted); font-size:12px; }
+    .loading, .empty{ text-align:center; padding:20px 0; color:var(--muted); font-weight:800; }
+
+    @media(max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .actions{ width:100%; }
+      .btn{ width:100%; text-align:center; }
+      .toolbar{ flex-direction:column; align-items:stretch; }
+      .toolbar input{ width:100%; }
+      table, thead, tbody, th, td, tr { display:block; }
+      th{ display:none; }
+      tr{ border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:10px; background:#f8fafc; }
+      td{ border:0; padding:6px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Users</h1>
+    <div class="actions">
+      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn" onclick="location.href='partners-list.html'">Partners</button>
+      <button class="btn primary" onclick="location.href='financial-dashboard.html'">Financial</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="toolbar">
+        <input id="search" placeholder="Search name, email, phone" />
+        <div id="count" class="muted"></div>
+      </div>
+      <div id="loading" class="loading">Loading users…</div>
+      <div id="empty" class="empty" style="display:none;">No users found.</div>
+      <table id="table" style="display:none;">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Partner</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+      authDomain: "reserva-b3312.firebaseapp.com",
+      projectId: "reserva-b3312",
+      storageBucket: "reserva-b3312.firebasestorage.app",
+      messagingSenderId: "482735599992",
+      appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+      measurementId: "G-TPVHX48X13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const searchInput = document.getElementById("search");
+    const countEl = document.getElementById("count");
+    const loadingEl = document.getElementById("loading");
+    const emptyEl = document.getElementById("empty");
+    const table = document.getElementById("table");
+    const tbody = table.querySelector("tbody");
+
+    let users = [];
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snap) => {
+        users = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        render();
+      }, (err) => {
+        loadingEl.textContent = err.message || "Failed to load users.";
+      });
+    });
+
+    const formatDate = (ms) => {
+      if (!ms) return "—";
+      const date = new Date(Number(ms));
+      return isNaN(date.getTime()) ? "—" : date.toLocaleString();
+    };
+
+    const render = () => {
+      const term = searchInput.value.trim().toLowerCase();
+      const filtered = users.filter((u) => {
+        if (!term) return true;
+        const text = [u.name, u.email, u.phone].filter(Boolean).join(" ").toLowerCase();
+        return text.includes(term);
+      });
+
+      countEl.textContent = `${filtered.length} users`;
+      loadingEl.style.display = "none";
+      tbody.innerHTML = "";
+
+      if (!filtered.length) {
+        table.style.display = "none";
+        emptyEl.style.display = "block";
+        return;
+      }
+      table.style.display = "table";
+      emptyEl.style.display = "none";
+
+      filtered.forEach((u) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${u.name || "—"}<div class="muted">${u.id}</div></td>
+          <td>${u.email || "—"}</td>
+          <td>${u.phone || "—"}</td>
+          <td>${u.isPartner ? '<span class="pill green">Yes</span>' : '<span class="pill">No</span>'}</td>
+          <td>${formatDate(u.createdAt)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    };
+
+    searchInput.addEventListener("input", render);
+  </script>
+</body>
+</html>

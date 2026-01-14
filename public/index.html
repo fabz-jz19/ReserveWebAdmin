@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Login</title>
+
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --danger:#dc2626;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(800px 400px at 20% 10%, rgba(43,33,189,.12), transparent 60%),
+        var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      color:var(--text);
+    }
+
+    .card{
+      width:100%;
+      max-width:380px;
+      background:#fff;
+      border-radius:20px;
+      padding:28px;
+      box-shadow:0 30px 60px rgba(15,23,42,.12);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .logo{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:linear-gradient(135deg, var(--primary), #4c3cff);
+      box-shadow:0 10px 25px rgba(43,33,189,.3);
+    }
+
+    h2{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .subtitle{
+      margin:6px 0 20px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    label{
+      display:block;
+      margin-top:14px;
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    input{
+      width:100%;
+      margin-top:6px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      font-size:14px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:rgba(43,33,189,.4);
+      box-shadow:0 0 0 4px rgba(43,33,189,.12);
+    }
+
+    button{
+      width:100%;
+      margin-top:22px;
+      padding:12px;
+      border-radius:14px;
+      border:0;
+      background:var(--primary);
+      color:#fff;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 12px 25px rgba(43,33,189,.25);
+      transition:.15s ease;
+    }
+
+    button:hover{
+      background:var(--primary-dark);
+      transform:translateY(-1px);
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(220,38,38,.08);
+      color:var(--danger);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:700;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="brand">
+    <div class="logo"></div>
+    <div>
+      <h2>Reserva Admin</h2>
+      <div class="subtitle">Secure access to partner management</div>
+    </div>
+  </div>
+
+  <form>
+    <label>Email</label>
+    <input type="email" name="email" placeholder="admin@reservemu.com" required />
+
+    <label>Password</label>
+    <input type="password" name="password" placeholder="••••••••" required />
+
+    <button type="submit">Sign in</button>
+    <div class="error" id="errorBox"></div>
+  </form>
+
+  <div class="footer">Reserva • Enn klik, lavi pli fasil</div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  // ✅ CORRECT, CLEAN CONFIG (do not change)
+const firebaseConfig = {
+  apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+  authDomain: "reserva-b3312.firebaseapp.com",
+  projectId: "reserva-b3312",
+  storageBucket: "reserva-b3312.firebasestorage.app",
+  messagingSenderId: "482735599992",
+  appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+  measurementId: "G-TPVHX48X13"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const form = document.querySelector("form");
+  const errorBox = document.getElementById("errorBox");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorBox.style.display = "none";
+
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        form.email.value,
+        form.password.value
+      );
+      window.location.replace("dashboard.html");
+    } catch (err) {
+      errorBox.textContent = "Invalid email or password";
+      errorBox.style.display = "block";
+    }
+  });
+</script>
+
+</body>
+</html>

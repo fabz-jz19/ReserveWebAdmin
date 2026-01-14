@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reserva Admin • Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:#f6f7fb;
+      color:#0f172a;
+    }
+
+    header{
+      background:#2B21BD;
+      color:#fff;
+      padding:22px;
+      font-size:20px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    main{
+      padding:32px 20px;
+      max-width:1100px;
+      margin:auto;
+    }
+
+    h2{
+      margin-bottom:24px;
+      font-size:22px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      gap:28px;
+    }
+
+    .card{
+      background:#ffffff;
+      border-radius:24px;
+      padding:36px 28px;
+      box-shadow:0 18px 45px rgba(0,0,0,.08);
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:220px;
+    }
+
+  .card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 28px 60px rgba(0,0,0,.12);
+  }
+
+    .icon{
+      font-size:56px;
+      margin-bottom:18px;
+    }
+
+    .card h3{
+      margin:0 0 10px;
+      font-size:22px;
+      font-weight:900;
+      text-align:center;
+    }
+
+  .card p{
+    margin:0;
+    font-size:15px;
+    color:#64748b;
+    text-align:center;
+    max-width:260px;
+  }
+
+  /* Optional color accents */
+  .add{ border-top:6px solid #16a34a; }
+  .view{ border-top:6px solid #2563eb; }
+  .edit{ border-top:6px solid #f59e0b; }
+
+  @media(max-width:640px){
+    header{ padding:16px; font-size:18px; }
+    main{ padding:20px 14px; }
+  }
+  </style>
+</head>
+
+<body>
+
+<header>
+  Reserva Admin — Dashboard 
+</header>
+
+<main>
+  <h2>Main Actions</h2>
+
+  <div class="grid">
+
+    <!-- VIEW PARTNERS -->
+    <div class="card view" onclick="location.href='partners-list.html'">
+      <div class="icon">📋</div>
+      <h3>View All Partners</h3>
+      <p>Browse, search and manage all registered partners</p>
+    </div>
+
+    <!-- ADD PARTNER -->
+    <div class="card add" onclick="location.href='partner-create.html'">
+      <div class="icon">➕</div>
+      <h3>Add New Partner</h3>
+      <p>Create a new partner profile and activate services</p>
+    </div>
+
+    <!-- MODIFY PARTNER -->
+    <div class="card edit" onclick="location.href='partners-list.html'">
+      <div class="icon">✏️</div>
+      <h3>Modify Partner</h3>
+      <p>Edit partner details, status, pricing and availability</p>
+    </div>
+
+    <!-- FINANCIAL DASHBOARD -->
+    <div class="card view" onclick="location.href='financial-dashboard.html'">
+      <div class="icon">💰</div>
+      <h3>Financial Dashboard</h3>
+      <p>See bookings, revenue, and filter by date or client</p>
+    </div>
+
+    <!-- USERS -->
+    <div class="card view" onclick="location.href='users-list.html'">
+      <div class="icon">👥</div>
+      <h3>Users</h3>
+      <p>Browse and search all registered users</p>
+    </div>
+
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+  authDomain: "reserva-b3312.firebaseapp.com",
+  projectId: "reserva-b3312",
+  storageBucket: "reserva-b3312.firebasestorage.app",
+  messagingSenderId: "482735599992",
+  appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+  measurementId: "G-TPVHX48X13"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // ✅ PREVENT REDIRECT LOOP
+  let authChecked = false;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authChecked = true; // user is logged in, allow page
+      return;
+    }
+
+    // redirect ONLY after Firebase finishes checking auth
+    if (!authChecked) {
+      setTimeout(() => {
+     //   window.location.replace("index.html");
+      }, 300);
+    }
+  });
+</script>
+
+
+</body>
+</html>

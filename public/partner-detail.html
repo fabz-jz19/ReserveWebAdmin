@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Partner Details</title>
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --danger:#dc2626;
+      --success:#16a34a;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    header h1{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:800;
+      cursor:pointer;
+      color:#fff;
+      background:rgba(255,255,255,.18);
+    }
+    .btn.primary{ background:#fff; color:var(--primary); }
+    .btn.danger{ background:var(--danger); color:#fff; }
+    .btn:hover{ opacity:.92; }
+    main{
+      max-width:1200px;
+      margin:24px auto 48px;
+      padding:0 18px;
+      display:grid;
+      gap:16px;
+    }
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 16px 36px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:17px;
+      font-weight:900;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:10px 16px;
+    }
+    .label{ font-size:12px; color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.02em; }
+    .value{ font-weight:800; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:10px;
+      font-size:12px;
+      font-weight:800;
+      background:#eef2ff;
+      color:#312e81;
+    }
+    .pill.green{ background:rgba(22,163,74,.12); color:#166534; }
+    .pill.red{ background:rgba(220,38,38,.1); color:#991b1b; }
+    .tag{
+      display:inline-block;
+      padding:4px 8px;
+      margin:2px;
+      background:#e2e8f0;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:700;
+      color:#334155;
+    }
+    .row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .media{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .media img{
+      max-width:140px;
+      border-radius:12px;
+      border:1px solid var(--border);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:6px;
+    }
+    th, td{
+      text-align:left;
+      padding:8px 6px;
+      border-bottom:1px solid var(--border);
+      font-size:13px;
+    }
+    th{ color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:.02em; }
+    .muted{ color:var(--muted); }
+    pre{
+      background:#0f172a;
+      color:#e2e8f0;
+      padding:12px;
+      border-radius:12px;
+      overflow:auto;
+      font-size:12px;
+    }
+
+    @media(max-width:640px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .actions{ width:100%; }
+      .actions .btn{ width:100%; text-align:center; }
+    }
+    .status{
+      display:none;
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:800;
+      margin:12px 0 0;
+    }
+    .status.error{
+      background:rgba(220,38,38,.08);
+      color:#b91c1c;
+      border:1px solid rgba(220,38,38,.2);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Partner Details</h1>
+    <div class="actions">
+      <button class="btn" onclick="location.href='partners-list.html'">← All Partners</button>
+      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn primary" id="editBtn">Edit</button>
+      <button class="btn" onclick="location.href='partner-create.html'">+ Add Partner</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="statusBox" class="status error"></div>
+    <div id="summaryCard" class="card" style="display:none;">
+      <h2 id="partnerName">Partner</h2>
+      <div class="row" id="pills"></div>
+      <div class="muted" id="description"></div>
+      <div class="row" id="tags"></div>
+    </div>
+
+    <div class="card" id="contactCard" style="display:none;">
+      <h2>Contact</h2>
+      <div class="grid" id="contactGrid"></div>
+    </div>
+
+    <div class="card" id="mediaCard" style="display:none;">
+      <h2>Media</h2>
+      <div class="media" id="media"></div>
+      <div id="videoLinks" class="muted" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card" id="locationCard" style="display:none;">
+      <h2>Location</h2>
+      <div class="grid" id="locationGrid"></div>
+    </div>
+
+    <div class="card" id="socialCard" style="display:none;">
+      <h2>Social & Links</h2>
+      <div class="grid" id="socialGrid"></div>
+    </div>
+
+    <div class="card" id="scheduleCard" style="display:none;">
+      <h2>Working Schedule</h2>
+      <div class="grid">
+        <div>
+          <div class="label">Timezone</div>
+          <div class="value" id="timezone">—</div>
+        </div>
+        <div>
+          <div class="label">Closed Dates</div>
+          <div class="value" id="closedDates">—</div>
+        </div>
+      </div>
+      <table id="scheduleTable"></table>
+    </div>
+
+    <div class="card" id="productsCard" style="display:none;">
+      <h2>Products</h2>
+      <table id="productsTable"></table>
+    </div>
+
+    <div class="card" id="policiesCard" style="display:none;">
+      <h2>Policies & Payments</h2>
+      <div class="grid" id="policiesGrid"></div>
+    </div>
+
+    <div class="card" id="statsCard" style="display:none;">
+      <h2>Stats</h2>
+      <div class="grid" id="statsGrid"></div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfF5HvJZoLQJWtCX17LpPZwnNlcMixYQs",
+      authDomain: "reserva-b3312.firebaseapp.com",
+      projectId: "reserva-b3312",
+      storageBucket: "reserva-b3312.firebasestorage.app",
+      messagingSenderId: "482735599992",
+      appId: "1:482735599992:web:a7a9c6f2060516bb33588d",
+      measurementId: "G-TPVHX48X13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const partnerId = params.get("id");
+    const editBtn = document.getElementById("editBtn");
+    let currentPartnerRef = null;
+
+    const statusBox = document.getElementById("statusBox");
+    const summaryCard = document.getElementById("summaryCard");
+    const partnerNameEl = document.getElementById("partnerName");
+    const pillsEl = document.getElementById("pills");
+    const descriptionEl = document.getElementById("description");
+    const tagsEl = document.getElementById("tags");
+
+    const contactCard = document.getElementById("contactCard");
+    const contactGrid = document.getElementById("contactGrid");
+
+    const mediaCard = document.getElementById("mediaCard");
+    const mediaEl = document.getElementById("media");
+    const videoLinksEl = document.getElementById("videoLinks");
+
+    const locationCard = document.getElementById("locationCard");
+    const locationGrid = document.getElementById("locationGrid");
+
+    const socialCard = document.getElementById("socialCard");
+    const socialGrid = document.getElementById("socialGrid");
+
+    const scheduleCard = document.getElementById("scheduleCard");
+    const scheduleTable = document.getElementById("scheduleTable");
+    const timezoneEl = document.getElementById("timezone");
+    const closedDatesEl = document.getElementById("closedDates");
+
+    const productsCard = document.getElementById("productsCard");
+    const productsTable = document.getElementById("productsTable");
+
+    const policiesCard = document.getElementById("policiesCard");
+    const policiesGrid = document.getElementById("policiesGrid");
+
+    const statsCard = document.getElementById("statsCard");
+    const statsGrid = document.getElementById("statsGrid");
+
+    const rawCard = document.createElement("div");
+    rawCard.className = "card";
+    rawCard.innerHTML = `<h2>Raw Data</h2><pre id="rawData"></pre>`;
+    const rawDataEl = rawCard.querySelector("#rawData");
+    document.querySelector("main").appendChild(rawCard);
+
+    const showError = (msg) => {
+      statusBox.textContent = msg;
+      statusBox.style.display = "block";
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+      if (!partnerId) {
+        showError("Missing partner id.");
+        return;
+      }
+      currentPartnerRef = doc(db, "partners", partnerId);
+      listen();
+    });
+
+    const listen = () => {
+      onSnapshot(currentPartnerRef, (snap) => {
+        if (!snap.exists()) {
+          showError("Partner not found.");
+          return;
+        }
+        const partner = { id: snap.id, ...snap.data() };
+        renderPartner(partner);
+      }, (err) => showError(err.message || "Failed to load partner."));
+    };
+
+    const renderPartner = (p) => {
+      statusBox.style.display = "none";
+      const editId = p.partnerId || p.id || partnerId;
+      editBtn.onclick = () => {
+        location.href = `partner-create.html?id=${encodeURIComponent(editId)}`;
+      };
+      partnerNameEl.textContent = p.partnerName || "—";
+      descriptionEl.textContent = p.description || "No description provided.";
+
+      pillsEl.innerHTML = "";
+      pillsEl.innerHTML += `<span class="pill">${p.partnerMarketTheme || "—"}</span>`;
+      pillsEl.innerHTML += `<span class="pill">${p.district || "No district"}</span>`;
+      pillsEl.innerHTML += `<span class="pill ${p.isActive !== false ? "green" : "red"}">${p.isActive !== false ? "Active" : "Inactive"}</span>`;
+      pillsEl.innerHTML += `<span class="pill ${p.verified ? "green" : ""}">${p.verified ? "Verified" : "Not verified"}</span>`;
+      pillsEl.innerHTML += `<span class="pill">Priority ${p.priorityRank ?? 0}</span>`;
+      summaryCard.style.display = "block";
+
+      tagsEl.innerHTML = "";
+      const tagsArr = Array.isArray(p.categoryTags) ? p.categoryTags : [];
+      tagsArr.forEach((t) => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = t;
+        tagsEl.appendChild(span);
+      });
+      const langsArr = Array.isArray(p.languagesSpoken) ? p.languagesSpoken : [];
+      langsArr.forEach((t) => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = t;
+        tagsEl.appendChild(span);
+      });
+
+      contactGrid.innerHTML = "";
+      const contactFields = [
+        ["Email", p.email],
+        ["Phone", p.phoneNumber],
+        ["Website", p.website],
+        ["Contact Name", p.contactPersonName],
+        ["Contact Email", p.contactPersonEmail],
+        ["Contact Phone", p.contactPersonPhone],
+        ["Auth Mail", p.authenticationMail],
+        ["Account Number", p.accountNumber],
+        ["Mobile Number", p.mobileNumber],
+        ["Address", p.address],
+        ["BRN", p.brnNumber],
+      ];
+      contactFields.forEach(([label, value]) => {
+        if (!value) return;
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>`;
+        contactGrid.appendChild(div);
+      });
+      contactCard.style.display = contactGrid.children.length ? "block" : "none";
+
+      mediaEl.innerHTML = "";
+      if (p.partnerLogo) mediaEl.innerHTML += `<div><div class="label">Logo</div><img src="${p.partnerLogo}" alt="Logo" /></div>`;
+      if (p.coverImage) mediaEl.innerHTML += `<div><div class="label">Cover</div><img src="${p.coverImage}" alt="Cover" /></div>`;
+      const gallery = Array.isArray(p.partnerImages)
+        ? p.partnerImages
+        : (typeof p.partnerImages === "string" ? p.partnerImages.split("|").map((u) => u.trim()) : []);
+      gallery.forEach((url, idx) => {
+        mediaEl.innerHTML += `<div><div class="label">Image ${idx + 1}</div><img src="${url}" alt="Image ${idx + 1}" /></div>`;
+      });
+      mediaCard.style.display = mediaEl.children.length ? "block" : "none";
+
+      const videoArr = Array.isArray(p.videoLinks)
+        ? p.videoLinks
+        : (typeof p.videoLinks === "string" && p.videoLinks.trim())
+            ? p.videoLinks.split(/,|\n/).map((v) => v.trim()).filter(Boolean)
+            : [];
+      if (videoArr.length) {
+        videoLinksEl.textContent = "Videos: " + videoArr.join(", ");
+        videoLinksEl.style.display = "block";
+      } else {
+        videoLinksEl.style.display = "none";
+      }
+
+      locationGrid.innerHTML = "";
+      const pin = p.pinLocation;
+      [
+        ["Address", p.address],
+        ["District", p.district],
+        ["Latitude", pin?.latitude],
+        ["Longitude", pin?.longitude],
+      ].forEach(([label, value]) => {
+        if (value === undefined || value === null || value === "") return;
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>`;
+        locationGrid.appendChild(div);
+      });
+      locationCard.style.display = locationGrid.children.length ? "block" : "none";
+
+      socialGrid.innerHTML = "";
+      const social = p.socialLinks || {};
+      const socialFields = [
+        ["Facebook", social.facebook],
+        ["Instagram", social.instagram],
+        ["TikTok", social.tiktok],
+      ];
+      socialFields.forEach(([label, value]) => {
+        if (!value) return;
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="label">${label}</div><div class="value"><a href="${value}" target="_blank">${value}</a></div>`;
+        socialGrid.appendChild(div);
+      });
+      socialCard.style.display = socialGrid.children.length ? "block" : "none";
+
+      const schedule = p.workingSchedule;
+      if (schedule) {
+        timezoneEl.textContent = schedule.timezone || "—";
+        closedDatesEl.textContent = (schedule.closedDates || []).join(", ") || "—";
+        scheduleTable.innerHTML = `
+          <tr><th>Day</th><th>Status</th><th>Hours</th><th>Breaks</th></tr>
+        `;
+        const days = ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"];
+        days.forEach((day) => {
+          const d = schedule.weekly?.[day];
+          const status = d?.isOpen ? "Open" : "Closed";
+          const hours = d?.start && d?.end ? `${d.start} - ${d.end}` : "—";
+          const breaks = (d?.breaks || []).map((b) => `${b.start} - ${b.end}`).join(", ") || "—";
+          scheduleTable.innerHTML += `<tr><td>${day}</td><td>${status}</td><td>${hours}</td><td>${breaks}</td></tr>`;
+        });
+        scheduleCard.style.display = "block";
+      } else {
+        scheduleCard.style.display = "none";
+      }
+
+      if (p.products && p.products.length) {
+        productsTable.innerHTML = `
+          <tr><th>Name</th><th>Category</th><th>Price</th><th>Duration</th><th>Slots</th><th>Add-on</th></tr>
+        `;
+        p.products.forEach((prod) => {
+          const slots = Array.isArray(prod.availabilitySlots)
+            ? prod.availabilitySlots
+            : (typeof prod.availabilitySlots === "string" && prod.availabilitySlots.trim())
+                ? prod.availabilitySlots.split(/,|\n/).map((s) => s.trim()).filter(Boolean)
+                : [];
+          productsTable.innerHTML += `
+            <tr>
+              <td>${prod.productName}</td>
+              <td>${prod.category || prod.productCategory || "—"}</td>
+              <td>${prod.currency || "MUR"} ${prod.price ?? "—"}</td>
+              <td>${prod.durationMinutes ?? "—"}</td>
+              <td>${slots.join(", ") || "—"}</td>
+              <td>${prod.isAddOn ? "Yes" : "No"}</td>
+            </tr>
+          `;
+        });
+        productsCard.style.display = "block";
+      } else {
+        productsCard.style.display = "none";
+      }
+
+      policiesGrid.innerHTML = "";
+      const paymentsArr = Array.isArray(p.acceptedPayments)
+        ? p.acceptedPayments
+        : (typeof p.acceptedPayments === "string" && p.acceptedPayments.trim())
+            ? p.acceptedPayments.split(/,|\n/).map((v) => v.trim()).filter(Boolean)
+            : [];
+      const policies = [
+        ["Cancellation Policy", p.cancellationPolicy],
+        ["Min Booking Notice (min)", p.minBookingNoticeMinutes],
+        ["Max Guests", p.maxGuests],
+        ["Advance Payment Required", p.advancePaymentRequired ? "Yes" : "No"],
+        ["Accepted Payments", paymentsArr.join(", ") || "—"],
+        ["Verified", p.verified ? "Yes" : "No"],
+        ["Active", p.isActive !== false ? "Yes" : "No"],
+        ["Status", p.status || "—"],
+      ];
+      policies.forEach(([label, value]) => {
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="label">${label}</div><div class="value">${value ?? "—"}</div>`;
+        policiesGrid.appendChild(div);
+      });
+      policiesCard.style.display = "block";
+
+      statsGrid.innerHTML = "";
+      const stats = [
+        ["Rating Avg", p.ratingAverage ?? "—"],
+        ["Rating Count", p.ratingCount ?? 0],
+        ["Reviews", (p.reviews || []).length],
+        ["Bookings", p.bookingCount ?? 0],
+        ["Clicks", p.clickCount ?? 0],
+        ["Created", p.createdAt || "—"],
+        ["Updated", p.updatedAt || "—"],
+        ["FCM Token", p.fcmToken || "—"],
+        ["Partner ID", p.partnerId || p.id || "—"],
+      ];
+      stats.forEach(([label, value]) => {
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>`;
+      statsGrid.appendChild(div);
+    });
+    statsCard.style.display = "block";
+
+    rawDataEl.textContent = JSON.stringify(p, null, 2);
+    rawCard.style.display = "block";
+
+      const actions = document.querySelector(".actions");
+      actions.querySelectorAll(".quick-action").forEach((btn) => btn.remove());
+      const addQuickButton = (label, handler) => {
+        const btn = document.createElement("button");
+        btn.className = "btn quick-action";
+        btn.textContent = label;
+        btn.onclick = handler;
+        actions.appendChild(btn);
+      };
+
+      if (currentPartnerRef) {
+        addQuickButton(p.isActive !== false ? "Set Inactive" : "Set Active", async () => {
+          try {
+            await updateDoc(currentPartnerRef, { isActive: !(p.isActive !== false) });
+            alert("Status updated");
+          } catch (err) {
+            alert(err.message || "Failed to update");
+          }
+        });
+        addQuickButton(p.verified ? "Unverify" : "Verify", async () => {
+          try {
+            await updateDoc(currentPartnerRef, { verified: !p.verified });
+            alert("Verification updated");
+          } catch (err) {
+            alert(err.message || "Failed to update");
+          }
+        });
+      }
+    };
+  </script>
+</body>
+</html>
