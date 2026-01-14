@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "reserva-b3312"
+    "default": "reserva-b3312",
+    "dev": "reserve-dev-a297a"
   }
 }

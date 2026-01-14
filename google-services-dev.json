@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "851971023438",
+    "project_id": "reserve-dev-a297a",
+    "storage_bucket": "reserve-dev-a297a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851971023438:android:a973331cd11e352fa9d91f",
+        "android_client_info": {
+          "package_name": "com.reserveapp.mu.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851971023438-6r6c7pb52imd8v7d337r1nt1shl0spen.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reserveapp.mu.dev",
+            "certificate_hash": "e10efc4421511fa95528a1ebcfc5c48173f28aaa"
+          }
+        },
+        {
+          "client_id": "851971023438-6f3k4f4lvineruuas7qr9kb4m0g7foqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0O1iZ_cnibr3EpycWqG2sTshWNu-byG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851971023438-6f3k4f4lvineruuas7qr9kb4m0g7foqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
