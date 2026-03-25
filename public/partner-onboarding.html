@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserve • Business Onboarding</title>
+  <style>
+    :root{
+      --brand:#2563eb;
+      --brand-dark:#1d4ed8;
+      --panel:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#dbe4f0;
+      --danger:#dc2626;
+      --success:#166534;
+      --success-bg:#ecfdf5;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(rgba(243,246,251,.7), rgba(233,238,246,.78)),
+        radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 38%),
+        linear-gradient(135deg, #f5f7fb 0%, #eaf0f8 100%);
+    }
+
+    .shell{
+      width:min(100%, 620px);
+      margin:56px auto;
+      padding:0 18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:20px;
+      padding:34px 28px 24px;
+      box-shadow:0 22px 60px rgba(15,23,42,.12);
+    }
+
+    .brand{
+      text-align:center;
+      font-size:24px;
+      font-weight:800;
+      margin-bottom:10px;
+      letter-spacing:-.02em;
+    }
+
+    h1{
+      margin:0 0 8px;
+      text-align:center;
+      font-size:32px;
+      line-height:1.1;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      margin:0 0 28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.5;
+    }
+
+    form{
+      display:grid;
+      gap:18px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:13px;
+      font-weight:700;
+      color:#334155;
+    }
+
+    input, select{
+      width:100%;
+      height:48px;
+      padding:0 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:14px;
+      transition:border-color .18s ease, box-shadow .18s ease;
+      outline:none;
+    }
+
+    input:focus, select:focus{
+      border-color:rgba(37,99,235,.65);
+      box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .error{
+      display:none;
+      margin-top:8px;
+      color:var(--danger);
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .status{
+      display:none;
+      margin-top:16px;
+      padding:16px;
+      border-radius:14px;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .status.success{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status.error{
+      background:rgba(220,38,38,.08);
+      color:#b91c1c;
+    }
+
+    button{
+      width:100%;
+      height:50px;
+      border:0;
+      border-radius:12px;
+      background:var(--brand);
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      transition:background .18s ease, transform .18s ease;
+    }
+
+    button:hover:not(:disabled){
+      background:var(--brand-dark);
+      transform:translateY(-1px);
+    }
+
+    button:disabled{
+      cursor:wait;
+      opacity:.7;
+    }
+
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      color:#94a3b8;
+      font-size:13px;
+    }
+
+    .hp{
+      position:absolute;
+      left:-9999px;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    @media (max-width: 640px){
+      .shell{
+        margin:28px auto;
+      }
+
+      .card{
+        padding:26px 20px 22px;
+      }
+
+      h1{
+        font-size:28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="brand">Reserve</div>
+      <h1>Business onboarding</h1>
+      <p class="subtitle">
+        Join Reserve and start receiving bookings from customers.
+      </p>
+
+      <form id="partnerForm" novalidate>
+        <div>
+          <label for="businessName">Business Name</label>
+          <input type="text" id="businessName" name="businessName" required />
+          <div class="error" id="businessError">Business name is required.</div>
+        </div>
+
+        <div>
+          <label for="category">Business Category</label>
+          <select id="category" name="category" required>
+            <option value="">Select category</option>
+            <option value="Car Detailing">Car Detailing</option>
+            <option value="Hair Salon">Hair Salon</option>
+            <option value="Barber">Barber</option>
+            <option value="Spa">Spa</option>
+            <option value="Gym">Gym</option>
+            <option value="Restaurant">Restaurant</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="error" id="categoryError">Please select a category.</div>
+        </div>
+
+        <div>
+          <label for="mobile">Mobile Number</label>
+          <input type="tel" id="mobile" name="mobile" placeholder="5xxxxxxx" required />
+          <div class="error" id="mobileError">Valid phone number required.</div>
+        </div>
+
+        <div>
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required />
+          <div class="error" id="emailError">Valid email required.</div>
+        </div>
+
+        <div>
+          <label for="district">District</label>
+          <select id="district" name="district" required>
+            <option value="">Select district</option>
+            <option value="Port Louis">Port Louis</option>
+            <option value="Pamplemousses">Pamplemousses</option>
+            <option value="Riviere du Rempart">Riviere du Rempart</option>
+            <option value="Flacq">Flacq</option>
+            <option value="Grand Port">Grand Port</option>
+            <option value="Savanne">Savanne</option>
+            <option value="Black River">Black River</option>
+            <option value="Plaines Wilhems">Plaines Wilhems</option>
+            <option value="Moka">Moka</option>
+          </select>
+          <div class="error" id="districtError">Please select a district.</div>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="website">Leave this empty</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <button type="submit" id="submitBtn">Submit Business</button>
+      </form>
+
+      <div class="status success" id="successBox">
+        Your business has been submitted successfully.<br />
+        Our team will contact you shortly.
+      </div>
+
+      <div class="status error" id="statusError"></div>
+
+      <div class="footer">Reserve © 2026</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { db, firebaseEnv } from "./firebase-config.js";
+
+    const form = document.getElementById("partnerForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const successBox = document.getElementById("successBox");
+    const statusError = document.getElementById("statusError");
+
+    const phoneRegex = /^[5-9][0-9]{7}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const showError = (id, visible) => {
+      document.getElementById(id).style.display = visible ? "block" : "none";
+    };
+
+    const setSubmitState = (submitting) => {
+      submitBtn.disabled = submitting;
+      submitBtn.textContent = submitting ? "Submitting..." : "Submit Business";
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      successBox.style.display = "none";
+      statusError.style.display = "none";
+
+      const businessName = form.businessName.value.trim();
+      const category = form.category.value;
+      const mobile = form.mobile.value.trim().replace(/\s+/g, "");
+      const email = form.email.value.trim().toLowerCase();
+      const district = form.district.value;
+      const honeypot = form.website.value.trim();
+
+      let valid = true;
+
+      showError("businessError", !businessName);
+      showError("categoryError", !category);
+      showError("mobileError", !phoneRegex.test(mobile));
+      showError("emailError", !emailRegex.test(email));
+      showError("districtError", !district);
+
+      if (!businessName || !category || !phoneRegex.test(mobile) || !emailRegex.test(email) || !district) {
+        valid = false;
+      }
+
+      if (!valid) {
+        return;
+      }
+
+      if (honeypot) {
+        form.reset();
+        return;
+      }
+
+      setSubmitState(true);
+
+      try {
+        await addDoc(collection(db, "partner_leads"), {
+          businessName,
+          category,
+          mobile,
+          email,
+          district,
+          status: "NEW",
+          source: "public_partner_onboarding",
+          firebaseEnv,
+          createdAt: serverTimestamp()
+        });
+
+        form.reset();
+        successBox.style.display = "block";
+      } catch (error) {
+        statusError.textContent = error?.message || "Submission failed. Please try again.";
+        statusError.style.display = "block";
+        statusError.className = "status error";
+      } finally {
+        setSubmitState(false);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -203,23 +203,9 @@
   </main>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDU8QAHaSo04L0j6ZNt_PFiR6YKuh0sxJU",
-      authDomain: "reserve-dev-a297a.firebaseapp.com",
-      projectId: "reserve-dev-a297a",
-      storageBucket: "reserve-dev-a297a.firebasestorage.app",
-      messagingSenderId: "851971023438",
-      appId: "1:851971023438:web:b1e24f8ee8013a39a9d91f",
-      measurementId: "G-5V5B0XZDJP"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { auth, db } from "./firebase-config.js";
 
     const totalRevenueEl = document.getElementById("totalRevenue");
     const totalBookingsEl = document.getElementById("totalBookings");

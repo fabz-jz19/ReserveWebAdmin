@@ -128,6 +128,23 @@
       color:var(--muted);
       font-weight:700;
     }
+
+    .public-link{
+      margin-top:14px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .public-link a{
+      color:var(--primary);
+      font-weight:800;
+      text-decoration:none;
+    }
+
+    .public-link a:hover{
+      text-decoration:underline;
+    }
   </style>
 </head>
 
@@ -155,25 +172,15 @@
   </form>
 
   <div class="footer">Reserva • Enn klik, lavi pli fasil</div>
+  <div class="public-link">
+    Partner registration:
+    <a href="partner-onboarding.html">Open business onboarding form</a>
+  </div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-  // ✅ CORRECT, CLEAN CONFIG (do not change)
-const firebaseConfig = {
-  apiKey: "AIzaSyDU8QAHaSo04L0j6ZNt_PFiR6YKuh0sxJU",
-  authDomain: "reserve-dev-a297a.firebaseapp.com",
-  projectId: "reserve-dev-a297a",
-  storageBucket: "reserve-dev-a297a.firebasestorage.app",
-  messagingSenderId: "851971023438",
-  appId: "1:851971023438:web:b1e24f8ee8013a39a9d91f",
-  measurementId: "G-5V5B0XZDJP"
-};
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { auth } from "./firebase-config.js";
 
   const form = document.querySelector("form");
   const errorBox = document.getElementById("errorBox");
