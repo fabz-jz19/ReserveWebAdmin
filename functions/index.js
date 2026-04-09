@@ -2,17 +2,38 @@
 
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
-const { defineSecret } = require("firebase-functions/params");
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const twilio = require("twilio");
+const { defineSecret, defineString } = require("firebase-functions/params");
+const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
 
 admin.initializeApp();
 
 const db = admin.firestore();
-const FieldValue = admin.firestore.FieldValue;
-const Timestamp = admin.firestore.Timestamp;
 
 const MAIL_USER = defineSecret("MAIL_USER");
 const MAIL_APP_PASSWORD = defineSecret("MAIL_APP_PASSWORD");
+const TWILIO_ACCOUNT_SID = defineSecret("TWILIO_ACCOUNT_SID");
+const TWILIO_AUTH_TOKEN = defineSecret("TWILIO_AUTH_TOKEN");
+const TWILIO_WHATSAPP_FROM = defineSecret("TWILIO_WHATSAPP_FROM");
+
+const PLAY_STORE_LINK = defineString("PLAY_STORE_LINK", {
+  default: "https://play.google.com/store",
+});
+const APP_STORE_LINK = defineString("APP_STORE_LINK", {
+  default: "https://apps.apple.com/",
+});
+const HUAWEI_APP_GALLERY_LINK = defineString("HUAWEI_APP_GALLERY_LINK", {
+  default: "https://appgallery.huawei.com/",
+});
+const BUSINESS_TUTORIAL_LINK = defineString("BUSINESS_TUTORIAL_LINK", {
+  default: "https://reservemu.com/",
+});
+const SUPPORT_WHATSAPP_NUMBER = defineString("SUPPORT_WHATSAPP_NUMBER", {
+  default: "+23058264867",
+});
+const SUPPORT_EMAIL = defineString("SUPPORT_EMAIL", {
+  default: "support@reservemu.com",
+});
 
 const buildTransporter = () =>
   nodemailer.createTransport({
@@ -25,14 +46,15 @@ const buildTransporter = () =>
 
 exports.sendPartnerOnboardingMail = onDocumentCreated(
   {
-    document: "partner_leads/{leadId}",
+    document: "partner_onboarding_submissions/{submissionId}",
     secrets: [MAIL_USER, MAIL_APP_PASSWORD],
   },
   async (event) => {
     const snapshot = event.data;
     const data = snapshot?.data();
+    const recipientEmail = data?.basicInfo?.email;
 
-    if (!data?.email) {
+    if (!recipientEmail) {
       console.log("No email provided. Skipping email.");
       return;
     }
@@ -41,52 +63,17 @@ exports.sendPartnerOnboardingMail = onDocumentCreated(
 
     const mailOptions = {
       from: `Reserve <${MAIL_USER.value()}>`,
-      to: data.email,
-      subject: "Reserve – Partner Onboarding",
+      to: recipientEmail,
+      subject: "Reserve – Onboarding received",
       text: `Dear partner,
 
-I hope you’re doing well.
+Thank you for submitting ${data.basicInfo?.businessName || "your business"} on the Reserve platform.
 
-Thank you for registering ${data.businessName} on the Reserve platform.
+We have received your full onboarding submission and our team will now review it internally.
 
-We are excited to start working together and support your business through our booking platform.
+There is no need to send the same information again by email. We will work directly from the profile you submitted.
 
-----------------------------------
-
-Information required to complete your onboarding
-
-To set up your business profile in the Reserve app, please reply with the following details:
-
-1. Photos
-Up to 5 photos maximum.
-These can include your logo, workspace, services, or any visuals representing your business.
-
-2. Business description
-A short description of your services (2–5 lines is perfect).
-
-3. Location
-Latitude & longitude or a Google Maps pin.
-
-4. Address
-Full business address as you want it displayed in the app.
-
-5. Working hours
-Opening hours from Monday to Sunday.
-Please specify closed days if applicable.
-
-6. Reserve platform email
-The email address you would like to use for:
-- Booking notifications
-- Partner dashboard access
-- Reserve business communications
-
-----------------------------------
-
-Once this information is received, we will immediately add your business to the Reserve app and make your profile live.
-
-If you have any questions or need assistance, feel free to reply to this email.
-
-Looking forward to working together and building this step by step.
+If we need anything critical, we will contact you using the details you provided.
 
 Best regards,
 
@@ -106,6 +93,155 @@ Enn klik… la vie vinn fasil.`,
       console.log("Email sent to:", data.email);
     } catch (error) {
       console.error("Email sending failed:", error);
+    }
+  }
+);
+
+const normalizePhoneForWhatsApp = (value) => {
+  if (!value) return null;
+
+  const raw = String(value).trim().replace(/^whatsapp:/i, "");
+  const plusAndDigits = raw.replace(/[^\d+]/g, "");
+  const digits = plusAndDigits.replace(/\D/g, "");
+
+  if (!digits) return null;
+
+  if (plusAndDigits.startsWith("+")) {
+    return `+${digits}`;
+  }
+
+  if (digits.startsWith("00")) {
+    return `+${digits.slice(2)}`;
+  }
+
+  if (digits.startsWith("230") && digits.length === 11) {
+    return `+${digits}`;
+  }
+
+  if (digits.length === 8) {
+    return `+230${digits}`;
+  }
+
+  return `+${digits}`;
+};
+
+const normalizeTwilioWhatsAppFrom = (value) => {
+  if (!value) return null;
+  const cleaned = String(value).trim();
+  if (cleaned.toLowerCase().startsWith("whatsapp:")) {
+    return cleaned;
+  }
+  return `whatsapp:${cleaned}`;
+};
+
+const buildApprovalWhatsAppBody = ({
+  clientName,
+  businessName,
+  partnerEmail,
+  setPasswordLinkOrPassword,
+}) => `Dear ${clientName},
+
+Great news - your business ${businessName} has been approved on Reserve.
+
+Please sign in using the provided credentials:
+Email / Username: ${partnerEmail}
+Password / Setup Link: ${setPasswordLinkOrPassword}
+
+Once signed in, go to the PRO section of the app, where you can start adding your services and prices.
+
+Download the app:
+
+Android: ${PLAY_STORE_LINK.value()}
+iPhone: ${APP_STORE_LINK.value()}
+Huawei: ${HUAWEI_APP_GALLERY_LINK.value()}
+
+Business tutorial:
+${BUSINESS_TUTORIAL_LINK.value()}
+
+Need help?
+WhatsApp: ${SUPPORT_WHATSAPP_NUMBER.value()}
+Email: ${SUPPORT_EMAIL.value()}
+
+Welcome to Reserve.`;
+
+exports.sendPartnerApprovalWhatsApp = onDocumentUpdated(
+  {
+    document: "partner_onboarding_submissions/{submissionId}",
+    secrets: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM],
+  },
+  async (event) => {
+    const before = event.data?.before?.data();
+    const after = event.data?.after?.data();
+
+    if (!before || !after) {
+      return;
+    }
+
+    const beforeStatus = (before.partnerStatus || "").toLowerCase();
+    const afterStatus = (after.partnerStatus || "").toLowerCase();
+
+    if (beforeStatus === afterStatus) {
+      return;
+    }
+
+    if (afterStatus !== "approved") {
+      return;
+    }
+
+    if (after.approvalWhatsAppSentAtIso) {
+      console.log("Approval WhatsApp already sent for this submission.");
+      return;
+    }
+
+    const partnerEmail = after?.basicInfo?.bookingEmail || after?.basicInfo?.email || after?.partnerDraft?.email;
+    const clientName = after?.basicInfo?.contactPersonName || after?.partnerDraft?.contactPersonName || "partner";
+    const businessName = after?.basicInfo?.businessName || after?.partnerDraft?.partnerName || "your business";
+    const setPasswordLinkOrPassword =
+      after?.partnerAccess?.setPasswordLink ||
+      after?.setPasswordLink ||
+      "You will receive your setup link shortly from the Reserve team.";
+
+    const partnerMobile = after?.basicInfo?.mobile || after?.partnerDraft?.contactPersonPhone || after?.partnerDraft?.phoneNumber;
+    const toNumber = normalizePhoneForWhatsApp(partnerMobile);
+    const fromNumber = normalizeTwilioWhatsAppFrom(TWILIO_WHATSAPP_FROM.value());
+
+    if (!toNumber || !fromNumber) {
+      await event.data.after.ref.update({
+        approvalWhatsAppStatus: "failed",
+        approvalWhatsAppError: "Missing or invalid WhatsApp numbers.",
+        updatedAtServer: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return;
+    }
+
+    try {
+      const twilioClient = twilio(TWILIO_ACCOUNT_SID.value(), TWILIO_AUTH_TOKEN.value());
+      const message = await twilioClient.messages.create({
+        from: fromNumber,
+        to: `whatsapp:${toNumber}`,
+        body: buildApprovalWhatsAppBody({
+          clientName,
+          businessName,
+          partnerEmail: partnerEmail || "Not provided",
+          setPasswordLinkOrPassword,
+        }),
+      });
+
+      await event.data.after.ref.update({
+        approvalWhatsAppStatus: "sent",
+        approvalWhatsAppSentAtIso: new Date().toISOString(),
+        approvalWhatsAppMessageSid: message.sid,
+        updatedAtServer: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      console.log("Approval WhatsApp sent:", message.sid);
+    } catch (error) {
+      console.error("Twilio WhatsApp send failed:", error);
+      await event.data.after.ref.update({
+        approvalWhatsAppStatus: "failed",
+        approvalWhatsAppError: error?.message || "Unknown Twilio error",
+        updatedAtServer: admin.firestore.FieldValue.serverTimestamp(),
+      });
     }
   }
 );

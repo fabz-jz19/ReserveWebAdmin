@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva Admin • Onboarding Submissions</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --panel:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --brand:#2B21BD;
+      --brand-dark:#201a94;
+      --success:#15803d;
+      --success-bg:#f0fdf4;
+      --warning:#92400e;
+      --warning-bg:#fff7ed;
+      --danger:#b91c1c;
+      --danger-bg:#fef2f2;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+
+    header{
+      background:var(--brand);
+      color:#fff;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    header h1{
+      margin:0;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .header-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:10px 14px;
+      background:rgba(255,255,255,.14);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .btn.secondary{
+      background:#fff;
+      color:var(--brand);
+    }
+
+    main{
+      max-width:1320px;
+      margin:24px auto 48px;
+      padding:0 18px;
+    }
+
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr 180px;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 13px;
+      font:inherit;
+      background:#fff;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1.1fr) minmax(350px, .9fr);
+      gap:20px;
+      align-items:start;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:0 16px 40px rgba(15,23,42,.06);
+    }
+
+    .list{
+      padding:14px;
+      display:grid;
+      gap:12px;
+    }
+
+    .submission{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:#fff;
+      cursor:pointer;
+      transition:.14s ease;
+    }
+
+    .submission:hover,
+    .submission.active{
+      border-color:rgba(43,33,189,.3);
+      box-shadow:0 14px 32px rgba(43,33,189,.08);
+    }
+
+    .submission-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .submission h3{
+      margin:0 0 5px;
+      font-size:18px;
+      letter-spacing:-.02em;
+    }
+
+    .submission p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      white-space:nowrap;
+    }
+
+    .badge.submitted{ background:#eff6ff; color:#1d4ed8; }
+    .badge.converted{ background:var(--success-bg); color:var(--success); }
+    .badge.needs_changes{ background:var(--warning-bg); color:var(--warning); }
+    .badge.rejected{ background:var(--danger-bg); color:var(--danger); }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 14px;
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .detail{
+      padding:22px;
+    }
+
+    .detail h2{
+      margin:0 0 8px;
+      font-size:28px;
+      letter-spacing:-.03em;
+    }
+
+    .detail p{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .detail-grid{
+      display:grid;
+      gap:18px;
+    }
+
+    .section{
+      padding-top:16px;
+      border-top:1px solid var(--line);
+    }
+
+    .section h3{
+      margin:0 0 10px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--muted);
+    }
+
+    .rows{
+      display:grid;
+      gap:10px;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .row span:first-child{
+      color:var(--muted);
+      min-width:140px;
+    }
+
+    .detail-actions{
+      display:flex;
+      gap:12px;
+      margin-top:20px;
+      flex-wrap:wrap;
+    }
+
+    .photo-grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));
+      gap:10px;
+    }
+
+    .photo-link{
+      display:block;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+      aspect-ratio:1/1;
+    }
+
+    .photo-link img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .photo-empty{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .action{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .action.primary{
+      background:var(--brand);
+      color:#fff;
+    }
+
+    .action.primary:hover{ background:var(--brand-dark); }
+    .action.ghost{ background:#e2e8f0; color:var(--ink); }
+
+    .status{
+      display:none;
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:800;
+      line-height:1.5;
+    }
+
+    .status.success{ display:block; background:var(--success-bg); color:var(--success); }
+    .status.error{ display:block; background:var(--danger-bg); color:var(--danger); }
+
+    .empty{
+      padding:40px 28px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    @media(max-width:1000px){
+      .layout{ grid-template-columns:1fr; }
+    }
+
+    @media(max-width:640px){
+      header{
+        padding:16px;
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .toolbar{
+        grid-template-columns:1fr;
+      }
+
+      .row{
+        flex-direction:column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Partner Onboarding Submissions</h1>
+    <div class="header-actions">
+      <button class="btn secondary" onclick="location.href='dashboard.html'">Back to dashboard</button>
+      <button class="btn" onclick="location.href='partner-create.html'">Manual partner create</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <input id="searchInput" placeholder="Search by business name, contact, email, district..." />
+      <select id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="submitted">Submitted</option>
+        <option value="converted">Converted</option>
+        <option value="rejected">Rejected</option>
+        <option value="needs_changes">Needs changes</option>
+      </select>
+    </div>
+
+    <div class="layout">
+      <section class="card list" id="listPanel"></section>
+      <section class="card detail">
+        <div id="detailPanel" class="empty">Select a submission to inspect the full onboarding data.</div>
+        <div id="detailStatus" class="status"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module">
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      addDoc,
+      collection,
+      doc,
+      getDocs,
+      orderBy,
+      query,
+      serverTimestamp,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { auth, db } from "./firebase-config.js";
+
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const listPanel = document.getElementById("listPanel");
+    const detailPanel = document.getElementById("detailPanel");
+    const detailStatus = document.getElementById("detailStatus");
+
+    let submissions = [];
+    let selectedId = null;
+
+    const THEME_BY_CATEGORY = {
+      "spa": "SPA",
+      "dental": "DENTAL",
+      "salon": "HAIR_SALON",
+      "hair salon": "HAIR_SALON",
+      "barber": "HAIR_SALON",
+      "fitness": "FITNESS",
+      "gym": "FITNESS",
+      "restaurant": "RESTAURANT"
+    };
+
+    const setDetailStatus = (message = "", tone = "success") => {
+      if (!message) {
+        detailStatus.className = "status";
+        detailStatus.style.display = "none";
+        detailStatus.textContent = "";
+        return;
+      }
+
+      detailStatus.className = `status ${tone}`;
+      detailStatus.style.display = "block";
+      detailStatus.textContent = message;
+    };
+
+    const statusBadge = (status = "submitted") => `<span class="badge ${status}">${status.replace("_", " ")}</span>`;
+
+    const rows = (items) => `
+      <div class="rows">
+        ${items.map(([label, value]) => `
+          <div class="row">
+            <span>${label}</span>
+            <strong>${value || "—"}</strong>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    const scheduleSummary = (schedule) => {
+      if (!schedule?.weekly) {
+        return "No schedule";
+      }
+
+      const days = Object.entries(schedule.weekly).map(([day, value]) => `${day.replaceAll("_", " ")} ${value.start}-${value.end}`);
+      return days.length ? days.join(", ") : "No schedule";
+    };
+
+    const normalizeTheme = (submission) => {
+      const existing = submission.partnerDraft?.partnerMarketTheme || submission.basicInfo?.partnerMarketTheme;
+      if (existing) return existing;
+      const category = `${submission.basicInfo?.category || ""}`.trim().toLowerCase();
+      return THEME_BY_CATEGORY[category] || "OTHER";
+    };
+
+    const buildPartnerPayload = (submission, partnerId) => {
+      const basic = submission.basicInfo || {};
+      const profile = submission.businessProfile || {};
+      const operations = submission.operations || {};
+      const media = submission.media || {};
+      const draft = submission.partnerDraft || {};
+      const partnerStatus = submission.partnerStatus || "pending";
+      const nowIso = new Date().toISOString();
+      const photoUrls = Array.isArray(media.photos)
+        ? media.photos.map((photo) => photo.url).filter(Boolean)
+        : [];
+      const partnerImages = photoUrls.length
+        ? photoUrls
+        : media.logoUrl
+          ? [media.logoUrl]
+          : [];
+
+      return {
+        partnerId,
+        partnerName: draft.partnerName || basic.businessName,
+        brnNumber: draft.brnNumber || basic.brnNumber || null,
+        partnerMarketTheme: normalizeTheme(submission),
+        status: partnerStatus === "approved" ? "ACTIVE" : "INACTIVE",
+        partnerStatus,
+        createdAt: nowIso,
+        updatedAt: nowIso,
+        createdAtServer: serverTimestamp(),
+        updatedAtServer: serverTimestamp(),
+        partnerLogo: media.logoUrl || null,
+        partnerImages: partnerImages.length ? partnerImages.join("|") : null,
+        coverImage: media.logoUrl || null,
+        address: draft.address || profile.address || null,
+        pinLocation: draft.pinLocation || profile.pinLocation || null,
+        branchLocations: draft.branchLocations || profile.branchLocations || [],
+        description: draft.description || profile.description || null,
+        workingSchedule: draft.workingSchedule || operations.workingSchedule || null,
+        languagesSpoken: draft.languagesSpoken || profile.languagesSpoken || [],
+        categoryTags: draft.categoryTags || profile.services || [],
+        products: [],
+        cancellationPolicy: draft.cancellationPolicy || operations.cancellationPolicy || null,
+        minBookingNoticeMinutes: null,
+        maxGuests: null,
+        advancePaymentRequired: draft.advancePaymentRequired || operations.advancePaymentRequired || false,
+        verified: false,
+        acceptedPayments: draft.acceptedPayments || operations.acceptedPayments || [],
+        ratingAverage: null,
+        ratingCount: 0,
+        reviews: [],
+        socialLinks: draft.socialLinks || {
+          facebook: media.facebook || null,
+          instagram: media.instagram || null,
+          tiktok: media.tiktok || null
+        },
+        email: draft.email || basic.bookingEmail || basic.email || null,
+        phoneNumber: draft.phoneNumber || basic.phoneNumber || basic.mobile || null,
+        website: draft.website || media.website || null,
+        contactPersonName: draft.contactPersonName || basic.contactPersonName || null,
+        contactPersonEmail: draft.contactPersonEmail || basic.email || null,
+        contactPersonPhone: draft.contactPersonPhone || basic.mobile || null,
+        clickCount: 0,
+        bookingCount: 0,
+        priorityRank: 0,
+        isActive: false,
+        district: draft.district || basic.district || null,
+        fcmToken: null,
+        authenticationMail: basic.bookingEmail || basic.email || null,
+        accountNumber: null,
+        mobileNumber: basic.mobile || null,
+        onboardingSubmissionId: submission.id,
+        onboardingStatus: submission.status || "submitted",
+        onboardingPhotoUrls: photoUrls,
+        onboardingPhotoCount: photoUrls.length,
+        onboardingNotes: submission.notesForTeam || null
+      };
+    };
+
+    const renderDetail = (submission) => {
+      if (!submission) {
+        detailPanel.className = "empty";
+        detailPanel.innerHTML = "Select a submission to inspect the full onboarding data.";
+        return;
+      }
+
+      const mediaPhotos = Array.isArray(submission.media?.photos)
+        ? submission.media.photos
+          .map((photo) => (typeof photo === "string" ? photo : photo?.url))
+          .filter(Boolean)
+        : Array.isArray(submission.onboardingPhotoUrls)
+          ? submission.onboardingPhotoUrls.filter(Boolean)
+          : [];
+
+      const photoGallery = mediaPhotos.length
+        ? `
+          <div class="photo-grid">
+            ${mediaPhotos.map((url, index) => `
+              <a class="photo-link" href="${url}" target="_blank" rel="noopener noreferrer" title="Open photo ${index + 1}">
+                <img src="${url}" alt="Uploaded photo ${index + 1}" loading="lazy" />
+              </a>
+            `).join("")}
+          </div>
+        `
+        : `<div class="photo-empty">No uploaded photos.</div>`;
+
+      detailPanel.className = "";
+      detailPanel.innerHTML = `
+        <div class="submission-top" style="margin-bottom:14px;">
+          <div>
+            <h2>${submission.basicInfo?.businessName || "Untitled business"}</h2>
+            <p>${submission.basicInfo?.category || "No category"} • ${submission.basicInfo?.district || "No district"}</p>
+          </div>
+          ${statusBadge(submission.status)}
+        </div>
+
+        <div class="detail-grid">
+          <div class="section">
+            <h3>Contact</h3>
+            ${rows([
+              ["Contact person", submission.basicInfo?.contactPersonName],
+              ["Role", submission.basicInfo?.contactPersonRole],
+              ["BRN", submission.basicInfo?.brnNumber],
+              ["Email", submission.basicInfo?.email],
+              ["Booking email", submission.basicInfo?.bookingEmail],
+              ["Mobile", submission.basicInfo?.mobile],
+              ["Phone", submission.basicInfo?.phoneNumber]
+            ])}
+          </div>
+
+          <div class="section">
+            <h3>Business profile</h3>
+            ${rows([
+              ["Theme", submission.basicInfo?.partnerMarketTheme],
+              ["Description", submission.businessProfile?.description],
+              ["Address", submission.businessProfile?.address],
+              ["Services", (submission.businessProfile?.services || []).join(", ")],
+              ["Languages", (submission.businessProfile?.languagesSpoken || []).join(", ")],
+              ["Location", submission.businessProfile?.pinLocation ? `${submission.businessProfile.pinLocation.latitude}, ${submission.businessProfile.pinLocation.longitude}` : null],
+              ["Branches", submission.businessProfile?.branchLocations?.length ? `${submission.businessProfile.branchLocations.length} branch(es)` : "None"]
+            ])}
+          </div>
+
+          <div class="section">
+            <h3>Operations</h3>
+            ${rows([
+              ["Schedule", scheduleSummary(submission.operations?.workingSchedule)],
+              ["Advance payment", submission.operations?.advancePaymentRequired ? "Yes" : "No"],
+              ["Payments", (submission.operations?.acceptedPayments || []).join(", ")],
+              ["Cancellation", submission.operations?.cancellationPolicy]
+            ])}
+          </div>
+
+          <div class="section">
+            <h3>Media</h3>
+            ${rows([
+              ["Photos", `${mediaPhotos.length} files`],
+              ["Logo URL", submission.media?.logoUrl],
+              ["Website", submission.media?.website],
+              ["Facebook", submission.media?.facebook],
+              ["Instagram", submission.media?.instagram],
+              ["TikTok", submission.media?.tiktok]
+            ])}
+            ${photoGallery}
+          </div>
+
+          <div class="section">
+            <h3>Internal notes</h3>
+            ${rows([
+              ["Submitted", submission.submittedAtIso],
+              ["Notes", submission.notesForTeam],
+              ["Partner status", submission.partnerStatus || "pending"],
+              ["Converted partner", submission.convertedPartnerId]
+            ])}
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button class="action primary" id="convertBtn" ${submission.status === "converted" ? "disabled" : ""}>Convert to partner</button>
+          <button class="action ghost" id="markNeedsChangesBtn">Mark needs changes</button>
+          <button class="action ghost" id="rejectBtn">Reject</button>
+          <select id="partnerStatusSelect" class="action ghost">
+            <option value="pending" ${submission.partnerStatus === "pending" ? "selected" : ""}>Partner status: pending</option>
+            <option value="approved" ${submission.partnerStatus === "approved" ? "selected" : ""}>Partner status: approved</option>
+            <option value="rejected" ${submission.partnerStatus === "rejected" ? "selected" : ""}>Partner status: rejected</option>
+            <option value="invalid" ${submission.partnerStatus === "invalid" ? "selected" : ""}>Partner status: invalid</option>
+            <option value="subscription_cancelled" ${submission.partnerStatus === "subscription_cancelled" ? "selected" : ""}>Partner status: subscription cancelled</option>
+          </select>
+        </div>
+      `;
+
+      document.getElementById("convertBtn")?.addEventListener("click", () => convertSubmission(submission));
+      document.getElementById("markNeedsChangesBtn")?.addEventListener("click", () => updateSubmissionStatus(submission.id, "needs_changes"));
+      document.getElementById("rejectBtn")?.addEventListener("click", () => updateSubmissionStatus(submission.id, "rejected"));
+      document.getElementById("partnerStatusSelect")?.addEventListener("change", (event) => {
+        updatePartnerStatus(submission.id, event.target.value);
+      });
+    };
+
+    const getFilteredSubmissions = () => {
+      const term = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
+
+      return submissions.filter((submission) => {
+        const haystack = [
+          submission.basicInfo?.businessName,
+          submission.basicInfo?.brnNumber,
+          submission.basicInfo?.contactPersonName,
+          submission.basicInfo?.email,
+          submission.basicInfo?.district,
+          submission.basicInfo?.category
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        const statusMatch = status === "all" || submission.status === status;
+        const termMatch = !term || haystack.includes(term);
+        return statusMatch && termMatch;
+      });
+    };
+
+    const renderList = () => {
+      const filtered = getFilteredSubmissions();
+
+      if (!filtered.length) {
+        listPanel.innerHTML = `<div class="empty">No onboarding submissions found.</div>`;
+        renderDetail(null);
+        return;
+      }
+
+      if (!selectedId || !filtered.some((item) => item.id === selectedId)) {
+        selectedId = filtered[0].id;
+      }
+
+      listPanel.innerHTML = filtered.map((submission) => `
+        <article class="submission ${submission.id === selectedId ? "active" : ""}" data-id="${submission.id}">
+          <div class="submission-top">
+            <div>
+              <h3>${submission.basicInfo?.businessName || "Untitled business"}</h3>
+              <p>${submission.basicInfo?.contactPersonName || "No contact"} • ${submission.basicInfo?.email || "No email"}</p>
+            </div>
+            ${statusBadge(submission.status)}
+          </div>
+          <p>${submission.businessProfile?.description || "No description provided."}</p>
+          <div class="meta">
+            <span>${submission.basicInfo?.category || "No category"}</span>
+            <span>${submission.basicInfo?.district || "No district"}</span>
+            <span>${(submission.partnerStatus || "pending").replace("_", " ")}</span>
+            <span>${submission.submittedAtIso || "No submission date"}</span>
+          </div>
+        </article>
+      `).join("");
+
+      Array.from(listPanel.querySelectorAll(".submission")).forEach((el) => {
+        el.addEventListener("click", () => {
+          selectedId = el.dataset.id;
+          renderList();
+        });
+      });
+
+      renderDetail(filtered.find((item) => item.id === selectedId) || null);
+    };
+
+    const refreshSubmissions = async () => {
+      const q = query(collection(db, "partner_onboarding_submissions"), orderBy("createdAtServer", "desc"));
+      const snap = await getDocs(q);
+      submissions = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+      renderList();
+    };
+
+    const updateSubmissionStatus = async (id, status) => {
+      try {
+        await updateDoc(doc(db, "partner_onboarding_submissions", id), {
+          status,
+          reviewedAtIso: new Date().toISOString(),
+          updatedAtServer: serverTimestamp()
+        });
+        setDetailStatus(`Submission marked as ${status.replace("_", " ")}.`, "success");
+        await refreshSubmissions();
+      } catch (error) {
+        setDetailStatus(error.message || "Failed to update submission.", "error");
+      }
+    };
+
+    const updatePartnerStatus = async (id, partnerStatus) => {
+      try {
+        await updateDoc(doc(db, "partner_onboarding_submissions", id), {
+          partnerStatus,
+          reviewedAtIso: new Date().toISOString(),
+          updatedAtServer: serverTimestamp()
+        });
+        setDetailStatus(`Partner status updated to ${partnerStatus.replace("_", " ")}.`, "success");
+        await refreshSubmissions();
+      } catch (error) {
+        setDetailStatus(error.message || "Failed to update partner status.", "error");
+      }
+    };
+
+    const convertSubmission = async (submission) => {
+      try {
+        setDetailStatus("");
+        const partnerId = submission.partnerDraft?.partnerId || submission.partnerId || doc(collection(db, "partners")).id;
+        const partnerRef = doc(db, "partners", partnerId);
+
+        await setDoc(partnerRef, buildPartnerPayload(submission, partnerRef.id));
+
+        await updateDoc(doc(db, "partner_onboarding_submissions", submission.id), {
+          status: "converted",
+          convertedPartnerId: partnerRef.id,
+          reviewedAtIso: new Date().toISOString(),
+          updatedAtServer: serverTimestamp()
+        });
+
+        setDetailStatus(`Submission converted to partner ${partnerRef.id}.`, "success");
+        await refreshSubmissions();
+      } catch (error) {
+        setDetailStatus(error.message || "Failed to convert submission.", "error");
+      }
+    };
+
+    searchInput.addEventListener("input", renderList);
+    statusFilter.addEventListener("change", renderList);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("index.html");
+        return;
+      }
+
+      try {
+        await refreshSubmissions();
+      } catch (error) {
+        listPanel.innerHTML = `<div class="empty">Failed to load onboarding submissions.</div>`;
+        setDetailStatus(error.message || "Failed to load onboarding submissions.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

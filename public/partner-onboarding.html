@@ -3,18 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserve • Business Onboarding</title>
+  <title>Reserve • Partner Onboarding</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
   <style>
     :root{
-      --brand:#2563eb;
-      --brand-dark:#1d4ed8;
+      --bg:#f4f7fb;
       --panel:#ffffff;
-      --text:#0f172a;
+      --ink:#0f172a;
       --muted:#64748b;
-      --border:#dbe4f0;
-      --danger:#dc2626;
+      --line:#dbe4f0;
+      --brand:#0f62fe;
+      --brand-dark:#0b4ed1;
       --success:#166534;
       --success-bg:#ecfdf5;
+      --danger:#b91c1c;
+      --danger-bg:#fef2f2;
+      --warning:#92400e;
+      --warning-bg:#fff7ed;
     }
 
     *{ box-sizing:border-box; }
@@ -22,131 +32,853 @@
     body{
       margin:0;
       min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
       background:
-        linear-gradient(rgba(243,246,251,.7), rgba(233,238,246,.78)),
-        radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 38%),
-        linear-gradient(135deg, #f5f7fb 0%, #eaf0f8 100%);
+        radial-gradient(circle at top left, rgba(15,98,254,.14), transparent 26%),
+        linear-gradient(180deg, #eef4ff 0%, var(--bg) 18%, var(--bg) 100%);
     }
 
-    .shell{
-      width:min(100%, 620px);
-      margin:56px auto;
-      padding:0 18px;
-    }
-
-    .card{
-      background:rgba(255,255,255,.94);
-      backdrop-filter:blur(6px);
-      border:1px solid rgba(255,255,255,.8);
-      border-radius:20px;
-      padding:34px 28px 24px;
-      box-shadow:0 22px 60px rgba(15,23,42,.12);
-    }
-
-    .brand{
-      text-align:center;
-      font-size:24px;
-      font-weight:800;
-      margin-bottom:10px;
-      letter-spacing:-.02em;
-    }
-
-    h1{
-      margin:0 0 8px;
-      text-align:center;
-      font-size:32px;
-      line-height:1.1;
-      letter-spacing:-.03em;
-    }
-
-    .subtitle{
-      margin:0 0 28px;
-      text-align:center;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.5;
-    }
-
-    form{
-      display:grid;
+    .topbar{
+      background:#0a3d91;
+      color:#fff;
+      padding:20px 28px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:18px;
     }
 
-    label{
+    .brand{
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .brand-note{
+      font-size:13px;
+      opacity:.82;
+    }
+
+    .shell{
+      max-width:1260px;
+      margin:0 auto;
+      padding:24px 18px 52px;
+    }
+
+    .progress{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+      gap:10px;
+      margin-bottom:24px;
+    }
+
+    .progress-mini{
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(15,23,42,.08);
+      font-size:13px;
+      font-weight:800;
+      color:#1e3a8a;
+    }
+
+    .progress-mini span{
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+    }
+
+    .progress-step{
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.68);
+      border:1px solid rgba(15,23,42,.06);
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      transition:.18s ease;
+    }
+
+    .progress-step.active{
+      background:#fff;
+      color:var(--brand);
+      box-shadow:0 10px 30px rgba(15,98,254,.08);
+    }
+
+    .progress-step.done{
+      color:var(--success);
+      background:#f0fdf4;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1.5fr) minmax(280px, .72fr);
+      gap:24px;
+      align-items:start;
+    }
+
+    .panel{
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:28px;
+      box-shadow:0 22px 70px rgba(15,23,42,.08);
+      backdrop-filter:blur(10px);
+    }
+
+    .wizard{
+      padding:28px;
+    }
+
+    .aside{
+      padding:24px;
+      position:sticky;
+      top:20px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:14px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .icon-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:26px;
+      height:26px;
+      border-radius:999px;
+      background:#e0ecff;
+      color:var(--brand);
+      font-size:13px;
+      font-weight:900;
+      margin-right:8px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:48px;
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .intro{
+      max-width:690px;
+      margin:0 0 30px;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.55;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:minmax(0, 1.1fr) minmax(0, .9fr);
+      gap:28px;
+      align-items:stretch;
+      margin-bottom:26px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .hero-note{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .hero-copy{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .mobile-start-cta{
+      display:none;
+    }
+
+    .hero-meta{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    .hero-visual{
+      position:relative;
+      border-radius:26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.9)), url("assets/background.png") center/cover no-repeat;
+      border:1px solid rgba(15,23,42,.08);
+      overflow:hidden;
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+    }
+
+    .hero-visual::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:rgba(255,255,255,.25);
+      backdrop-filter:blur(2px);
+      z-index:0;
+    }
+
+    .hero-visual > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-visual h4{
+      margin:0;
+      color:var(--brand);
+      font-size:15px;
+      font-weight:900;
+    }
+
+    .hero-visual-cta{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+    }
+
+    .hero-visual-cta .primary{
+      width:100%;
+      max-width:240px;
+    }
+
+    .phone-shell{
+      width:240px;
+      height:480px;
+      border-radius:32px;
+      background:transparent;
+      border:0;
+      box-shadow:none;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+    }
+
+    .phone-shell img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      background:transparent;
+      border-radius:28px;
+    }
+
+
+    .process-card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      background:#fff;
+      display:grid;
+      gap:12px;
+    }
+
+    .process-step{
+      display:grid;
+      grid-template-columns:26px 1fr;
+      gap:12px;
+      align-items:start;
+    }
+
+    .process-step span{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      background:#e0ecff;
+      color:var(--brand);
+      font-weight:900;
+      font-size:12px;
+    }
+
+    .process-step strong{
       display:block;
-      margin-bottom:6px;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+
+    .process-step p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+      gap:14px;
+      margin-bottom:20px;
+    }
+
+    .feature-card{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:flex;
+      gap:12px;
+    }
+
+    .feature-icon{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      background:#e0ecff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--brand);
+      flex-shrink:0;
+    }
+
+    .feature-card strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:14px;
+    }
+
+    .feature-card span{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .category-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
+      gap:14px;
+    }
+
+    .category-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:#fff;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      transition:border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .category-card:hover{
+      transform:translateY(-1px);
+      border-color:rgba(15,98,254,.4);
+      box-shadow:0 12px 24px rgba(15,98,254,.12);
+    }
+
+    .category-card.selected{
+      border-color:var(--brand);
+      box-shadow:0 12px 30px rgba(15,98,254,.18);
+    }
+
+    .category-card .card-icon{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      background:#f1f5ff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--brand);
+    }
+
+    .category-card span{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .category-detail{
+      display:none;
+    }
+
+    .store-links{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:12px;
+      align-items:center;
+      width:100%;
+    }
+
+    .mobile-store-links{
+      display:none;
+    }
+
+    .store-link{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+      color:var(--ink);
+      font-weight:800;
+      font-size:14px;
+      min-width:200px;
+      justify-content:center;
+    }
+
+    .store-link .store-icon{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      background:#e0ecff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--brand);
+    }
+
+    .checklist{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .check-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
       font-size:13px;
       font-weight:700;
       color:#334155;
     }
 
-    input, select{
-      width:100%;
-      height:48px;
-      padding:0 14px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:#fff;
-      font-size:14px;
-      transition:border-color .18s ease, box-shadow .18s ease;
-      outline:none;
+    .check-item input{
+      width:18px;
+      min-height:18px;
+      margin:0;
     }
 
-    input:focus, select:focus{
-      border-color:rgba(37,99,235,.65);
-      box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    .testimonial{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+
+    .testimonial strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+    }
+
+    .testimonial span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .map-wrap{
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+
+    #locationMap{
+      width:100%;
+      height:320px;
+    }
+
+    .step{
+      display:none;
+      animation:fade .18s ease;
+    }
+
+    .step.active{
+      display:block;
+    }
+
+    @keyframes fade{
+      from{ opacity:0; transform:translateY(6px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    .step h2{
+      margin:0 0 8px;
+      font-size:28px;
+      letter-spacing:-.03em;
+    }
+
+    .step-copy{
+      margin:0 0 22px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px 16px;
+    }
+
+    .grid.single{
+      grid-template-columns:1fr;
+    }
+
+    .span-2{
+      grid-column:1 / -1;
+    }
+
+    label{
+      display:block;
+      margin-bottom:7px;
+      font-size:13px;
+      font-weight:800;
+      color:#334155;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:13px 14px;
+      font:inherit;
+      color:var(--ink);
+      transition:border-color .16s ease, box-shadow .16s ease;
+    }
+
+    input, select{
+      min-height:50px;
+    }
+
+    textarea{
+      min-height:124px;
+      resize:vertical;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      border-color:rgba(15,98,254,.5);
+      box-shadow:0 0 0 4px rgba(15,98,254,.12);
+    }
+
+    .field-note{
+      margin-top:7px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .upload-box{
+      border:1px dashed rgba(15,98,254,.4);
+      border-radius:18px;
+      padding:16px;
+      background:#f8fbff;
+    }
+
+    .upload-list{
+      display:grid;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .upload-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .upload-item span{
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .upload-remove{
+      border:0;
+      border-radius:10px;
+      background:#fee2e2;
+      color:#b91c1c;
+      font-weight:900;
+      padding:6px 10px;
+      cursor:pointer;
+    }
+
+    .branch-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#fff;
+      display:grid;
+      gap:12px;
+    }
+
+    .branch-actions{
+      display:flex;
+      justify-content:flex-end;
     }
 
     .error{
       display:none;
-      margin-top:8px;
+      margin-top:7px;
       color:var(--danger);
       font-size:12px;
-      font-weight:600;
+      font-weight:700;
     }
 
-    .status{
-      display:none;
-      margin-top:16px;
+    .schedule{
+      display:grid;
+      gap:14px;
+    }
+
+    .schedule-section{
+      border:1px solid var(--line);
+      border-radius:18px;
       padding:16px;
-      border-radius:14px;
+      background:#f8fbff;
+    }
+
+    .schedule-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .schedule-title{
+      font-weight:900;
       font-size:14px;
-      line-height:1.45;
     }
 
-    .status.success{
-      background:var(--success-bg);
-      color:var(--success);
+    .schedule-row{
+      display:grid;
+      grid-template-columns:120px 120px 1fr 1fr;
+      gap:12px;
+      align-items:center;
+      padding:10px 0;
     }
 
-    .status.error{
-      background:rgba(220,38,38,.08);
-      color:#b91c1c;
+    .checkbox{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      font-weight:700;
+      color:#334155;
+    }
+
+    .checkbox input{
+      width:18px;
+      min-height:18px;
+      margin:0;
+      padding:0;
+    }
+
+    .weekday-label{
+      font-size:13px;
+      font-weight:800;
+      color:#1e293b;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:30px;
+    }
+
+    .actions-right{
+      display:flex;
+      gap:12px;
     }
 
     button{
-      width:100%;
-      height:50px;
       border:0;
-      border-radius:12px;
-      background:var(--brand);
-      color:#fff;
-      font-size:15px;
-      font-weight:700;
+      border-radius:16px;
+      padding:14px 22px;
+      font:inherit;
+      font-weight:900;
       cursor:pointer;
-      transition:background .18s ease, transform .18s ease;
+      transition:transform .16s ease, opacity .16s ease, background .16s ease;
     }
 
     button:hover:not(:disabled){
-      background:var(--brand-dark);
       transform:translateY(-1px);
     }
 
     button:disabled{
       cursor:wait;
-      opacity:.7;
+      opacity:.72;
+    }
+
+    .ghost{
+      background:#e2e8f0;
+      color:var(--ink);
+    }
+
+    .primary{
+      background:var(--brand);
+      color:#fff;
+      min-width:180px;
+    }
+
+    .primary:hover:not(:disabled){
+      background:var(--brand-dark);
+    }
+
+    .status{
+      display:none;
+      margin-top:22px;
+      padding:15px 16px;
+      border-radius:18px;
+      font-size:14px;
+      line-height:1.5;
+      font-weight:700;
+    }
+
+    .status.error{
+      display:block;
+      background:var(--danger-bg);
+      color:var(--danger);
+    }
+
+    .status.success{
+      display:block;
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status.warning{
+      display:block;
+      background:var(--warning-bg);
+      color:var(--warning);
+    }
+
+    .summary-block + .summary-block{
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+
+    .summary-block h3{
+      margin:0 0 10px;
+      font-size:13px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .summary-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .summary-item{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .summary-item span:first-child{
+      color:var(--muted);
+      min-width:118px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eff6ff;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+
+    .aside h3{
+      margin:0 0 10px;
+      font-size:22px;
+      letter-spacing:-.03em;
+    }
+
+    .aside p{
+      margin:0 0 16px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .tip-list{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .tip{
+      padding:14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid var(--line);
+    }
+
+    .tip strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+    }
+
+    .tip span{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
     }
 
     .footer{
@@ -156,186 +888,1505 @@
       font-size:13px;
     }
 
-    .hp{
-      position:absolute;
-      left:-9999px;
-      opacity:0;
-      pointer-events:none;
+    .success-page{
+      display:none;
+      padding:24px 8px 8px;
     }
 
-    @media (max-width: 640px){
-      .shell{
-        margin:28px auto;
+    .success-card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:26px;
+      background:linear-gradient(180deg, #ffffff, #f8fbff);
+      box-shadow:0 18px 40px rgba(15,23,42,.08);
+    }
+
+    .success-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#dcfce7;
+      color:#166534;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin-bottom:14px;
+    }
+
+    .success-card h2{
+      margin:0 0 10px;
+      font-size:36px;
+      letter-spacing:-.03em;
+    }
+
+    .success-card p{
+      margin:0 0 16px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:17px;
+    }
+
+    .success-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    body.success-mode .progress,
+    body.success-mode .progress-mini,
+    body.success-mode .aside,
+    body.success-mode #wizardForm{
+      display:none !important;
+    }
+
+    body.success-mode .layout{
+      grid-template-columns:1fr;
+    }
+
+    body.success-mode .success-page{
+      display:block;
+    }
+
+    @media (max-width: 1040px){
+      .layout{
+        grid-template-columns:1fr;
       }
 
-      .card{
-        padding:26px 20px 22px;
+      .aside{
+        position:static;
+      }
+    }
+
+    @media (max-width: 720px){
+      .topbar{
+        padding:12px 14px;
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .topbar > div:first-child .brand-note{
+        display:none;
+      }
+
+      .brand{
+        font-size:18px;
       }
 
       h1{
+        font-size:30px;
+      }
+
+      .shell{
+        padding:16px 14px 40px;
+      }
+
+      .progress{
+        display:none;
+      }
+
+      .progress-mini{
+        display:flex;
+      }
+
+      .hero{
+        grid-template-columns:1fr;
+        gap:16px;
+      }
+
+      .hero-visual{
+        padding:16px;
+      }
+
+      .wizard{
+        padding:18px 16px;
+      }
+
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .schedule-row{
+        grid-template-columns:1fr;
+      }
+
+      .actions{
+        flex-direction:column-reverse;
+        align-items:stretch;
+      }
+
+      .actions-right{
+        width:100%;
+        flex-direction:column;
+      }
+
+      .actions-right button,
+      .ghost,
+      .primary{
+        width:100%;
+      }
+
+      .success-card h2{
         font-size:28px;
+      }
+
+      .feature-grid{
+        grid-template-columns:1fr;
+      }
+
+      #locationMap{
+        height:240px;
+      }
+
+      .step[data-step="0"] .hero{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+      }
+
+      .step[data-step="0"] .hero-visual{
+        order:-1;
+        background:none;
+        border:0;
+        padding:0;
+        min-height:unset;
+        box-shadow:none;
+      }
+
+      .step[data-step="0"] .hero-visual::before{
+        display:none;
+      }
+
+      .step[data-step="0"] .hero-visual h4{
+        display:none;
+      }
+
+      .step[data-step="0"] .hero-visual-cta{
+        display:none;
+      }
+
+      .step[data-step="0"] .hero-visual-cta .primary{
+        width:100%;
+        max-width:none;
+      }
+
+      .step[data-step="0"] .mobile-start-cta{
+        display:block;
+        margin-top:-2px;
+        margin-bottom:6px;
+      }
+
+      .step[data-step="0"] .mobile-start-cta .primary{
+        width:100%;
+        max-width:none;
+      }
+
+      .step[data-step="0"] .hero-copy .intro{
+        margin-bottom:12px;
+        font-size:17px;
+      }
+
+      .step[data-step="0"] .hero-copy .hero-note{
+        margin-bottom:6px;
+      }
+
+      .step[data-step="0"] .hero-visual .store-links{
+        display:none;
+      }
+
+      .mobile-store-links{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        margin-top:10px;
+        width:100%;
+      }
+
+      .mobile-store-links .store-link{
+        width:100%;
+        max-width:none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="card">
-      <div class="brand">Reserve</div>
-      <h1>Business onboarding</h1>
-      <p class="subtitle">
-        Join Reserve and start receiving bookings from customers.
-      </p>
-
-      <form id="partnerForm" novalidate>
-        <div>
-          <label for="businessName">Business Name</label>
-          <input type="text" id="businessName" name="businessName" required />
-          <div class="error" id="businessError">Business name is required.</div>
-        </div>
-
-        <div>
-          <label for="category">Business Category</label>
-          <select id="category" name="category" required>
-            <option value="">Select category</option>
-            <option value="Car Detailing">Car Detailing</option>
-            <option value="Hair Salon">Hair Salon</option>
-            <option value="Barber">Barber</option>
-            <option value="Spa">Spa</option>
-            <option value="Gym">Gym</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Other">Other</option>
-          </select>
-          <div class="error" id="categoryError">Please select a category.</div>
-        </div>
-
-        <div>
-          <label for="mobile">Mobile Number</label>
-          <input type="tel" id="mobile" name="mobile" placeholder="5xxxxxxx" required />
-          <div class="error" id="mobileError">Valid phone number required.</div>
-        </div>
-
-        <div>
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" required />
-          <div class="error" id="emailError">Valid email required.</div>
-        </div>
-
-        <div>
-          <label for="district">District</label>
-          <select id="district" name="district" required>
-            <option value="">Select district</option>
-            <option value="Port Louis">Port Louis</option>
-            <option value="Pamplemousses">Pamplemousses</option>
-            <option value="Riviere du Rempart">Riviere du Rempart</option>
-            <option value="Flacq">Flacq</option>
-            <option value="Grand Port">Grand Port</option>
-            <option value="Savanne">Savanne</option>
-            <option value="Black River">Black River</option>
-            <option value="Plaines Wilhems">Plaines Wilhems</option>
-            <option value="Moka">Moka</option>
-          </select>
-          <div class="error" id="districtError">Please select a district.</div>
-        </div>
-
-        <div class="hp" aria-hidden="true">
-          <label for="website">Leave this empty</label>
-          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
-        </div>
-
-        <button type="submit" id="submitBtn">Submit Business</button>
-      </form>
-
-      <div class="status success" id="successBox">
-        Your business has been submitted successfully.<br />
-        Our team will contact you shortly.
-      </div>
-
-      <div class="status error" id="statusError"></div>
-
-      <div class="footer">Reserve © 2026</div>
+  <header class="topbar">
+    <div>
+      <div class="brand">Reserve Partner Onboarding</div>
+      <div class="brand-note">Submit your business profile once. Our team reviews and publishes it from your submission.</div>
     </div>
-  </div>
+    <div class="brand-note">Reserve © 2026</div>
+  </header>
 
+  <main class="shell">
+    <div class="progress" id="progress"></div>
+    <div class="progress-mini" id="progressMini">
+      <div id="progressMiniLabel">Step 1 of 7</div>
+      <span id="progressMiniStep">Overview</span>
+    </div>
+
+    <div class="layout">
+      <section class="panel wizard">
+        <form id="wizardForm" novalidate>
+          <section class="step active" data-step="0">
+            <div class="hero">
+              <div class="hero-copy">
+                <div class="hero-meta">
+                  <div class="eyebrow">
+                    <span class="icon-badge">1</span>
+                    Partner setup
+                  </div>
+                </div>
+
+                <h1>List your business on Reserve. Free for first 3 months</h1>
+                <div class="mobile-start-cta">
+                  <button type="button" class="primary" data-start-onboarding>Register my business</button>
+                </div>
+                <p class="intro">
+                  Register your business in 3 minutes. No fees for registration. Complete the onboarding in one guided flow with no follow-up email and no duplicate manual entry.
+                </p>
+                <div class="hero-note">
+                  Once submitted, your business profile is ready for internal review and publication by the Reserve team.
+                </div>
+
+                <h2><span class="icon-badge">2</span>How Reserve works</h2>
+                <p class="step-copy">Complete the onboarding once with all business details.</p>
+
+                <div class="process-card">
+                  <div class="process-step">
+                    <span>1</span>
+                    <div>
+                      <strong>Submit profile</strong>
+                      <p>Complete the onboarding once with all business details.</p>
+                    </div>
+                  </div>
+                  <div class="process-step">
+                    <span>2</span>
+                    <div>
+                      <strong>Internal review</strong>
+                      <p>Our team validates your details and configures your booking setup.</p>
+                    </div>
+                  </div>
+                  <div class="process-step">
+                    <span>3</span>
+                    <div>
+                      <strong>Profile goes live</strong>
+                      <p>Your business appears in the Reserve app and starts receiving bookings.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                <div class="hero-visual">
+                  <div class="hero-visual-cta">
+                    <button type="button" class="primary" data-start-onboarding>Register my business</button>
+                    <div class="hero-note">Register your business in 3 minutes.</div>
+                  </div>
+                  <h4>See how your listing will appear</h4>
+                  <div class="store-links">
+                  <a href="https://apps.apple.com/" target="_blank" rel="noopener noreferrer" class="store-link">
+                    <span class="store-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M16 13c0 3.314-2.239 7-4 7s-1.5-1-3-1-1.5 1-3 1-4-4.686-4-7 1.5-5 4-5c1.5 0 2.5 1 3 1s1.5-1 3-1c2.5 0 4 2 4 5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.5 3c-.6 1.1-1.7 2-3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    Apple App Store
+                  </a>
+                  <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" class="store-link">
+                    <span class="store-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4l12 8-12 8V4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                        <path d="M16 12l4-2v4l-4-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    Google Play
+                  </a>
+                  <a href="https://appgallery.huawei.com/" target="_blank" rel="noopener noreferrer" class="store-link">
+                    <span class="store-icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    Huawei AppGallery
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="store-links mobile-store-links">
+              <a href="https://apps.apple.com/" target="_blank" rel="noopener noreferrer" class="store-link">
+                <span class="store-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M16 13c0 3.314-2.239 7-4 7s-1.5-1-3-1-1.5 1-3 1-4-4.686-4-7 1.5-5 4-5c1.5 0 2.5 1 3 1s1.5-1 3-1c2.5 0 4 2 4 5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.5 3c-.6 1.1-1.7 2-3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                Apple App Store
+              </a>
+              <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" class="store-link">
+                <span class="store-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4l12 8-12 8V4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M16 12l4-2v4l-4-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Google Play
+              </a>
+              <a href="https://appgallery.huawei.com/" target="_blank" rel="noopener noreferrer" class="store-link">
+                <span class="store-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                Huawei AppGallery
+              </a>
+            </div>
+          </section>
+
+          <section class="step" data-step="1">
+            <h2><span class="icon-badge">3</span>Select your business category</h2>
+            <p class="step-copy">Choose the category that best describes your business. This helps us configure the right booking experience.</p>
+
+            <div class="category-grid" id="categoryGrid">
+              <div class="category-card" data-category="Barber" data-theme="HAIR_SALON">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 6h10l-1 12H8L7 6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M9 6l1-2h4l1 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Barber</strong>
+                <span>Haircuts, grooming, styling.</span>
+              </div>
+              <div class="category-card" data-category="Apartment Renting" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 10l8-6 8 6v8H4v-8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M10 18v-6h4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Apartment Renting</strong>
+                <span>Short stays, holiday homes, rentals.</span>
+              </div>
+              <div class="category-card" data-category="Spa" data-theme="SPA">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 4c2 2 4 4 4 6a4 4 0 0 1-8 0c0-2 2-4 4-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M5 20h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Spa</strong>
+                <span>Wellness, massage, relaxation.</span>
+              </div>
+              <div class="category-card" data-category="Doctor" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <rect x="5" y="5" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </div>
+                <strong>Doctor</strong>
+                <span>Medical consultations, clinics.</span>
+              </div>
+              <div class="category-card" data-category="Dental" data-theme="DENTAL">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 4c-2 0-4 2-4 5 0 5 2 11 4 11s2-4 4-4 2 4 4 4 4-6 4-11c0-3-2-5-4-5-2 0-2 1-4 1s-2-1-4-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <strong>Dental</strong>
+                <span>Dental care, orthodontics.</span>
+              </div>
+              <div class="category-card" data-category="Activities" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Activities</strong>
+                <span>Tours, guides, experiences.</span>
+              </div>
+              <div class="category-card" data-category="Other" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M9 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Other</strong>
+                <span>Anything outside the categories above.</span>
+              </div>
+            </div>
+
+            <div class="grid single category-detail" id="categoryDetailRow" style="margin-top:18px;">
+              <div>
+                <label for="categoryDetail">If other, specify</label>
+                <input id="categoryDetail" name="categoryDetail" placeholder="Describe your business category" />
+                <div class="error" id="categoryDetailError">Please specify your category.</div>
+              </div>
+            </div>
+
+            <input type="hidden" id="category" name="category" />
+            <input type="hidden" id="partnerMarketTheme" name="partnerMarketTheme" />
+            <div class="error" id="categoryError">Please select a category to continue.</div>
+          </section>
+
+          <section class="step" data-step="2">
+            <h2><span class="icon-badge">4</span>Basic information</h2>
+            <p class="step-copy">Start with the essential business and contact details we need to identify your business and reach the right person.</p>
+
+            <div class="grid">
+              <div>
+                <label for="businessName">Business name</label>
+                <input id="businessName" name="businessName" required />
+                <div class="error" id="businessNameError">Business name is required.</div>
+              </div>
+
+              <div>
+                <label for="brnNumber">BRN number</label>
+                <input id="brnNumber" name="brnNumber" placeholder="C12345678" required />
+                <div class="error" id="brnError">Valid BRN is required (example: C12345678).</div>
+              </div>
+
+              <div class="span-2">
+                <label for="contactPersonName">Contact person name</label>
+                <input id="contactPersonName" name="contactPersonName" required />
+                <div class="error" id="contactPersonNameError">Contact person is required.</div>
+              </div>
+
+              <div>
+                <label for="email">Contact email</label>
+                <input id="email" name="email" type="email" required />
+                <div class="error" id="emailError">Valid email is required.</div>
+              </div>
+
+              <div>
+                <label for="mobile">Mobile number</label>
+                <input id="mobile" name="mobile" type="tel" placeholder="5xxxxxxx" required />
+                <div class="error" id="mobileError">Valid mobile number is required.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="step" data-step="3">
+            <h2><span class="icon-badge">5</span>Business profile</h2>
+            <p class="step-copy">Tell us about your services and where customers can find you.</p>
+
+            <div class="grid">
+              <div>
+                <label for="district">District</label>
+                <select id="district" name="district" required>
+                  <option value="">Select district</option>
+                  <option value="PORT_LOUIS">Port Louis</option>
+                  <option value="PLAINE_WILHEMS">Plaines Wilhems</option>
+                  <option value="RIVIERE_DU_REMPART">Riviere du Rempart</option>
+                  <option value="SAVANNE">Savanne</option>
+                  <option value="GRAND_PORT">Grand Port</option>
+                  <option value="PAMPLEMOUSSES">Pamplemousses</option>
+                  <option value="BLACK_RIVER">Black River</option>
+                  <option value="FLACQ">Flacq</option>
+                  <option value="MOKA">Moka</option>
+                </select>
+                <div class="error" id="districtError">District is required.</div>
+              </div>
+
+              <div class="span-2">
+                <label for="description">Business description</label>
+                <textarea id="description" name="description" placeholder="What do you offer, who do you serve, and what makes your business stand out?" required></textarea>
+                <div class="error" id="descriptionError">Description is required (at least 20 characters).</div>
+              </div>
+
+              <div class="span-2">
+                <label for="address">Business address</label>
+                <textarea id="address" name="address" placeholder="Full address as you want it displayed in the app." required></textarea>
+                <div class="error" id="addressError">Address is required.</div>
+              </div>
+
+              <div class="span-2">
+                <label>Pick your primary location on the map</label>
+                <div class="map-wrap">
+                  <div id="locationMap"></div>
+                </div>
+                <div class="field-note">Click on the map to set the business pin.</div>
+              </div>
+
+              <div class="span-2">
+                <label>Additional locations (optional)</label>
+                <div class="field-note">Use this if your business has multiple branches. Primary location is the map above.</div>
+                <div class="upload-list" id="branchList"></div>
+                <button type="button" class="ghost" id="addBranchBtn" style="margin-top:10px;">Add another location</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="step" data-step="4">
+            <h2><span class="icon-badge">6</span>Working hours</h2>
+            <p class="step-copy">Set your weekly availability so the onboarding team can create an accurate booking setup from your submitted schedule.</p>
+
+            <div class="schedule" id="schedule"></div>
+            <div class="error" id="scheduleError">Open at least one day and provide a start and end time.</div>
+          </section>
+
+          <section class="step" data-step="5">
+            <h2><span class="icon-badge">7</span>Media and business operations</h2>
+            <p class="step-copy">Add the media and operational details needed to publish your profile cleanly without asking you for more information later.</p>
+
+            <div class="grid">
+              <div class="span-2">
+                <label for="photoUploads">Business photos</label>
+                <div class="upload-box">
+                  <input id="photoUploads" name="photoUploads" type="file" accept="image/*" multiple />
+                  <div class="field-note">Upload at least 3 photos (logo, workspace, services). Max 10 photos, 10MB each.</div>
+                  <div class="error" id="photoUploadsError">Please upload at least 3 photos.</div>
+                  <div class="upload-list" id="photoList"></div>
+                </div>
+              </div>
+
+              <div>
+                <label for="advancePaymentRequired">Advance payment required?</label>
+                <select id="advancePaymentRequired" name="advancePaymentRequired">
+                  <option value="false">No</option>
+                  <option value="true">Yes</option>
+                </select>
+              </div>
+
+              <div class="span-2">
+                <label>Accepted payment methods</label>
+                <div class="checklist">
+                  <label class="check-item"><input type="checkbox" name="acceptedPayments" value="Cash" />Cash</label>
+                  <label class="check-item"><input type="checkbox" name="acceptedPayments" value="Juice" />Juice</label>
+                  <label class="check-item"><input type="checkbox" name="acceptedPayments" value="Card" />Card</label>
+                  <label class="check-item"><input type="checkbox" name="acceptedPayments" value="Bank transfer" />Bank transfer</label>
+                  <label class="check-item"><input type="checkbox" name="acceptedPayments" value="Other" />Other</label>
+                </div>
+                <input id="paymentOther" name="paymentOther" placeholder="If other, specify (optional)" style="margin-top:10px;" />
+                <div class="error" id="acceptedPaymentsError">Select at least one payment method.</div>
+              </div>
+
+              <div class="span-2">
+                <label for="cancellationPolicy">Cancellation policy</label>
+                <select id="cancellationPolicy" name="cancellationPolicy">
+                  <option value="">Select a policy</option>
+                  <option value="Flexible">Flexible (free cancellation up to 24 hours)</option>
+                  <option value="Moderate">Moderate (free cancellation up to 48 hours)</option>
+                  <option value="Strict">Strict (free cancellation up to 7 days)</option>
+                  <option value="Non-refundable">Non-refundable</option>
+                  <option value="No cancellation policy">No cancellation policy</option>
+                </select>
+                <div class="error" id="cancellationPolicyError">Select a cancellation policy.</div>
+              </div>
+
+              <div class="span-2">
+                <label for="notesForTeam">Notes for the onboarding team</label>
+                <textarea id="notesForTeam" name="notesForTeam" placeholder="Any extra information, instructions, or context for the Reserve team."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="step" data-step="6">
+            <h2><span class="icon-badge">8</span>Review and submit</h2>
+            <p class="step-copy">Review the details below. When you submit, the full onboarding package is stored for internal review and partner creation.</p>
+
+            <div class="summary-block">
+              <h3>Business</h3>
+              <div class="summary-list" id="reviewBusiness"></div>
+            </div>
+
+            <div class="summary-block">
+              <h3>Profile</h3>
+              <div class="summary-list" id="reviewProfile"></div>
+            </div>
+
+            <div class="summary-block">
+              <h3>Operations</h3>
+              <div class="summary-list" id="reviewOperations"></div>
+            </div>
+          </section>
+
+          <div class="status" id="statusBox"></div>
+
+          <div class="actions" id="actions">
+            <button type="button" class="ghost" id="backBtn">Back</button>
+            <div class="actions-right">
+              <button type="button" class="primary" id="nextBtn">Continue</button>
+              <button type="submit" class="primary" id="submitBtn" style="display:none;">Submit onboarding</button>
+            </div>
+          </div>
+        </form>
+
+        <section class="success-page" id="successPage">
+          <div class="success-card">
+            <div class="success-chip">Submission received</div>
+            <h2>Business submission completed</h2>
+            <p>Your business profile has been submitted successfully.</p>
+            <p>You will have a mail for confirmation once your business is ready on the Reserve app.</p>
+            <div class="success-actions">
+              <button type="button" class="primary" id="submitAnotherBtn">Submit another business</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer">Reserve onboarding is reviewed internally before your profile goes live.</div>
+      </section>
+
+      <aside class="panel aside">
+        <div class="pill">Partner feedback</div>
+        <h3>Businesses growing on Reserve</h3>
+        <p>These are sample testimonials to show how partners describe their onboarding experience.</p>
+
+        <div class="tip-list">
+          <div class="testimonial">
+            <strong>Skyline Barber Studio</strong>
+            <span>"We went live in less than a week and started getting new bookings immediately."</span>
+          </div>
+          <div class="testimonial">
+            <strong>Lagoon Spa & Wellness</strong>
+            <span>"The onboarding was one clear flow. The Reserve team handled the rest."</span>
+          </div>
+          <div class="testimonial">
+            <strong>Coral Dental Clinic</strong>
+            <span>"The profile setup was simple, and the app looks professional."</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
   <script type="module">
-    import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { db, firebaseEnv } from "./firebase-config.js";
+    import { collection, doc, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDownloadURL, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    import { db, firebaseEnv, storage } from "./firebase-config.js";
 
-    const form = document.getElementById("partnerForm");
+    const DAYS = [
+      { key: "MONDAY", label: "Monday" },
+      { key: "TUESDAY", label: "Tuesday" },
+      { key: "WEDNESDAY", label: "Wednesday" },
+      { key: "THURSDAY", label: "Thursday" },
+      { key: "FRIDAY", label: "Friday" },
+      { key: "SATURDAY", label: "Saturday" },
+      { key: "SUNDAY", label: "Sunday" }
+    ];
+
+    const DISTRICT_LABELS = {
+      PORT_LOUIS: "Port Louis",
+      PLAINE_WILHEMS: "Plaines Wilhems",
+      RIVIERE_DU_REMPART: "Riviere du Rempart",
+      SAVANNE: "Savanne",
+      GRAND_PORT: "Grand Port",
+      PAMPLEMOUSSES: "Pamplemousses",
+      BLACK_RIVER: "Black River",
+      FLACQ: "Flacq",
+      MOKA: "Moka"
+    };
+
+    const form = document.getElementById("wizardForm");
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const progress = document.getElementById("progress");
+    const progressMiniLabel = document.getElementById("progressMiniLabel");
+    const progressMiniStep = document.getElementById("progressMiniStep");
+    const actions = document.getElementById("actions");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
     const submitBtn = document.getElementById("submitBtn");
-    const successBox = document.getElementById("successBox");
-    const statusError = document.getElementById("statusError");
+    const startBtns = Array.from(document.querySelectorAll("[data-start-onboarding]"));
+    const submitAnotherBtn = document.getElementById("submitAnotherBtn");
+    const statusBox = document.getElementById("statusBox");
+      const scheduleEl = document.getElementById("schedule");
+    const photoInput = document.getElementById("photoUploads");
+    const photoList = document.getElementById("photoList");
+    const categoryCards = Array.from(document.querySelectorAll(".category-card"));
+    const categoryInput = document.getElementById("category");
+    const partnerMarketThemeInput = document.getElementById("partnerMarketTheme");
+    const categoryDetailRow = document.getElementById("categoryDetailRow");
+    const categoryDetailInput = document.getElementById("categoryDetail");
+    const emailInput = document.getElementById("email");
+    const branchList = document.getElementById("branchList");
+    const addBranchBtn = document.getElementById("addBranchBtn");
+    let currentStep = 0;
+    let photoFiles = [];
+    let mapInstance;
+    let mapMarker;
+    let currentPinLocation = null;
+    const branchMaps = [];
 
     const phoneRegex = /^[5-9][0-9]{7}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const brnRegex = /^[A-Za-z][0-9]{8}$/;
+    const MAX_PHOTOS = 10;
+    const MAX_PHOTO_MB = 10;
 
-    const showError = (id, visible) => {
-      document.getElementById(id).style.display = visible ? "block" : "none";
+      const STEP_LABELS = [
+        "Overview",
+        "Category",
+        "Basic information",
+        "Business profile",
+        "Working hours",
+        "Media & operations",
+        "Review"
+      ];
+
+    const createProgress = () => {
+      progress.innerHTML = STEP_LABELS
+        .map((label, index) => `<div class="progress-step" data-progress="${index}">${index + 1}. ${label}</div>`)
+        .join("");
     };
 
-    const setSubmitState = (submitting) => {
-      submitBtn.disabled = submitting;
-      submitBtn.textContent = submitting ? "Submitting..." : "Submit Business";
+    const buildSchedule = () => {
+      const sections = [
+        { label: "Weekdays", days: DAYS.slice(0, 5) },
+        { label: "Saturday", days: DAYS.slice(5, 6) },
+        { label: "Sunday", days: DAYS.slice(6) }
+      ];
+
+      scheduleEl.innerHTML = sections
+        .map((section) => `
+          <div class="schedule-section">
+            <div class="schedule-header">
+              <div class="schedule-title">${section.label}</div>
+              <label class="checkbox">
+                <input type="checkbox" data-group="${section.label}" checked />
+                Same hours
+              </label>
+            </div>
+            ${section.days
+              .map((day, index) => `
+                <div class="schedule-row" data-group-row="${section.label}">
+                  <div class="weekday-label">${day.label}</div>
+                  <label class="checkbox">
+                    <input type="checkbox" name="${day.key}_isOpen" ${day.key !== "SUNDAY" ? "checked" : ""} />
+                    Open
+                  </label>
+                  <input type="time" name="${day.key}_start" value="${day.key !== "SUNDAY" ? "09:00" : ""}" />
+                  <input type="time" name="${day.key}_end" value="${day.key !== "SUNDAY" ? "18:00" : ""}" />
+                </div>
+              `)
+              .join("")}
+          </div>
+        `)
+        .join("");
+
+      scheduleEl.querySelectorAll('[data-group]').forEach((toggle) => {
+        toggle.addEventListener("change", () => {
+          const group = toggle.dataset.group;
+          const rows = Array.from(scheduleEl.querySelectorAll(`[data-group-row="${group}"]`));
+          if (!rows.length) {
+            return;
+          }
+          const sourceRow = rows[0];
+          const sourceStart = sourceRow.querySelector('input[name$="_start"]')?.value || "";
+          const sourceEnd = sourceRow.querySelector('input[name$="_end"]')?.value || "";
+          const sourceOpen = sourceRow.querySelector('input[name$="_isOpen"]')?.checked || false;
+
+          if (toggle.checked) {
+            rows.forEach((row, index) => {
+              if (index === 0) {
+                return;
+              }
+              const openEl = row.querySelector('input[name$="_isOpen"]');
+              const startEl = row.querySelector('input[name$="_start"]');
+              const endEl = row.querySelector('input[name$="_end"]');
+              openEl.checked = sourceOpen;
+              startEl.value = sourceStart;
+              endEl.value = sourceEnd;
+              startEl.disabled = true;
+              endEl.disabled = true;
+            });
+          } else {
+            rows.forEach((row, index) => {
+              if (index === 0) {
+                return;
+              }
+              row.querySelector('input[name$="_start"]').disabled = false;
+              row.querySelector('input[name$="_end"]').disabled = false;
+            });
+          }
+        });
+        toggle.dispatchEvent(new Event("change"));
+      });
     };
+
+    const initMapPicker = () => {
+      if (typeof L === "undefined") {
+        return;
+      }
+
+      const mapEl = document.getElementById("locationMap");
+      if (!mapEl) {
+        return;
+      }
+
+      const defaultLat = -20.348404;
+      const defaultLng = 57.552152;
+      mapInstance = L.map(mapEl).setView([defaultLat, defaultLng], 12);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(mapInstance);
+
+      mapMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(mapInstance);
+
+      const syncPin = (lat, lng) => {
+        currentPinLocation = { latitude: Number(lat.toFixed(6)), longitude: Number(lng.toFixed(6)) };
+      };
+
+      syncPin(defaultLat, defaultLng);
+
+      mapMarker.on("dragend", () => {
+        const { lat, lng } = mapMarker.getLatLng();
+        syncPin(lat, lng);
+      });
+
+      mapInstance.on("click", (event) => {
+        mapMarker.setLatLng(event.latlng);
+        syncPin(event.latlng.lat, event.latlng.lng);
+      });
+
+      setTimeout(() => mapInstance.invalidateSize(), 0);
+    };
+
+    const updateCategoryDetailVisibility = () => {
+      if (!categoryDetailRow) {
+        return;
+      }
+
+      const show = categoryInput.value === "Other";
+      categoryDetailRow.style.display = show ? "grid" : "none";
+      if (!show) {
+        categoryDetailInput.value = "";
+        toggleError("categoryDetailError", false);
+      }
+    };
+
+    const isMobileViewport = () => window.matchMedia("(max-width: 720px)").matches;
+
+    const setStatus = (message = "", tone = "error") => {
+      if (!message) {
+        statusBox.className = "status";
+        statusBox.style.display = "none";
+        statusBox.textContent = "";
+        return;
+      }
+
+      statusBox.className = `status ${tone}`;
+      statusBox.style.display = "block";
+      statusBox.textContent = message;
+    };
+
+    const toggleError = (id, visible) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = visible ? "block" : "none";
+      }
+    };
+
+    const renderPhotoList = () => {
+      photoList.innerHTML = photoFiles.map((file, index) => `
+        <div class="upload-item">
+          <div>
+            ${file.name}
+            <span>(${(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+          </div>
+          <button type="button" class="upload-remove" data-index="${index}">Remove</button>
+        </div>
+      `).join("");
+
+      Array.from(photoList.querySelectorAll(".upload-remove")).forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.index);
+          photoFiles.splice(idx, 1);
+          renderPhotoList();
+        });
+      });
+    };
+
+    photoInput.addEventListener("change", () => {
+      const files = Array.from(photoInput.files || []);
+      const images = files.filter((file) => file.type.startsWith("image/"));
+      const filtered = images.filter((file) => file.size <= MAX_PHOTO_MB * 1024 * 1024);
+      photoFiles = filtered.slice(0, MAX_PHOTOS);
+      renderPhotoList();
+    });
+
+    const updateStepUI = () => {
+      steps.forEach((step, index) => {
+        step.classList.toggle("active", index === currentStep);
+      });
+
+      Array.from(progress.children).forEach((step, index) => {
+        step.classList.toggle("active", index === currentStep);
+        step.classList.toggle("done", index < currentStep);
+      });
+
+      if (progressMiniLabel && progressMiniStep) {
+        progressMiniLabel.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+        progressMiniStep.textContent = STEP_LABELS[currentStep] || "";
+      }
+
+      backBtn.style.visibility = currentStep === 0 ? "hidden" : "visible";
+      nextBtn.style.display = currentStep === steps.length - 1 ? "none" : "inline-flex";
+      submitBtn.style.display = currentStep === steps.length - 1 ? "inline-flex" : "none";
+      actions.style.display = currentStep === 0 ? "none" : "flex";
+
+      if (currentStep === steps.length - 1) {
+        renderReview();
+      }
+
+      setStatus("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (currentStep === 3) {
+        setTimeout(() => {
+          if (mapInstance) {
+            mapInstance.invalidateSize();
+          }
+          branchMaps.forEach((branchMap) => branchMap.invalidateSize());
+        }, 0);
+      }
+    };
+
+    const showSuccessPage = () => {
+      document.body.classList.add("success-mode");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const showWizardPage = () => {
+      document.body.classList.remove("success-mode");
+      currentStep = 0;
+      updateStepUI();
+    };
+
+    const getValue = (name) => form.elements[name]?.value?.trim?.() ?? "";
+    const districtDisplay = (value) => DISTRICT_LABELS[value] || value || "—";
+
+    const buildWorkingSchedule = () => {
+      const weekly = {};
+
+      DAYS.forEach((day) => {
+        const isOpen = form.elements[`${day.key}_isOpen`].checked;
+        const start = getValue(`${day.key}_start`);
+        const end = getValue(`${day.key}_end`);
+
+        if (isOpen) {
+          weekly[day.key] = {
+            isOpen: true,
+            start,
+            end,
+            breaks: []
+          };
+        }
+      });
+
+      return {
+        timezone: "Indian/Mauritius",
+        weekly,
+        closedDates: []
+      };
+    };
+
+    const getFormData = () => {
+      const primaryPin = currentPinLocation;
+      const acceptedPayments = Array.from(document.querySelectorAll('input[name="acceptedPayments"]:checked'))
+        .map((input) => input.value);
+      const paymentOther = getValue("paymentOther");
+      if (paymentOther) {
+        acceptedPayments.push(`Other: ${paymentOther}`);
+      }
+      const workingSchedule = buildWorkingSchedule();
+
+      return {
+        businessName: getValue("businessName"),
+        brnNumber: getValue("brnNumber").replace(/\s+/g, "").toUpperCase(),
+        partnerMarketTheme: getValue("partnerMarketTheme"),
+        category: getValue("category"),
+        categoryDetail: getValue("categoryDetail"),
+        district: getValue("district"),
+        contactPersonName: getValue("contactPersonName"),
+        contactPersonRole: "Owner",
+        email: getValue("email").toLowerCase(),
+        bookingEmail: getValue("email").toLowerCase(),
+        mobile: getValue("mobile").replace(/\s+/g, ""),
+        phoneNumber: null,
+        description: getValue("description"),
+        address: getValue("address"),
+        pinLocation: primaryPin,
+        branchLocations: Array.from(document.querySelectorAll(".branch-card")).map((card) => {
+          const name = card.querySelector('[name="branchName"]')?.value?.trim() || "";
+          const address = card.querySelector('[name="branchAddress"]')?.value?.trim() || "";
+          const district = card.querySelector('[name="branchDistrict"]')?.value?.trim() || "";
+          const latInput = card.querySelector('[name="branchLatitude"]')?.value?.trim() || "";
+          const lngInput = card.querySelector('[name="branchLongitude"]')?.value?.trim() || "";
+          const lat = latInput || card.dataset.branchLat || "";
+          const lng = lngInput || card.dataset.branchLng || "";
+          return {
+            name: name || null,
+            address: address || null,
+            district: district || null,
+            pinLocation:
+              lat && lng
+                ? { latitude: Number(lat), longitude: Number(lng) }
+                : null
+          };
+        }).filter((branch) => branch.name || branch.address || branch.district || branch.pinLocation),
+        servicesSummary: "",
+        services: [],
+        languagesSpoken: ["English", "French"],
+        workingSchedule,
+        photoFiles,
+        advancePaymentRequired: getValue("advancePaymentRequired") === "true",
+        acceptedPayments,
+        cancellationPolicy: getValue("cancellationPolicy"),
+        notesForTeam: getValue("notesForTeam"),
+        firebaseEnv
+      };
+    };
+
+    const renderSummaryList = (targetId, rows) => {
+      document.getElementById(targetId).innerHTML = rows
+        .map(([label, value]) => `
+          <div class="summary-item">
+            <span>${label}</span>
+            <strong>${value || "—"}</strong>
+          </div>
+        `)
+        .join("");
+    };
+
+    const renderReview = () => {
+      const data = getFormData();
+      const openDays = Object.entries(data.workingSchedule.weekly)
+        .map(([day, values]) => `${day.replace("_", " ")} ${values.start}-${values.end}`)
+        .join(", ");
+      const categoryLabel =
+        data.category === "Other" && data.categoryDetail
+          ? `Other - ${data.categoryDetail}`
+          : data.category;
+
+      renderSummaryList("reviewBusiness", [
+        ["Business", data.businessName],
+        ["BRN", data.brnNumber],
+        ["Theme", data.partnerMarketTheme],
+        ["Category", categoryLabel],
+        ["District", districtDisplay(data.district)],
+        ["Contact", data.contactPersonName],
+        ["Email", data.email],
+        ["Mobile", data.mobile]
+      ]);
+
+      renderSummaryList("reviewProfile", [
+        ["Address", data.address],
+        ["Description", data.description],
+        ["Services", "—"],
+        ["Languages", data.languagesSpoken.join(", ")],
+        ["Location pin", data.pinLocation ? `${data.pinLocation.latitude}, ${data.pinLocation.longitude}` : "Not provided"],
+        ["Branch locations", data.branchLocations.length ? `${data.branchLocations.length} branch(es)` : "None"]
+      ]);
+
+      renderSummaryList("reviewOperations", [
+        ["Open days", openDays],
+        ["Photos", `${data.photoFiles.length} files`],
+        ["Payments", data.acceptedPayments.join(", ")],
+        ["Cancellation policy", data.cancellationPolicy],
+        ["Booking email", data.email]
+      ]);
+    };
+
+    const validateStep = (stepIndex) => {
+      const data = getFormData();
+      let valid = true;
+
+      setStatus("");
+      document.querySelectorAll(".error").forEach((el) => {
+        el.style.display = "none";
+      });
+
+      if (stepIndex === 1) {
+        toggleError("categoryError", !data.category);
+        if (data.category === "Other") {
+          toggleError("categoryDetailError", !data.categoryDetail);
+        }
+
+        if (!data.category || (data.category === "Other" && !data.categoryDetail)) {
+          valid = false;
+        }
+      }
+
+      if (stepIndex === 2) {
+        toggleError("businessNameError", !data.businessName);
+        toggleError("brnError", !brnRegex.test(data.brnNumber));
+        toggleError("contactPersonNameError", !data.contactPersonName);
+        toggleError("emailError", !emailRegex.test(data.email));
+        toggleError("mobileError", !phoneRegex.test(data.mobile));
+
+        if (
+          !data.businessName ||
+          !brnRegex.test(data.brnNumber) ||
+          !data.contactPersonName ||
+          !emailRegex.test(data.email) ||
+          !phoneRegex.test(data.mobile)
+        ) {
+          valid = false;
+        }
+      }
+
+      if (stepIndex === 3) {
+        toggleError("districtError", !data.district);
+        toggleError("descriptionError", data.description.length < 20);
+        toggleError("addressError", !data.address);
+        if (!data.district || data.description.length < 20 || !data.address) {
+          valid = false;
+        }
+      }
+
+      if (stepIndex === 4) {
+        const openDays = Object.values(data.workingSchedule.weekly);
+        const invalidDay = openDays.some((entry) => !entry.start || !entry.end);
+        const scheduleValid = openDays.length > 0 && !invalidDay;
+        toggleError("scheduleError", !scheduleValid);
+        if (!scheduleValid) {
+          valid = false;
+        }
+      }
+
+      if (stepIndex === 5) {
+        const photoValid = data.photoFiles.length >= 3 && data.photoFiles.length <= MAX_PHOTOS;
+        toggleError("photoUploadsError", !photoValid);
+        if (!photoValid) {
+          valid = false;
+        }
+
+        toggleError("acceptedPaymentsError", data.acceptedPayments.length === 0);
+        toggleError("cancellationPolicyError", !data.cancellationPolicy);
+        if (data.acceptedPayments.length === 0 || !data.cancellationPolicy) {
+          valid = false;
+        }
+      }
+
+      return valid;
+    };
+
+    const uploadPhotos = async (partnerId, files) => {
+      const uploads = files.map(async (file) => {
+        const storagePath = `partners/${partnerId}/gallery/${Date.now()}-${file.name}`;
+        const storageRef = ref(storage, storagePath);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        return {
+          url,
+          path: storagePath,
+          name: file.name,
+          size: file.size
+        };
+      });
+
+      return Promise.all(uploads);
+    };
+
+    const buildSubmissionPayload = (photoUploads, partnerId) => {
+      const data = getFormData();
+      const isoNow = new Date().toISOString();
+
+      return {
+        status: "submitted",
+        partnerStatus: "pending",
+        submissionType: "partner_onboarding",
+        submittedAtIso: isoNow,
+        reviewedAtIso: null,
+        onboardingVersion: 1,
+        source: "public_partner_onboarding_wizard",
+        firebaseEnv,
+        basicInfo: {
+          partnerId,
+          businessName: data.businessName,
+          brnNumber: data.brnNumber,
+          partnerMarketTheme: data.partnerMarketTheme,
+          category: data.category,
+          categoryDetail: data.categoryDetail || null,
+          district: data.district,
+          contactPersonName: data.contactPersonName,
+          contactPersonRole: data.contactPersonRole,
+          email: data.email,
+          bookingEmail: data.email,
+          mobile: data.mobile,
+          phoneNumber: null
+        },
+        businessProfile: {
+          description: data.description,
+          address: data.address,
+          pinLocation: data.pinLocation,
+          branchLocations: data.branchLocations,
+          servicesSummary: data.servicesSummary,
+          services: data.services,
+          languagesSpoken: data.languagesSpoken
+        },
+        operations: {
+          workingSchedule: data.workingSchedule,
+          advancePaymentRequired: data.advancePaymentRequired,
+          acceptedPayments: data.acceptedPayments,
+          cancellationPolicy: data.cancellationPolicy || null
+        },
+        media: {
+          photos: photoUploads,
+          logoUrl: null,
+          website: null,
+          facebook: null,
+          instagram: null,
+          tiktok: null
+        },
+        notesForTeam: data.notesForTeam || null,
+        partnerDraft: {
+          partnerId,
+          partnerName: data.businessName,
+          brnNumber: data.brnNumber,
+          partnerMarketTheme: data.partnerMarketTheme,
+          address: data.address,
+          description: data.description,
+          district: data.district,
+          pinLocation: data.pinLocation,
+          branchLocations: data.branchLocations,
+          workingSchedule: data.workingSchedule,
+          contactPersonName: data.contactPersonName,
+          contactPersonEmail: data.email,
+          contactPersonPhone: data.mobile,
+          email: data.email,
+          phoneNumber: data.mobile,
+          website: null,
+          socialLinks: null,
+          partnerLogo: null,
+          partnerImages: photoUploads.map((photo) => photo.url),
+          categoryTags: [],
+          languagesSpoken: data.languagesSpoken,
+          cancellationPolicy: data.cancellationPolicy || null,
+          advancePaymentRequired: data.advancePaymentRequired,
+          acceptedPayments: data.acceptedPayments
+        },
+        createdAtServer: serverTimestamp(),
+        updatedAtServer: serverTimestamp()
+      };
+    };
+
+    createProgress();
+    buildSchedule();
+    updateStepUI();
+    initMapPicker();
+
+    const districtOptionsHtml = () => `
+      <option value="">Select district</option>
+      <option value="PORT_LOUIS">Port Louis</option>
+      <option value="PLAINE_WILHEMS">Plaines Wilhems</option>
+      <option value="RIVIERE_DU_REMPART">Riviere du Rempart</option>
+      <option value="SAVANNE">Savanne</option>
+      <option value="GRAND_PORT">Grand Port</option>
+      <option value="PAMPLEMOUSSES">Pamplemousses</option>
+      <option value="BLACK_RIVER">Black River</option>
+      <option value="FLACQ">Flacq</option>
+      <option value="MOKA">Moka</option>
+    `;
+
+    const addBranchCard = () => {
+      if (!branchList) {
+        return;
+      }
+
+      const mapId = `branchMap-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      const defaultLat = -20.348404;
+      const defaultLng = 57.552152;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "branch-card";
+      wrapper.innerHTML = `
+        <div class="grid">
+          <div class="span-2">
+            <label>Branch name (optional)</label>
+            <input name="branchName" placeholder="e.g. Spa Ebene" />
+          </div>
+          <div class="span-2">
+            <label>Branch address</label>
+            <input name="branchAddress" placeholder="Full branch address" />
+          </div>
+          <div>
+            <label>Branch district</label>
+            <select name="branchDistrict">
+              ${districtOptionsHtml()}
+            </select>
+          </div>
+          <input type="hidden" name="branchLatitude" />
+          <input type="hidden" name="branchLongitude" />
+          <div class="span-2">
+            <label>Branch location</label>
+            <div class="map-wrap">
+              <div id="${mapId}" style="height:240px;"></div>
+            </div>
+            <div class="field-note">Click on the map to set the branch pin.</div>
+          </div>
+        </div>
+        <div class="branch-actions">
+          <button type="button" class="upload-remove">Remove</button>
+        </div>
+      `;
+
+      wrapper.querySelector(".upload-remove").addEventListener("click", () => {
+        wrapper.remove();
+      });
+
+      branchList.appendChild(wrapper);
+
+      if (typeof L !== "undefined") {
+        const branchMap = L.map(mapId).setView([defaultLat, defaultLng], 12);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(branchMap);
+        const marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(branchMap);
+        const latInput = wrapper.querySelector('[name="branchLatitude"]');
+        const lngInput = wrapper.querySelector('[name="branchLongitude"]');
+        const sync = (lat, lng) => {
+          wrapper.dataset.branchLat = lat.toFixed(6);
+          wrapper.dataset.branchLng = lng.toFixed(6);
+          latInput.value = lat.toFixed(6);
+          lngInput.value = lng.toFixed(6);
+        };
+        sync(defaultLat, defaultLng);
+        marker.on("dragend", () => {
+          const { lat, lng } = marker.getLatLng();
+          sync(lat, lng);
+        });
+        branchMap.on("click", (event) => {
+          marker.setLatLng(event.latlng);
+          sync(event.latlng.lat, event.latlng.lng);
+        });
+        branchMaps.push(branchMap);
+        setTimeout(() => branchMap.invalidateSize(), 0);
+      }
+    };
+
+    if (addBranchBtn) {
+      addBranchBtn.addEventListener("click", addBranchCard);
+    }
+
+    categoryCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        categoryCards.forEach((item) => item.classList.remove("selected"));
+        card.classList.add("selected");
+        categoryInput.value = card.dataset.category || "";
+        partnerMarketThemeInput.value = card.dataset.theme || "";
+        updateCategoryDetailVisibility();
+
+        if (isMobileViewport() && currentStep === 1) {
+          if (categoryInput.value === "Other") {
+            categoryDetailInput?.focus();
+            return;
+          }
+
+          if (validateStep(currentStep)) {
+            currentStep += 1;
+            updateStepUI();
+          }
+        }
+      });
+    });
+
+    updateCategoryDetailVisibility();
+
+    startBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentStep = 1;
+        updateStepUI();
+      });
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (!validateStep(currentStep)) {
+        setStatus("Please complete the required fields before continuing.", "error");
+        return;
+      }
+
+      currentStep += 1;
+      updateStepUI();
+    });
+
+    backBtn.addEventListener("click", () => {
+      if (currentStep === 0) {
+        return;
+      }
+
+      currentStep -= 1;
+      updateStepUI();
+    });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      successBox.style.display = "none";
-      statusError.style.display = "none";
 
-      const businessName = form.businessName.value.trim();
-      const category = form.category.value;
-      const mobile = form.mobile.value.trim().replace(/\s+/g, "");
-      const email = form.email.value.trim().toLowerCase();
-      const district = form.district.value;
-      const honeypot = form.website.value.trim();
-
-      let valid = true;
-
-      showError("businessError", !businessName);
-      showError("categoryError", !category);
-      showError("mobileError", !phoneRegex.test(mobile));
-      showError("emailError", !emailRegex.test(email));
-      showError("districtError", !district);
-
-      if (!businessName || !category || !phoneRegex.test(mobile) || !emailRegex.test(email) || !district) {
-        valid = false;
+      for (let stepIndex = 0; stepIndex < steps.length - 1; stepIndex += 1) {
+        if (!validateStep(stepIndex)) {
+          currentStep = stepIndex;
+          updateStepUI();
+          setStatus("Please complete the required fields before submitting.", "error");
+          return;
+        }
       }
 
-      if (!valid) {
-        return;
-      }
-
-      if (honeypot) {
-        form.reset();
-        return;
-      }
-
-      setSubmitState(true);
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+      setStatus("");
 
       try {
-        await addDoc(collection(db, "partner_leads"), {
-          businessName,
-          category,
-          mobile,
-          email,
-          district,
-          status: "NEW",
-          source: "public_partner_onboarding",
-          firebaseEnv,
-          createdAt: serverTimestamp()
+        const submissionRef = doc(collection(db, "partner_onboarding_submissions"));
+        const partnerId = doc(collection(db, "partners")).id;
+        await setDoc(submissionRef, {
+          status: "uploading",
+          submissionType: "partner_onboarding",
+          partnerId,
+          createdAtServer: serverTimestamp(),
+          updatedAtServer: serverTimestamp()
+        });
+
+        const uploads = await uploadPhotos(partnerId, photoFiles);
+
+        await updateDoc(submissionRef, {
+          ...buildSubmissionPayload(uploads, partnerId),
+          status: "submitted",
+          updatedAtServer: serverTimestamp()
         });
 
         form.reset();
-        successBox.style.display = "block";
+        photoFiles = [];
+        photoInput.value = "";
+        renderPhotoList();
+        buildSchedule();
+        categoryCards.forEach((item) => item.classList.remove("selected"));
+        categoryInput.value = "";
+        partnerMarketThemeInput.value = "";
+        updateCategoryDetailVisibility();
+        if (branchList) {
+          branchList.innerHTML = "";
+        }
+        currentStep = 0;
+        updateStepUI();
+        showSuccessPage();
       } catch (error) {
-        statusError.textContent = error?.message || "Submission failed. Please try again.";
-        statusError.style.display = "block";
-        statusError.className = "status error";
+        setStatus(error?.message || "Submission failed. Please try again.", "error");
       } finally {
-        setSubmitState(false);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit onboarding";
       }
     });
+
+    if (submitAnotherBtn) {
+      submitAnotherBtn.addEventListener("click", showWizardPage);
+    }
   </script>
 </body>
 </html>
