@@ -1,17 +1,12 @@
 /* eslint-disable */
 
 const admin = require("firebase-admin");
-const nodemailer = require("nodemailer");
 const twilio = require("twilio");
 const { defineSecret, defineString } = require("firebase-functions/params");
-const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
+const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
 
 admin.initializeApp();
 
-const db = admin.firestore();
-
-const MAIL_USER = defineSecret("MAIL_USER");
-const MAIL_APP_PASSWORD = defineSecret("MAIL_APP_PASSWORD");
 const TWILIO_ACCOUNT_SID = defineSecret("TWILIO_ACCOUNT_SID");
 const TWILIO_AUTH_TOKEN = defineSecret("TWILIO_AUTH_TOKEN");
 const TWILIO_WHATSAPP_FROM = defineSecret("TWILIO_WHATSAPP_FROM");
@@ -34,68 +29,6 @@ const SUPPORT_WHATSAPP_NUMBER = defineString("SUPPORT_WHATSAPP_NUMBER", {
 const SUPPORT_EMAIL = defineString("SUPPORT_EMAIL", {
   default: "support@reservemu.com",
 });
-
-const buildTransporter = () =>
-  nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: MAIL_USER.value(),
-      pass: MAIL_APP_PASSWORD.value(),
-    },
-  });
-
-exports.sendPartnerOnboardingMail = onDocumentCreated(
-  {
-    document: "partner_onboarding_submissions/{submissionId}",
-    secrets: [MAIL_USER, MAIL_APP_PASSWORD],
-  },
-  async (event) => {
-    const snapshot = event.data;
-    const data = snapshot?.data();
-    const recipientEmail = data?.basicInfo?.email;
-
-    if (!recipientEmail) {
-      console.log("No email provided. Skipping email.");
-      return;
-    }
-
-    const transporter = buildTransporter();
-
-    const mailOptions = {
-      from: `Reserve <${MAIL_USER.value()}>`,
-      to: recipientEmail,
-      subject: "Reserve – Onboarding received",
-      text: `Dear partner,
-
-Thank you for submitting ${data.basicInfo?.businessName || "your business"} on the Reserve platform.
-
-We have received your full onboarding submission and our team will now review it internally.
-
-There is no need to send the same information again by email. We will work directly from the profile you submitted.
-
-If we need anything critical, we will contact you using the details you provided.
-
-Best regards,
-
-Fabien Noellette Jeremie
-(On behalf of the Direction – Mrs Mirella Noellette)
-Schedura Technologies Ltd
-
-Phone: +230 58264867
-Website: reservemu.com
-
-Reserve
-Enn klik… la vie vinn fasil.`,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log("Email sent to:", data.email);
-    } catch (error) {
-      console.error("Email sending failed:", error);
-    }
-  }
-);
 
 const normalizePhoneForWhatsApp = (value) => {
   if (!value) return null;
