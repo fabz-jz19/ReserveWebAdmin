@@ -128,9 +128,9 @@
   <header>
     <h1>Financial Dashboard</h1>
     <div class="actions">
-      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
-      <button class="btn" onclick="location.href='partners-list.html'">Partners</button>
-      <button class="btn" onclick="location.href='users-list.html'">Users</button>
+      <button class="btn" onclick="location.href='dashboard'">Dashboard</button>
+      <button class="btn" onclick="location.href='partners-list'">Partners</button>
+      <button class="btn" onclick="location.href='users-list'">Users</button>
     </div>
   </header>
 
@@ -227,7 +227,7 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.replace("index.html");
+        window.location.replace("/");
         return;
       }
       subscribe();
@@ -369,7 +369,7 @@
               <td>${entry.bookings}</td>
               <td>MUR ${entry.revenue.toFixed(2)}</td>
             `;
-            row.onclick = () => location.href = `partner-detail.html?id=${encodeURIComponent(id)}`;
+            row.onclick = () => location.href = `partner-detail?id=${encodeURIComponent(id)}`;
             partnerTbody.appendChild(row);
           });
       }

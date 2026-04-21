@@ -606,6 +606,56 @@
       line-height:1.45;
     }
 
+    .otp-box{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#f8fafc;
+      display:grid;
+      gap:10px;
+    }
+
+    .otp-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .otp-actions .ghost,
+    .otp-actions .primary{
+      min-width:140px;
+      padding:10px 12px;
+      border-radius:12px;
+    }
+
+    .otp-input-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:center;
+    }
+
+    .otp-status{
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .otp-status.success{ color:var(--success); }
+    .otp-status.error{ color:var(--danger); }
+
+    .payout-section{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#f8fafc;
+      margin-top:8px;
+    }
+
+    .payout-field{
+      margin-top:10px;
+    }
+
     .upload-box{
       border:1px dashed rgba(15,98,254,.4);
       border-radius:18px;
@@ -667,6 +717,40 @@
       color:var(--danger);
       font-size:12px;
       font-weight:700;
+    }
+
+    .terms-box{
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#f8fafc;
+    }
+
+    .terms-label{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      font-weight:700;
+      color:#334155;
+      cursor:pointer;
+    }
+
+    .terms-label input{
+      width:18px;
+      min-height:18px;
+      margin-top:2px;
+      padding:0;
+      flex-shrink:0;
+    }
+
+    .terms-link{
+      color:var(--brand);
+      text-decoration:underline;
+      font-weight:800;
     }
 
     .schedule{
@@ -797,6 +881,52 @@
       display:block;
       background:var(--warning-bg);
       color:var(--warning);
+    }
+
+    .global-loader{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(15,23,42,.34);
+      backdrop-filter:blur(2px);
+      z-index:9999;
+      padding:20px;
+    }
+
+    .global-loader.active{
+      display:flex;
+    }
+
+    .loader-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      min-width:220px;
+      padding:16px 18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      box-shadow:0 16px 40px rgba(15,23,42,.22);
+      text-align:center;
+      color:#334155;
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .loader-spinner{
+      width:34px;
+      height:34px;
+      border:3px solid #dbeafe;
+      border-top-color:var(--brand);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+    }
+
+    @keyframes spin{
+      to{ transform:rotate(360deg); }
     }
 
     .summary-block + .summary-block{
@@ -1124,7 +1254,7 @@
   <main class="shell">
     <div class="progress" id="progress"></div>
     <div class="progress-mini" id="progressMini">
-      <div id="progressMiniLabel">Step 1 of 7</div>
+      <div id="progressMiniLabel">Step 1 of 9</div>
       <span id="progressMiniStep">Overview</span>
     </div>
 
@@ -1369,14 +1499,33 @@
 
               <div>
                 <label for="mobile">Mobile number</label>
-                <input id="mobile" name="mobile" type="tel" placeholder="5xxxxxxx" required />
-                <div class="error" id="mobileError">Valid mobile number is required.</div>
+                <input id="mobile" name="mobile" type="tel" placeholder="+2305xxxxxxx" required />
+                <div class="error" id="mobileError">Enter a valid number (E.164 like +2305xxxxxxx, or local MU 5xxxxxxx).</div>
+                <div class="field-note">You will verify this number by OTP in the next step.</div>
               </div>
             </div>
           </section>
 
           <section class="step" data-step="3">
-            <h2><span class="icon-badge">5</span>Business profile</h2>
+            <h2><span class="icon-badge">5</span>Mobile verification</h2>
+            <p class="step-copy">Verify your mobile number to continue onboarding.</p>
+
+            <div class="grid single">
+              <div class="otp-box">
+                <div class="field-note">A one-time code is sent automatically when this step loads.</div>
+                <div class="otp-input-row">
+                  <input id="otpCode" name="otpCode" placeholder="Enter 6-digit OTP" />
+                </div>
+                <div class="field-note">Enter OTP and click Continue. Verification is done automatically.</div>
+                <div class="otp-status" id="otpStatus"></div>
+                <div id="recaptcha-container"></div>
+                <div class="error" id="mobileOtpError">Mobile number must be OTP verified.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="step" data-step="4">
+            <h2><span class="icon-badge">6</span>Business profile</h2>
             <p class="step-copy">Tell us about your services and where customers can find you.</p>
 
             <div class="grid">
@@ -1426,16 +1575,16 @@
             </div>
           </section>
 
-          <section class="step" data-step="4">
-            <h2><span class="icon-badge">6</span>Working hours</h2>
+          <section class="step" data-step="5">
+            <h2><span class="icon-badge">7</span>Working hours</h2>
             <p class="step-copy">Set your weekly availability so the onboarding team can create an accurate booking setup from your submitted schedule.</p>
 
             <div class="schedule" id="schedule"></div>
             <div class="error" id="scheduleError">Open at least one day and provide a start and end time.</div>
           </section>
 
-          <section class="step" data-step="5">
-            <h2><span class="icon-badge">7</span>Media and business operations</h2>
+          <section class="step" data-step="6">
+            <h2><span class="icon-badge">8</span>Media and business operations</h2>
             <p class="step-copy">Add the media and operational details needed to publish your profile cleanly without asking you for more information later.</p>
 
             <div class="grid">
@@ -1490,8 +1639,31 @@
             </div>
           </section>
 
-          <section class="step" data-step="6">
-            <h2><span class="icon-badge">8</span>Review and submit</h2>
+          <section class="step" data-step="7">
+            <h2><span class="icon-badge">9</span>Payment details</h2>
+            <p class="step-copy">Add one or both payout channels where Reserve payouts should be sent for your approved bookings.</p>
+
+            <div class="grid single">
+              <div class="payout-section">
+                <div class="payout-field" id="mcbAccountRow">
+                  <label for="mcbAccountNumber">MCB account number</label>
+                  <input id="mcbAccountNumber" name="mcbAccountNumber" placeholder="Enter MCB account number" />
+                  <div class="error" id="mcbAccountError">Valid MCB account number is required.</div>
+                </div>
+
+                <div class="payout-field" id="juiceMobileRow">
+                  <label for="juiceMobileNumber">Juice mobile number</label>
+                  <input id="juiceMobileNumber" name="juiceMobileNumber" placeholder="5xxxxxxx" />
+                  <div class="error" id="juiceMobileError">Valid Juice mobile number is required.</div>
+                </div>
+
+                <div class="error" id="paymentDetailsError">Please provide at least one payout channel (MCB or Juice).</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="step" data-step="8">
+            <h2><span class="icon-badge">10</span>Review and submit</h2>
             <p class="step-copy">Review the details below. When you submit, the full onboarding package is stored for internal review and partner creation.</p>
 
             <div class="summary-block">
@@ -1507,6 +1679,28 @@
             <div class="summary-block">
               <h3>Operations</h3>
               <div class="summary-list" id="reviewOperations"></div>
+            </div>
+
+            <div class="summary-block">
+              <h3>Payment</h3>
+              <div class="summary-list" id="reviewPayment"></div>
+            </div>
+
+            <div class="terms-box">
+              <label for="termsAccepted" class="terms-label">
+                <input type="checkbox" id="termsAccepted" name="termsAccepted" />
+                <span>
+                  I accept the
+                  <a
+                    class="terms-link"
+                    href="https://reservemu.com/terms-and-conditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >Terms and Conditions</a>
+                  for onboarding with Reserve.
+                </span>
+              </label>
+              <div class="error" id="termsError">You must accept the Terms and Conditions to submit.</div>
             </div>
           </section>
 
@@ -1559,15 +1753,24 @@
     </div>
   </main>
 
+  <div class="global-loader" id="globalLoader" aria-live="polite" aria-busy="true">
+    <div class="loader-card">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <div id="globalLoaderText">Please wait…</div>
+    </div>
+  </div>
+
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
   <script type="module">
+    import { getAnalytics, isSupported, logEvent } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
     import { collection, doc, serverTimestamp, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getDownloadURL, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-    import { db, firebaseEnv, storage } from "./firebase-config.js";
+    import { app, auth, db, firebaseEnv, storage } from "./firebase-config.js";
 
     const DAYS = [
       { key: "MONDAY", label: "Monday" },
@@ -1614,6 +1817,12 @@
     const emailInput = document.getElementById("email");
     const branchList = document.getElementById("branchList");
     const addBranchBtn = document.getElementById("addBranchBtn");
+    const otpCodeInput = document.getElementById("otpCode");
+    const otpStatus = document.getElementById("otpStatus");
+    const termsAcceptedInput = document.getElementById("termsAccepted");
+    const termsLink = document.querySelector(".terms-link");
+    const globalLoader = document.getElementById("globalLoader");
+    const globalLoaderText = document.getElementById("globalLoaderText");
     let currentStep = 0;
     let photoFiles = [];
     let mapInstance;
@@ -1621,21 +1830,292 @@
     let currentPinLocation = null;
     const branchMaps = [];
 
-    const phoneRegex = /^[5-9][0-9]{7}$/;
+    const localMobileRegex = /^[5-9][0-9]{7}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const brnRegex = /^[A-Za-z][0-9]{8}$/;
+    const accountNumberRegex = /^[0-9]{8,20}$/;
     const MAX_PHOTOS = 10;
     const MAX_PHOTO_MB = 10;
+    const TERMS_URL = "https://reservemu.com/terms-and-conditions";
+    let recaptchaVerifier = null;
+    let confirmationResult = null;
+    let mobileOtpVerified = false;
+    let mobileOtpVerifiedAtIso = null;
+    let mobileVerifiedE164 = null;
+    let lastOtpRequestedE164 = null;
+    let otpSendPromise = null;
+    let lastTrackedStepView = null;
 
       const STEP_LABELS = [
         "Overview",
         "Category",
         "Basic information",
+        "Mobile verification",
         "Business profile",
         "Working hours",
         "Media & operations",
+        "Payment details",
         "Review"
       ];
+
+    const FLOW_STORAGE_KEY = "reserve_partner_onboarding_flow_id";
+    const ACTIVE_FLOW_STORAGE_KEY = "reserve_partner_onboarding_active_flow";
+    const createFlowId = () => {
+      if (globalThis.crypto?.randomUUID) {
+        return globalThis.crypto.randomUUID();
+      }
+      return `flow_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    };
+
+    const getFlowId = () => {
+      try {
+        const stored = window.sessionStorage.getItem(FLOW_STORAGE_KEY);
+        if (stored) {
+          return stored;
+        }
+        const next = createFlowId();
+        window.sessionStorage.setItem(FLOW_STORAGE_KEY, next);
+        return next;
+      } catch {
+        return createFlowId();
+      }
+    };
+
+    let onboardingFlowId = getFlowId();
+    let flowStartedAtIso = new Date().toISOString();
+    let stepEnteredAt = Date.now();
+    let lastFieldInteraction = null;
+    let pageWasHidden = false;
+    let lastHiddenTrackedAt = 0;
+    let hasSubmittedOnboarding = false;
+    const trackedFieldInteractions = new Set();
+    const stepAnalyticsName = (stepIndex) =>
+      (STEP_LABELS[stepIndex] || `Step ${stepIndex + 1}`)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+
+    const commonAnalyticsParams = () => ({
+      flow_id: onboardingFlowId,
+      firebase_env: firebaseEnv
+    });
+
+    const stepAnalyticsParams = (stepIndex, extra = {}) => ({
+      ...commonAnalyticsParams(),
+      step_index: stepIndex + 1,
+      step_name: stepAnalyticsName(stepIndex),
+      ...extra
+    });
+
+    const analyticsReady = (async () => {
+      try {
+        const supported = await isSupported();
+        return supported ? getAnalytics(app) : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    const trackEvent = (eventName, params = {}) => {
+      void analyticsReady.then((analytics) => {
+        if (!analytics) {
+          return;
+        }
+        logEvent(analytics, eventName, params);
+      }).catch(() => {});
+    };
+
+    const trackValidationFailure = (stepIndex, issues) => {
+      if (!issues.length) {
+        return;
+      }
+
+      trackEvent("partner_onboarding_validation_error", stepAnalyticsParams(stepIndex, {
+        field_count: issues.length,
+        fields: issues.slice(0, 5).join(",")
+      }));
+    };
+
+    const sanitizeAnalyticsValue = (value, fallback = "unknown") => {
+      const sanitized = String(value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 40);
+      return sanitized || fallback;
+    };
+
+    const readActiveFlow = () => {
+      try {
+        return JSON.parse(window.localStorage.getItem(ACTIVE_FLOW_STORAGE_KEY) || "null");
+      } catch {
+        return null;
+      }
+    };
+
+    const persistActiveFlow = (overrides = {}) => {
+      try {
+        window.localStorage.setItem(ACTIVE_FLOW_STORAGE_KEY, JSON.stringify({
+          flow_id: onboardingFlowId,
+          started_at: flowStartedAtIso,
+          updated_at: new Date().toISOString(),
+          step_index: currentStep + 1,
+          step_name: stepAnalyticsName(currentStep),
+          last_field: lastFieldInteraction,
+          submitted: hasSubmittedOnboarding,
+          ...overrides
+        }));
+      } catch {}
+    };
+
+    const clearActiveFlow = () => {
+      try {
+        window.localStorage.removeItem(ACTIVE_FLOW_STORAGE_KEY);
+      } catch {}
+    };
+
+    const resetFlowAnalyticsState = () => {
+      onboardingFlowId = createFlowId();
+      flowStartedAtIso = new Date().toISOString();
+      stepEnteredAt = Date.now();
+      currentStep = 0;
+      lastFieldInteraction = null;
+      pageWasHidden = false;
+      lastHiddenTrackedAt = 0;
+      hasSubmittedOnboarding = false;
+      trackedFieldInteractions.clear();
+      lastTrackedStepView = null;
+
+      try {
+        window.sessionStorage.setItem(FLOW_STORAGE_KEY, onboardingFlowId);
+      } catch {}
+
+      persistActiveFlow();
+    };
+
+    const noteFieldInteraction = (fieldName) => {
+      lastFieldInteraction = fieldName;
+      persistActiveFlow();
+    };
+
+    const getFieldStepIndex = (element) => {
+      const raw = Number(element?.closest(".step")?.dataset.step);
+      return Number.isFinite(raw) ? raw : currentStep;
+    };
+
+    const trackNamedFieldInteraction = (fieldName, stepIndex, extra = {}) => {
+      const normalizedName = sanitizeAnalyticsValue(fieldName);
+      noteFieldInteraction(normalizedName);
+
+      if (trackedFieldInteractions.has(normalizedName)) {
+        return;
+      }
+
+      trackedFieldInteractions.add(normalizedName);
+      trackEvent("partner_onboarding_field_interaction", stepAnalyticsParams(stepIndex, {
+        field_name: normalizedName,
+        ...extra
+      }));
+    };
+
+    const trackFieldInteraction = (element) => {
+      if (!element || element.type === "hidden") {
+        return;
+      }
+
+      const fieldName = sanitizeAnalyticsValue(
+        element.dataset.analyticsField || element.name || element.id || element.type
+      );
+      const stepIndex = getFieldStepIndex(element);
+
+      noteFieldInteraction(fieldName);
+
+      if (trackedFieldInteractions.has(fieldName)) {
+        return;
+      }
+
+      trackedFieldInteractions.add(fieldName);
+      trackEvent("partner_onboarding_field_interaction", stepAnalyticsParams(stepIndex, {
+        field_name: fieldName,
+        input_type: sanitizeAnalyticsValue(element.type || element.tagName || "field")
+      }));
+    };
+
+    const trackStepDuration = (reason, targetStep = null) => {
+      const durationMs = Math.max(Date.now() - stepEnteredAt, 0);
+      trackEvent("partner_onboarding_step_timing", stepAnalyticsParams(currentStep, {
+        exit_reason: sanitizeAnalyticsValue(reason),
+        duration_ms: durationMs,
+        duration_seconds: Math.round(durationMs / 100) / 10,
+        target_step_index: targetStep === null ? null : targetStep + 1
+      }));
+    };
+
+    const goToStep = (nextStep, reason) => {
+      if (nextStep === currentStep) {
+        persistActiveFlow();
+        updateStepUI();
+        return;
+      }
+
+      trackStepDuration(reason, nextStep);
+      currentStep = nextStep;
+      stepEnteredAt = Date.now();
+      persistActiveFlow({ transition_reason: sanitizeAnalyticsValue(reason) });
+      updateStepUI();
+    };
+
+    const trackSessionHidden = (source) => {
+      if (hasSubmittedOnboarding) {
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastHiddenTrackedAt < 400) {
+        return;
+      }
+      lastHiddenTrackedAt = now;
+      pageWasHidden = true;
+
+      trackStepDuration("session_hidden", currentStep);
+      trackEvent("partner_onboarding_session_hidden", stepAnalyticsParams(currentStep, {
+        hidden_source: sanitizeAnalyticsValue(source),
+        last_field: lastFieldInteraction || "none"
+      }));
+      persistActiveFlow({
+        hidden_at: new Date().toISOString(),
+        last_field: lastFieldInteraction
+      });
+    };
+
+    const trackSessionResumed = () => {
+      if (hasSubmittedOnboarding || !pageWasHidden) {
+        return;
+      }
+
+      pageWasHidden = false;
+      stepEnteredAt = Date.now();
+      trackEvent("partner_onboarding_session_resumed", stepAnalyticsParams(currentStep, {
+        last_field: lastFieldInteraction || "none"
+      }));
+      persistActiveFlow();
+    };
+
+    const previousActiveFlow = readActiveFlow();
+    if (previousActiveFlow && !previousActiveFlow.submitted) {
+      const previousUpdatedAt = Date.parse(previousActiveFlow.updated_at || "");
+      const hoursSinceLastSeen = Number.isFinite(previousUpdatedAt)
+        ? Math.round(((Date.now() - previousUpdatedAt) / (1000 * 60 * 60)) * 10) / 10
+        : null;
+
+      trackEvent("partner_onboarding_resume_detected", {
+        ...commonAnalyticsParams(),
+        previous_step_index: previousActiveFlow.step_index || null,
+        previous_step_name: previousActiveFlow.step_name || null,
+        hours_since_last_seen: hoursSinceLastSeen,
+        last_field: previousActiveFlow.last_field || "none"
+      });
+    }
 
     const createProgress = () => {
       progress.innerHTML = STEP_LABELS
@@ -1747,11 +2227,21 @@
       mapMarker.on("dragend", () => {
         const { lat, lng } = mapMarker.getLatLng();
         syncPin(lat, lng);
+        noteFieldInteraction("pin_location");
+        trackEvent("partner_onboarding_map_pin_update", stepAnalyticsParams(4, {
+          map_scope: "primary",
+          interaction_type: "drag"
+        }));
       });
 
       mapInstance.on("click", (event) => {
         mapMarker.setLatLng(event.latlng);
         syncPin(event.latlng.lat, event.latlng.lng);
+        noteFieldInteraction("pin_location");
+        trackEvent("partner_onboarding_map_pin_update", stepAnalyticsParams(4, {
+          map_scope: "primary",
+          interaction_type: "click"
+        }));
       });
 
       setTimeout(() => mapInstance.invalidateSize(), 0);
@@ -1770,6 +2260,68 @@
       }
     };
 
+    const normalizeMobileToE164 = (value) => {
+      const raw = String(value || "").trim();
+      const compact = raw.replace(/[\s()-]/g, "");
+      const digits = compact.replace(/\D/g, "");
+
+      if (/^\+[1-9][0-9]{7,14}$/.test(compact)) {
+        return compact;
+      }
+      if (/^00[1-9][0-9]{7,14}$/.test(digits)) {
+        return `+${digits.slice(2)}`;
+      }
+      if (/^[5-9][0-9]{7}$/.test(digits)) {
+        return `+230${digits}`;
+      }
+      if (/^[1-9][0-9]{7,14}$/.test(digits)) {
+        return `+${digits}`;
+      }
+
+      return null;
+    };
+
+    const setOtpStatus = (message = "", tone = "") => {
+      if (!otpStatus) {
+        return;
+      }
+      otpStatus.textContent = message;
+      otpStatus.className = tone ? `otp-status ${tone}` : "otp-status";
+    };
+
+    const formatOtpAuthError = (error) => {
+      const code = error?.code || "";
+      if (code === "auth/too-many-requests") {
+        return "Too many OTP attempts. Please wait 10-15 minutes and try again.";
+      }
+      if (code === "auth/invalid-phone-number") {
+        return "Invalid phone number format. Use E.164 format, e.g. +2305xxxxxxx.";
+      }
+      if (code === "auth/captcha-check-failed") {
+        return "reCAPTCHA validation failed. Refresh the page and try again.";
+      }
+      if (code === "auth/unauthorized-domain") {
+        return "This domain is not authorized for Phone Auth in Firebase.";
+      }
+      if (code === "auth/quota-exceeded") {
+        return "SMS quota exceeded for this Firebase project. Please try later.";
+      }
+      return error?.message || "OTP request failed.";
+    };
+
+    const resetMobileOtpState = () => {
+      confirmationResult = null;
+      mobileOtpVerified = false;
+      mobileOtpVerifiedAtIso = null;
+      mobileVerifiedE164 = null;
+      lastOtpRequestedE164 = null;
+      if (otpCodeInput) {
+        otpCodeInput.value = "";
+      }
+      setOtpStatus("");
+      toggleError("mobileOtpError", false);
+    };
+
     const isMobileViewport = () => window.matchMedia("(max-width: 720px)").matches;
 
     const setStatus = (message = "", tone = "error") => {
@@ -1783,6 +2335,116 @@
       statusBox.className = `status ${tone}`;
       statusBox.style.display = "block";
       statusBox.textContent = message;
+    };
+
+    const setGlobalLoading = (isLoading, message = "Please wait…") => {
+      if (!globalLoader || !globalLoaderText) {
+        return;
+      }
+
+      globalLoaderText.textContent = message;
+      globalLoader.classList.toggle("active", Boolean(isLoading));
+      [backBtn, nextBtn, submitBtn].forEach((btn) => {
+        if (btn) {
+          btn.disabled = Boolean(isLoading);
+        }
+      });
+    };
+
+    const ensureOtpRequestedForCurrentMobile = async (force = false) => {
+      const mobileValue = getValue("mobile");
+      const e164 = normalizeMobileToE164(mobileValue);
+
+      if (!e164) {
+        toggleError("mobileError", true);
+        setOtpStatus("Enter a valid mobile number with country code (E.164) or local MU format.", "error");
+        return false;
+      }
+
+      if (!force && confirmationResult && lastOtpRequestedE164 === e164) {
+        return true;
+      }
+
+      if (otpSendPromise) {
+        return otpSendPromise;
+      }
+
+      otpSendPromise = (async () => {
+        try {
+          setGlobalLoading(true, "Sending OTP...");
+          setOtpStatus("Sending OTP...", "");
+
+          if (!recaptchaVerifier) {
+            recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+              size: "invisible"
+            });
+            await recaptchaVerifier.render();
+          }
+
+          confirmationResult = await signInWithPhoneNumber(auth, e164, recaptchaVerifier);
+          lastOtpRequestedE164 = e164;
+          mobileVerifiedE164 = e164;
+          mobileOtpVerified = false;
+          mobileOtpVerifiedAtIso = null;
+          toggleError("mobileOtpError", false);
+          setOtpStatus("OTP sent. Enter the 6-digit code and click Continue.", "success");
+          trackEvent("partner_onboarding_otp_sent", stepAnalyticsParams(3));
+          return true;
+        } catch (error) {
+          setOtpStatus(formatOtpAuthError(error), "error");
+          trackEvent("partner_onboarding_otp_error", stepAnalyticsParams(3, {
+            error_code: error?.code || "unknown"
+          }));
+          return false;
+        } finally {
+          setGlobalLoading(false);
+          otpSendPromise = null;
+        }
+      })();
+
+      return otpSendPromise;
+    };
+
+    const verifyOtpBeforeContinue = async () => {
+      if (mobileOtpVerified) {
+        return true;
+      }
+
+      if (!confirmationResult) {
+        const requested = await ensureOtpRequestedForCurrentMobile(true);
+        if (!requested) {
+          toggleError("mobileOtpError", true);
+          return false;
+        }
+      }
+
+      const code = (otpCodeInput?.value || "").trim();
+      if (!/^[0-9]{6}$/.test(code)) {
+        setOtpStatus("Enter a valid 6-digit OTP to continue.", "error");
+        toggleError("mobileOtpError", true);
+        return false;
+      }
+
+      try {
+        setGlobalLoading(true, "Verifying OTP...");
+        await confirmationResult.confirm(code);
+        mobileOtpVerified = true;
+        mobileOtpVerifiedAtIso = new Date().toISOString();
+        toggleError("mobileOtpError", false);
+        setOtpStatus("Mobile number verified successfully.", "success");
+        trackEvent("partner_onboarding_otp_verified", stepAnalyticsParams(3));
+        return true;
+      } catch (error) {
+        mobileOtpVerified = false;
+        setOtpStatus(formatOtpAuthError(error), "error");
+        toggleError("mobileOtpError", true);
+        trackEvent("partner_onboarding_otp_verify_error", stepAnalyticsParams(3, {
+          error_code: error?.code || "unknown"
+        }));
+        return false;
+      } finally {
+        setGlobalLoading(false);
+      }
     };
 
     const toggleError = (id, visible) => {
@@ -1806,6 +2468,11 @@
       Array.from(photoList.querySelectorAll(".upload-remove")).forEach((btn) => {
         btn.addEventListener("click", () => {
           const idx = Number(btn.dataset.index);
+          const nextTotal = Math.max(photoFiles.length - 1, 0);
+          noteFieldInteraction("photo_uploads");
+          trackEvent("partner_onboarding_photo_remove", stepAnalyticsParams(6, {
+            total_photos: nextTotal
+          }));
           photoFiles.splice(idx, 1);
           renderPhotoList();
         });
@@ -1813,10 +2480,21 @@
     };
 
     photoInput.addEventListener("change", () => {
+      const previousCount = photoFiles.length;
       const files = Array.from(photoInput.files || []);
       const images = files.filter((file) => file.type.startsWith("image/"));
       const filtered = images.filter((file) => file.size <= MAX_PHOTO_MB * 1024 * 1024);
       photoFiles = filtered.slice(0, MAX_PHOTOS);
+      if (files.length) {
+        noteFieldInteraction("photo_uploads");
+        trackEvent("partner_onboarding_photo_add", stepAnalyticsParams(6, {
+          previous_total: previousCount,
+          total_photos: photoFiles.length,
+          selected_count: files.length,
+          accepted_count: photoFiles.length,
+          rejected_count: Math.max(files.length - photoFiles.length, 0)
+        }));
+      }
       renderPhotoList();
     });
 
@@ -1844,10 +2522,20 @@
         renderReview();
       }
 
+      if (lastTrackedStepView !== currentStep) {
+        trackEvent("partner_onboarding_step_view", stepAnalyticsParams(currentStep));
+        lastTrackedStepView = currentStep;
+      }
+
+      persistActiveFlow();
       setStatus("");
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       if (currentStep === 3) {
+        void ensureOtpRequestedForCurrentMobile(false);
+      }
+
+      if (currentStep === 4) {
         setTimeout(() => {
           if (mapInstance) {
             mapInstance.invalidateSize();
@@ -1864,8 +2552,7 @@
 
     const showWizardPage = () => {
       document.body.classList.remove("success-mode");
-      currentStep = 0;
-      updateStepUI();
+      goToStep(0, "show_wizard");
     };
 
     const getValue = (name) => form.elements[name]?.value?.trim?.() ?? "";
@@ -1918,6 +2605,10 @@
         email: getValue("email").toLowerCase(),
         bookingEmail: getValue("email").toLowerCase(),
         mobile: getValue("mobile").replace(/\s+/g, ""),
+        mobileE164: normalizeMobileToE164(getValue("mobile")),
+        mobileOtpVerified,
+        mobileOtpVerifiedAtIso,
+        mobileVerifiedE164,
         phoneNumber: null,
         description: getValue("description"),
         address: getValue("address"),
@@ -1948,7 +2639,10 @@
         advancePaymentRequired: getValue("advancePaymentRequired") === "true",
         acceptedPayments,
         cancellationPolicy: getValue("cancellationPolicy"),
+        mcbAccountNumber: getValue("mcbAccountNumber").replace(/\s+/g, ""),
+        juiceMobileNumber: getValue("juiceMobileNumber").replace(/\s+/g, ""),
         notesForTeam: getValue("notesForTeam"),
+        termsAccepted: Boolean(termsAcceptedInput?.checked),
         firebaseEnv
       };
     };
@@ -1982,7 +2676,8 @@
         ["District", districtDisplay(data.district)],
         ["Contact", data.contactPersonName],
         ["Email", data.email],
-        ["Mobile", data.mobile]
+        ["Mobile", data.mobile],
+        ["Mobile OTP", data.mobileOtpVerified ? "Verified" : "Not verified"]
       ]);
 
       renderSummaryList("reviewProfile", [
@@ -2001,11 +2696,17 @@
         ["Cancellation policy", data.cancellationPolicy],
         ["Booking email", data.email]
       ]);
+
+      renderSummaryList("reviewPayment", [
+        ["MCB account", data.mcbAccountNumber || "—"],
+        ["Juice number", data.juiceMobileNumber || "—"]
+      ]);
     };
 
-    const validateStep = (stepIndex) => {
+    const validateStep = (stepIndex, options = {}) => {
       const data = getFormData();
       let valid = true;
+      const issues = [];
 
       setStatus("");
       document.querySelectorAll(".error").forEach((el) => {
@@ -2018,6 +2719,13 @@
           toggleError("categoryDetailError", !data.categoryDetail);
         }
 
+        if (!data.category) {
+          issues.push("category");
+        }
+        if (data.category === "Other" && !data.categoryDetail) {
+          issues.push("category_detail");
+        }
+
         if (!data.category || (data.category === "Other" && !data.categoryDetail)) {
           valid = false;
         }
@@ -2028,50 +2736,127 @@
         toggleError("brnError", !brnRegex.test(data.brnNumber));
         toggleError("contactPersonNameError", !data.contactPersonName);
         toggleError("emailError", !emailRegex.test(data.email));
-        toggleError("mobileError", !phoneRegex.test(data.mobile));
+        toggleError("mobileError", !data.mobileE164);
+
+        if (!data.businessName) {
+          issues.push("business_name");
+        }
+        if (!brnRegex.test(data.brnNumber)) {
+          issues.push("brn_number");
+        }
+        if (!data.contactPersonName) {
+          issues.push("contact_person_name");
+        }
+        if (!emailRegex.test(data.email)) {
+          issues.push("email");
+        }
+        if (!data.mobileE164) {
+          issues.push("mobile");
+        }
 
         if (
           !data.businessName ||
           !brnRegex.test(data.brnNumber) ||
           !data.contactPersonName ||
           !emailRegex.test(data.email) ||
-          !phoneRegex.test(data.mobile)
+          !data.mobileE164
         ) {
           valid = false;
         }
       }
 
       if (stepIndex === 3) {
-        toggleError("districtError", !data.district);
-        toggleError("descriptionError", data.description.length < 20);
-        toggleError("addressError", !data.address);
-        if (!data.district || data.description.length < 20 || !data.address) {
+        toggleError("mobileOtpError", !data.mobileOtpVerified);
+        if (!data.mobileOtpVerified) {
+          issues.push("mobile_otp");
+        }
+        if (!data.mobileOtpVerified) {
           valid = false;
         }
       }
 
       if (stepIndex === 4) {
-        const openDays = Object.values(data.workingSchedule.weekly);
-        const invalidDay = openDays.some((entry) => !entry.start || !entry.end);
-        const scheduleValid = openDays.length > 0 && !invalidDay;
-        toggleError("scheduleError", !scheduleValid);
-        if (!scheduleValid) {
+        toggleError("districtError", !data.district);
+        toggleError("descriptionError", data.description.length < 20);
+        toggleError("addressError", !data.address);
+        if (!data.district) {
+          issues.push("district");
+        }
+        if (data.description.length < 20) {
+          issues.push("description");
+        }
+        if (!data.address) {
+          issues.push("address");
+        }
+        if (!data.district || data.description.length < 20 || !data.address) {
           valid = false;
         }
       }
 
       if (stepIndex === 5) {
+        const openDays = Object.values(data.workingSchedule.weekly);
+        const invalidDay = openDays.some((entry) => !entry.start || !entry.end);
+        const scheduleValid = openDays.length > 0 && !invalidDay;
+        toggleError("scheduleError", !scheduleValid);
+        if (!scheduleValid) {
+          issues.push("working_schedule");
+        }
+        if (!scheduleValid) {
+          valid = false;
+        }
+      }
+
+      if (stepIndex === 6) {
         const photoValid = data.photoFiles.length >= 3 && data.photoFiles.length <= MAX_PHOTOS;
         toggleError("photoUploadsError", !photoValid);
+        if (!photoValid) {
+          issues.push("photos");
+        }
         if (!photoValid) {
           valid = false;
         }
 
         toggleError("acceptedPaymentsError", data.acceptedPayments.length === 0);
         toggleError("cancellationPolicyError", !data.cancellationPolicy);
+        if (data.acceptedPayments.length === 0) {
+          issues.push("accepted_payments");
+        }
+        if (!data.cancellationPolicy) {
+          issues.push("cancellation_policy");
+        }
         if (data.acceptedPayments.length === 0 || !data.cancellationPolicy) {
           valid = false;
         }
+      }
+
+      if (stepIndex === 7) {
+        const hasMcb = Boolean(data.mcbAccountNumber);
+        const hasJuice = Boolean(data.juiceMobileNumber);
+        const atLeastOneProvided = hasMcb || hasJuice;
+        const mcbValid = !hasMcb || accountNumberRegex.test(data.mcbAccountNumber);
+        const juiceValid = !hasJuice || localMobileRegex.test(data.juiceMobileNumber);
+
+        toggleError("paymentDetailsError", !atLeastOneProvided);
+        toggleError("mcbAccountError", hasMcb && !mcbValid);
+        toggleError("juiceMobileError", hasJuice && !juiceValid);
+
+        if (!atLeastOneProvided) {
+          issues.push("payment_details");
+        }
+        if (hasMcb && !mcbValid) {
+          issues.push("mcb_account_number");
+        }
+        if (hasJuice && !juiceValid) {
+          issues.push("juice_mobile_number");
+        }
+
+        if (!atLeastOneProvided || !mcbValid || !juiceValid) {
+          valid = false;
+        }
+      }
+
+      if (!valid && options.trackAnalytics) {
+        trackValidationFailure(stepIndex, issues);
       }
 
       return valid;
@@ -2120,6 +2905,10 @@
           email: data.email,
           bookingEmail: data.email,
           mobile: data.mobile,
+          mobileE164: data.mobileE164,
+          mobileOtpVerified: data.mobileOtpVerified,
+          mobileOtpVerifiedAtIso: data.mobileOtpVerifiedAtIso,
+          mobileVerifiedE164: data.mobileVerifiedE164,
           phoneNumber: null
         },
         businessProfile: {
@@ -2135,7 +2924,11 @@
           workingSchedule: data.workingSchedule,
           advancePaymentRequired: data.advancePaymentRequired,
           acceptedPayments: data.acceptedPayments,
-          cancellationPolicy: data.cancellationPolicy || null
+          cancellationPolicy: data.cancellationPolicy || null,
+          paymentDetails: {
+            mcbAccountNumber: data.mcbAccountNumber || null,
+            juiceMobileNumber: data.juiceMobileNumber || null
+          }
         },
         media: {
           photos: photoUploads,
@@ -2146,6 +2939,11 @@
           tiktok: null
         },
         notesForTeam: data.notesForTeam || null,
+        consent: {
+          termsAccepted: data.termsAccepted,
+          termsAcceptedAtIso: data.termsAccepted ? isoNow : null,
+          termsUrl: TERMS_URL
+        },
         partnerDraft: {
           partnerId,
           partnerName: data.businessName,
@@ -2162,6 +2960,8 @@
           contactPersonPhone: data.mobile,
           email: data.email,
           phoneNumber: data.mobile,
+          accountNumber: data.mcbAccountNumber || null,
+          juiceMobileNumber: data.juiceMobileNumber || null,
           website: null,
           socialLinks: null,
           partnerLogo: null,
@@ -2181,6 +2981,11 @@
     buildSchedule();
     updateStepUI();
     initMapPicker();
+    trackEvent("partner_onboarding_view", {
+      ...commonAnalyticsParams(),
+      page_path: window.location.pathname
+    });
+    persistActiveFlow();
 
     const districtOptionsHtml = () => `
       <option value="">Select district</option>
@@ -2238,10 +3043,18 @@
       `;
 
       wrapper.querySelector(".upload-remove").addEventListener("click", () => {
+        noteFieldInteraction("branch_locations");
+        trackEvent("partner_onboarding_branch_remove", stepAnalyticsParams(4, {
+          total_branches: Math.max(document.querySelectorAll(".branch-card").length - 1, 0)
+        }));
         wrapper.remove();
       });
 
       branchList.appendChild(wrapper);
+      noteFieldInteraction("branch_locations");
+      trackEvent("partner_onboarding_branch_add", stepAnalyticsParams(4, {
+        total_branches: document.querySelectorAll(".branch-card").length
+      }));
 
       if (typeof L !== "undefined") {
         const branchMap = L.map(mapId).setView([defaultLat, defaultLng], 12);
@@ -2262,10 +3075,20 @@
         marker.on("dragend", () => {
           const { lat, lng } = marker.getLatLng();
           sync(lat, lng);
+          noteFieldInteraction("branch_pin_location");
+          trackEvent("partner_onboarding_map_pin_update", stepAnalyticsParams(4, {
+            map_scope: "branch",
+            interaction_type: "drag"
+          }));
         });
         branchMap.on("click", (event) => {
           marker.setLatLng(event.latlng);
           sync(event.latlng.lat, event.latlng.lng);
+          noteFieldInteraction("branch_pin_location");
+          trackEvent("partner_onboarding_map_pin_update", stepAnalyticsParams(4, {
+            map_scope: "branch",
+            interaction_type: "click"
+          }));
         });
         branchMaps.push(branchMap);
         setTimeout(() => branchMap.invalidateSize(), 0);
@@ -2276,12 +3099,55 @@
       addBranchBtn.addEventListener("click", addBranchCard);
     }
 
+    if (emailInput) {
+      emailInput.addEventListener("input", () => {
+        toggleError("emailError", false);
+      });
+    }
+
+    if (form.elements.mobile) {
+      form.elements.mobile.addEventListener("input", () => {
+        resetMobileOtpState();
+      });
+    }
+
+    if (otpCodeInput) {
+      otpCodeInput.addEventListener("input", () => {
+        toggleError("mobileOtpError", false);
+      });
+    }
+
+    form.addEventListener("focusin", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (target.matches("input, select, textarea")) {
+        trackFieldInteraction(target);
+      }
+    });
+
+    form.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (target !== photoInput && target.matches("input, select, textarea")) {
+        trackFieldInteraction(target);
+      }
+    });
+
     categoryCards.forEach((card) => {
       card.addEventListener("click", () => {
         categoryCards.forEach((item) => item.classList.remove("selected"));
         card.classList.add("selected");
         categoryInput.value = card.dataset.category || "";
         partnerMarketThemeInput.value = card.dataset.theme || "";
+        trackNamedFieldInteraction("category", 1, {
+          selection: sanitizeAnalyticsValue(card.dataset.category || "")
+        });
         updateCategoryDetailVisibility();
 
         if (isMobileViewport() && currentStep === 1) {
@@ -2290,9 +3156,9 @@
             return;
           }
 
-          if (validateStep(currentStep)) {
-            currentStep += 1;
-            updateStepUI();
+          if (validateStep(currentStep, { trackAnalytics: true })) {
+            trackEvent("partner_onboarding_step_complete", stepAnalyticsParams(currentStep));
+            goToStep(currentStep + 1, "mobile_auto_advance");
           }
         }
       });
@@ -2302,19 +3168,27 @@
 
     startBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        currentStep = 1;
-        updateStepUI();
+        trackEvent("partner_onboarding_start", commonAnalyticsParams());
+        goToStep(1, "start");
       });
     });
 
-    nextBtn.addEventListener("click", () => {
-      if (!validateStep(currentStep)) {
+    nextBtn.addEventListener("click", async () => {
+      if (currentStep === 3) {
+        const otpVerified = await verifyOtpBeforeContinue();
+        if (!otpVerified) {
+          setStatus("Please complete OTP verification before continuing.", "error");
+          return;
+        }
+      }
+
+      if (!validateStep(currentStep, { trackAnalytics: true })) {
         setStatus("Please complete the required fields before continuing.", "error");
         return;
       }
 
-      currentStep += 1;
-      updateStepUI();
+      trackEvent("partner_onboarding_step_complete", stepAnalyticsParams(currentStep));
+      goToStep(currentStep + 1, "continue");
     });
 
     backBtn.addEventListener("click", () => {
@@ -2322,25 +3196,42 @@
         return;
       }
 
-      currentStep -= 1;
-      updateStepUI();
+      trackEvent("partner_onboarding_step_back", stepAnalyticsParams(currentStep, {
+        target_step_index: currentStep
+      }));
+      goToStep(currentStep - 1, "back");
     });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       for (let stepIndex = 0; stepIndex < steps.length - 1; stepIndex += 1) {
-        if (!validateStep(stepIndex)) {
-          currentStep = stepIndex;
-          updateStepUI();
+        if (!validateStep(stepIndex, { trackAnalytics: true })) {
+          goToStep(stepIndex, "submit_validation_error");
           setStatus("Please complete the required fields before submitting.", "error");
           return;
         }
       }
 
+      if (!termsAcceptedInput?.checked) {
+        toggleError("termsError", true);
+        setStatus("Please accept the Terms and Conditions before submitting.", "error");
+        trackEvent("partner_onboarding_validation_error", stepAnalyticsParams(steps.length - 1, {
+          field_count: 1,
+          fields: "terms_accepted"
+        }));
+        return;
+      }
+
+      trackEvent("partner_onboarding_submit_attempt", {
+        ...stepAnalyticsParams(steps.length - 1),
+        photo_count: photoFiles.length,
+        branch_count: document.querySelectorAll(".branch-card").length
+      });
       submitBtn.disabled = true;
       submitBtn.textContent = "Submitting...";
       setStatus("");
+      setGlobalLoading(true, "Submitting onboarding...");
 
       try {
         const submissionRef = doc(collection(db, "partner_onboarding_submissions"));
@@ -2362,6 +3253,7 @@
         });
 
         form.reset();
+        resetMobileOtpState();
         photoFiles = [];
         photoInput.value = "";
         renderPhotoList();
@@ -2373,20 +3265,62 @@
         if (branchList) {
           branchList.innerHTML = "";
         }
-        currentStep = 0;
-        updateStepUI();
+        trackStepDuration("submit_success");
+        hasSubmittedOnboarding = true;
+        clearActiveFlow();
         showSuccessPage();
+        trackEvent("partner_onboarding_submit_success", {
+          ...commonAnalyticsParams(),
+          photo_count: uploads.length
+        });
       } catch (error) {
         setStatus(error?.message || "Submission failed. Please try again.", "error");
+        trackEvent("partner_onboarding_submit_error", {
+          ...stepAnalyticsParams(steps.length - 1),
+          error_code: error?.code || "unknown"
+        });
       } finally {
+        setGlobalLoading(false);
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit onboarding";
       }
     });
 
     if (submitAnotherBtn) {
-      submitAnotherBtn.addEventListener("click", showWizardPage);
+      submitAnotherBtn.addEventListener("click", () => {
+        trackEvent("partner_onboarding_restart", commonAnalyticsParams());
+        resetFlowAnalyticsState();
+        showWizardPage();
+      });
     }
+
+    if (termsAcceptedInput) {
+      termsAcceptedInput.addEventListener("change", () => {
+        toggleError("termsError", !termsAcceptedInput.checked);
+      });
+    }
+
+    if (termsLink) {
+      termsLink.addEventListener("click", () => {
+        noteFieldInteraction("terms_link");
+        trackEvent("partner_onboarding_terms_click", stepAnalyticsParams(8));
+      });
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        trackSessionHidden("visibilitychange");
+        return;
+      }
+
+      if (document.visibilityState === "visible") {
+        trackSessionResumed();
+      }
+    });
+
+    window.addEventListener("pagehide", () => {
+      trackSessionHidden("pagehide");
+    });
   </script>
 </body>
 </html>

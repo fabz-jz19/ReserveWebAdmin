@@ -208,8 +208,8 @@
   <header>
     <h1>Reserva Admin — Partners v1.0</h1>
     <div class="actions">
-      <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
-      <button class="btn primary" onclick="location.href='partner-create.html'">+ Add Partner</button>
+      <button class="btn" onclick="location.href='dashboard'">← Dashboard</button>
+      <button class="btn primary" onclick="location.href='partner-create'">+ Add Partner</button>
     </div>
   </header>
 
@@ -250,7 +250,7 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.replace("index.html");
+        window.location.replace("/");
         return;
       }
       subscribe();
@@ -339,7 +339,7 @@
         `;
 
         item.addEventListener("click", () => {
-          window.location.href = `partner-detail.html?id=${encodeURIComponent(p.id)}`;
+          window.location.href = `partner-detail?id=${encodeURIComponent(p.id)}`;
         });
 
         item.querySelector(".danger").addEventListener("click", async (event) => {

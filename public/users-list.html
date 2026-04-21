@@ -110,9 +110,9 @@
   <header>
     <h1>Users</h1>
     <div class="actions">
-      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
-      <button class="btn" onclick="location.href='partners-list.html'">Partners</button>
-      <button class="btn primary" onclick="location.href='financial-dashboard.html'">Financial</button>
+      <button class="btn" onclick="location.href='dashboard'">Dashboard</button>
+      <button class="btn" onclick="location.href='partners-list'">Partners</button>
+      <button class="btn primary" onclick="location.href='financial-dashboard'">Financial</button>
     </div>
   </header>
 
@@ -155,7 +155,7 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.replace("index.html");
+        window.location.replace("/");
         return;
       }
       const q = query(collection(db, "users"), orderBy("createdAt", "desc"));

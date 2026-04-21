@@ -322,8 +322,8 @@
   <header>
     <h1>Partner Onboarding Submissions</h1>
     <div class="header-actions">
-      <button class="btn secondary" onclick="location.href='dashboard.html'">Back to dashboard</button>
-      <button class="btn" onclick="location.href='partner-create.html'">Manual partner create</button>
+      <button class="btn secondary" onclick="location.href='dashboard'">Back to dashboard</button>
+      <button class="btn" onclick="location.href='partner-create'">Manual partner create</button>
     </div>
   </header>
 
@@ -429,6 +429,7 @@
       const basic = submission.basicInfo || {};
       const profile = submission.businessProfile || {};
       const operations = submission.operations || {};
+      const paymentDetails = operations.paymentDetails || {};
       const media = submission.media || {};
       const draft = submission.partnerDraft || {};
       const partnerStatus = submission.partnerStatus || "pending";
@@ -491,7 +492,9 @@
         district: draft.district || basic.district || null,
         fcmToken: null,
         authenticationMail: basic.bookingEmail || basic.email || null,
-        accountNumber: null,
+        accountNumber: draft.accountNumber || paymentDetails.mcbAccountNumber || null,
+        juiceMobileNumber: draft.juiceMobileNumber || paymentDetails.juiceMobileNumber || null,
+        mobileOtpVerified: Boolean(basic.mobileOtpVerified),
         mobileNumber: basic.mobile || null,
         onboardingSubmissionId: submission.id,
         onboardingStatus: submission.status || "submitted",
@@ -515,6 +518,14 @@
         : Array.isArray(submission.onboardingPhotoUrls)
           ? submission.onboardingPhotoUrls.filter(Boolean)
           : [];
+      const paymentDetails = submission.operations?.paymentDetails || {};
+      const draft = submission.partnerDraft || {};
+      const mcbAccount = paymentDetails.mcbAccountNumber || draft.accountNumber || null;
+      const juiceNumber = paymentDetails.juiceMobileNumber || draft.juiceMobileNumber || null;
+      const payoutChannels = [
+        mcbAccount ? "MCB account" : null,
+        juiceNumber ? "Juice mobile" : null
+      ].filter(Boolean).join(", ");
 
       const photoGallery = mediaPhotos.length
         ? `
@@ -571,7 +582,11 @@
               ["Schedule", scheduleSummary(submission.operations?.workingSchedule)],
               ["Advance payment", submission.operations?.advancePaymentRequired ? "Yes" : "No"],
               ["Payments", (submission.operations?.acceptedPayments || []).join(", ")],
-              ["Cancellation", submission.operations?.cancellationPolicy]
+              ["Cancellation", submission.operations?.cancellationPolicy],
+              ["Payout channels", payoutChannels || "None"],
+              ["MCB account", mcbAccount],
+              ["Juice number", juiceNumber],
+              ["Mobile OTP verified", submission.basicInfo?.mobileOtpVerified ? "Yes" : "No"]
             ])}
           </div>
 
@@ -593,6 +608,8 @@
             ${rows([
               ["Submitted", submission.submittedAtIso],
               ["Notes", submission.notesForTeam],
+              ["Terms accepted", submission.consent?.termsAccepted ? "Yes" : "No"],
+              ["Terms accepted at", submission.consent?.termsAcceptedAtIso],
               ["Partner status", submission.partnerStatus || "pending"],
               ["Converted partner", submission.convertedPartnerId]
             ])}
@@ -726,11 +743,16 @@
         setDetailStatus("");
         const partnerId = submission.partnerDraft?.partnerId || submission.partnerId || doc(collection(db, "partners")).id;
         const partnerRef = doc(db, "partners", partnerId);
+        const approvedSubmission = {
+          ...submission,
+          partnerStatus: "approved"
+        };
 
-        await setDoc(partnerRef, buildPartnerPayload(submission, partnerRef.id));
+        await setDoc(partnerRef, buildPartnerPayload(approvedSubmission, partnerRef.id));
 
         await updateDoc(doc(db, "partner_onboarding_submissions", submission.id), {
           status: "converted",
+          partnerStatus: "approved",
           convertedPartnerId: partnerRef.id,
           reviewedAtIso: new Date().toISOString(),
           updatedAtServer: serverTimestamp()
@@ -748,7 +770,7 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.replace("index.html");
+        window.location.replace("/");
         return;
       }
 

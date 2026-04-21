@@ -166,10 +166,10 @@
   <header>
     <h1>Partner Details</h1>
     <div class="actions">
-      <button class="btn" onclick="location.href='partners-list.html'">← All Partners</button>
-      <button class="btn" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn" onclick="location.href='partners-list'">← All Partners</button>
+      <button class="btn" onclick="location.href='dashboard'">Dashboard</button>
       <button class="btn primary" id="editBtn">Edit</button>
-      <button class="btn" onclick="location.href='partner-create.html'">+ Add Partner</button>
+      <button class="btn" onclick="location.href='partner-create'">+ Add Partner</button>
     </div>
   </header>
 
@@ -291,7 +291,7 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.replace("index.html");
+        window.location.replace("/");
         return;
       }
       if (!partnerId) {
@@ -317,7 +317,7 @@
       statusBox.style.display = "none";
       const editId = p.partnerId || p.id || partnerId;
       editBtn.onclick = () => {
-        location.href = `partner-create.html?id=${encodeURIComponent(editId)}`;
+        location.href = `partner-create?id=${encodeURIComponent(editId)}`;
       };
       partnerNameEl.textContent = p.partnerName || "—";
       descriptionEl.textContent = p.description || "No description provided.";

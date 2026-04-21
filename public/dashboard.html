@@ -104,41 +104,41 @@
   <div class="grid">
 
     <!-- VIEW PARTNERS -->
-    <div class="card view" onclick="location.href='partners-list.html'">
+    <div class="card view" onclick="location.href='partners-list'">
       <div class="icon">📋</div>
       <h3>View All Partners</h3>
       <p>Browse, search and manage all registered partners</p>
     </div>
 
     <!-- ADD PARTNER -->
-    <div class="card add" onclick="location.href='partner-create.html'">
+    <div class="card add" onclick="location.href='partner-create'">
       <div class="icon">➕</div>
       <h3>Add New Partner</h3>
       <p>Create a new partner profile and activate services</p>
     </div>
 
     <!-- MODIFY PARTNER -->
-    <div class="card edit" onclick="location.href='partners-list.html'">
+    <div class="card edit" onclick="location.href='partners-list'">
       <div class="icon">✏️</div>
       <h3>Modify Partner</h3>
       <p>Edit partner details, status, pricing and availability</p>
     </div>
 
     <!-- FINANCIAL DASHBOARD -->
-    <div class="card view" onclick="location.href='financial-dashboard.html'">
+    <div class="card view" onclick="location.href='financial-dashboard'">
       <div class="icon">💰</div>
       <h3>Financial Dashboard</h3>
       <p>See bookings, revenue, and filter by date or client</p>
     </div>
 
     <!-- USERS -->
-    <div class="card view" onclick="location.href='users-list.html'">
+    <div class="card view" onclick="location.href='users-list'">
       <div class="icon">👥</div>
       <h3>Users</h3>
       <p>Browse and search all registered users</p>
     </div>
 
-    <div class="card add" onclick="location.href='partner-onboarding-submissions.html'">
+    <div class="card add" onclick="location.href='partner-onboarding-submissions'">
       <div class="icon">🧾</div>
       <h3>Onboarding Queue</h3>
       <p>Review submitted onboarding forms and convert them into partner profiles</p>
@@ -163,7 +163,7 @@
     // redirect ONLY after Firebase finishes checking auth
     if (!authChecked) {
       setTimeout(() => {
-     //   window.location.replace("index.html");
+     //   window.location.replace("/");
       }, 300);
     }
   });

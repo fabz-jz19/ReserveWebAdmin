@@ -32,7 +32,14 @@ const PROD_HOSTS = new Set([
 const DEV_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
+  "reserve-dev-a297a.web.app",
+  "reserve-dev-a297a.firebaseapp.com",
 ]);
+
+const PROD_DOMAIN_SUFFIXES = [
+  "reservemu.com",
+  "reservamu.info",
+];
 
 const envOverride = new URLSearchParams(window.location.search).get("env");
 const hostname = window.location.hostname;
@@ -42,15 +49,20 @@ const resolveFirebaseEnv = () => {
     return envOverride;
   }
 
-  if (PROD_HOSTS.has(hostname)) {
+  const isProdDomain =
+    PROD_HOSTS.has(hostname) ||
+    PROD_DOMAIN_SUFFIXES.some((suffix) => hostname === suffix || hostname.endsWith(`.${suffix}`));
+
+  if (isProdDomain) {
     return "prod";
   }
 
-  if (DEV_HOSTS.has(hostname) || hostname.endsWith(".local")) {
+  if (DEV_HOSTS.has(hostname) || hostname.endsWith(".local") || hostname.includes("reserve-dev-a297a")) {
     return "dev";
   }
 
-  return "dev";
+  // For unknown public domains, default to prod configuration.
+  return "prod";
 };
 
 export const firebaseEnv = resolveFirebaseEnv();
