@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserve • Privacy Policy</title>
+  <meta
+    name="description"
+    content="Reserve privacy policy for customers, partners, and site visitors using our booking platform."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Gantari:ital,wght@0,600;0,700;0,800;1,300&amp;display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root{
+      --bg:#f4f5fb;
+      --surface:#ffffff;
+      --surface-soft:#f7f8ff;
+      --brand:#352dcc;
+      --brand-dark:#281fb5;
+      --ink:#161827;
+      --muted:#777c9a;
+      --line:#d8dbef;
+      --footer:#121420;
+      --shadow-lg:0 26px 60px rgba(27, 30, 74, .12);
+      --shadow-sm:0 12px 28px rgba(34, 35, 74, .08);
+      --page:1220px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"DM Sans", system-ui, sans-serif;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      min-height:100vh;
+      background:var(--surface);
+    }
+
+    .topbar{
+      background:var(--surface);
+      border-bottom:1px solid rgba(53,45,204,.10);
+    }
+
+    .nav{
+      min-height:82px;
+      padding:0 34px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      flex:none;
+    }
+
+    .brand img{
+      display:block;
+      width:auto;
+      height:38px;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:40px;
+      color:#3d425f;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:34px;
+    }
+
+    .download-link{
+      color:#3d425f;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .primary-btn,
+    .secondary-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 18px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:700;
+      transition:background .18s ease, transform .18s ease;
+    }
+
+    .primary-btn{
+      background:var(--brand);
+      color:#fff;
+      box-shadow:0 12px 24px rgba(53,45,204,.18);
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .primary-btn:hover{
+      background:var(--brand-dark);
+    }
+
+    .banner{
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at top left, rgba(88, 77, 255, .22), transparent 32%),
+        linear-gradient(135deg, #f6f5ff 0%, #eef0fb 58%, #ffffff 100%);
+      border-bottom:1px solid rgba(53,45,204,.10);
+    }
+
+    .banner::after{
+      content:"";
+      position:absolute;
+      right:-10%;
+      top:-25%;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      background:rgba(53,45,204,.08);
+    }
+
+    .banner-inner,
+    .content,
+    .footer-top,
+    .footer-bottom{
+      max-width:var(--page);
+      margin:0 auto;
+    }
+
+    .banner-inner{
+      position:relative;
+      z-index:1;
+      padding:78px 34px 74px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:18px;
+      padding:9px 14px;
+      border-radius:999px;
+      background:#eef0ff;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    h1{
+      margin:0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:62px;
+      line-height:1.02;
+      letter-spacing:-.07em;
+      font-weight:800;
+    }
+
+    .banner p{
+      max-width:700px;
+      margin:20px 0 0;
+      color:#585f81;
+      font-size:18px;
+      line-height:1.7;
+    }
+
+    .content{
+      padding:42px 34px 80px;
+      display:grid;
+      gap:18px;
+    }
+
+    .policy-card{
+      padding:28px 30px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--surface);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .policy-card h2{
+      margin:0 0 12px;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:30px;
+      line-height:1.08;
+      letter-spacing:-.05em;
+      font-weight:700;
+    }
+
+    .policy-card p,
+    .policy-card li{
+      color:#4f5574;
+      font-size:16px;
+      line-height:1.75;
+    }
+
+    .policy-card p{
+      margin:0;
+    }
+
+    .policy-card p + p,
+    .policy-card ul{
+      margin-top:14px;
+    }
+
+    .policy-card ul{
+      padding-left:20px;
+    }
+
+    .policy-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px;
+    }
+
+    .footer{
+      background:var(--footer);
+      color:#fff;
+      padding:54px 34px 28px;
+    }
+
+    .footer-top{
+      display:grid;
+      grid-template-columns:1.35fr .8fr .8fr .8fr;
+      gap:28px;
+      align-items:start;
+    }
+
+    .footer-brand .brand{
+      color:#fff;
+    }
+
+    .footer-brand .brand img{
+      height:36px;
+      filter:brightness(0) invert(1);
+    }
+
+    .footer-brand p{
+      max-width:300px;
+      margin:18px 0 0;
+      color:#9ea4c3;
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .store-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .store-badge{
+      min-width:132px;
+      min-height:42px;
+      padding:0 14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .footer-col h3{
+      margin:0 0 16px;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    .footer-col a{
+      display:block;
+      color:#9ea4c3;
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .footer-col a + a{
+      margin-top:10px;
+    }
+
+    .footer-bottom{
+      margin-top:34px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      color:#8087a7;
+      font-size:13px;
+    }
+
+    .footer-bottom-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:18px;
+    }
+
+    .footer-bottom-links a{
+      color:#aeb4cf;
+    }
+
+    @media (max-width: 980px){
+      .nav{
+        padding:0 18px;
+        flex-wrap:wrap;
+        justify-content:center;
+      }
+
+      .nav-links{
+        order:3;
+        width:100%;
+        justify-content:center;
+        gap:20px;
+        padding-bottom:18px;
+      }
+
+      h1{
+        font-size:44px;
+      }
+
+      .policy-grid,
+      .footer-top{
+        grid-template-columns:1fr;
+      }
+
+      .footer-bottom{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+
+    @media (max-width: 680px){
+      .nav{
+        min-height:76px;
+      }
+
+      .nav-links,
+      .download-link{
+        display:none;
+      }
+
+      .banner-inner,
+      .content,
+      .footer{
+        padding-left:18px;
+        padding-right:18px;
+      }
+
+      h1{
+        font-size:36px;
+      }
+
+      .banner p,
+      .policy-card p,
+      .policy-card li{
+        font-size:15px;
+      }
+
+      .policy-card{
+        padding:22px 20px;
+        border-radius:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="nav">
+        <a class="brand" href="/" aria-label="Reserve home">
+          <img src="assets/reserve-logo.svg" alt="Reserve" />
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#partners">For Partners</a>
+          <a href="index.html#customers">For Customers</a>
+          <a href="index.html#support">Support</a>
+        </nav>
+
+        <div class="nav-actions">
+          <a class="download-link" href="index.html#footer">Download App</a>
+          <a class="primary-btn" href="partner-onboarding">Become a Partner →</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="banner">
+        <div class="banner-inner">
+          <div class="eyebrow">Legal</div>
+          <h1>Privacy Policy</h1>
+          <p>
+            Effective Date: 28 April 2026. This Privacy Policy explains how Reserve collects, uses, stores,
+            and protects your personal information when you use our mobile application, website, or related services.
+          </p>
+        </div>
+      </section>
+
+      <section class="content">
+        <article class="policy-card">
+          <h2>Overview</h2>
+          <p>
+            Reserve is a booking and appointment platform designed to help users discover and book services in Mauritius, including restaurants, beauty services, health appointments, home services, tourism experiences, and other partner services.
+          </p>
+          <p>
+            By using Reserve, you agree to the collection and use of information in accordance with this Privacy Policy.
+          </p>
+        </article>
+
+        <article class="policy-card">
+          <h2>1. Information We Collect</h2>
+          <p>Reserve collects only the information needed to provide booking and appointment services.</p>
+          <p>When you use Reserve, we may collect the following information:</p>
+          <p><strong>User Information</strong></p>
+          <p>We may collect:</p>
+          <ul>
+            <li>Your full name</li>
+            <li>Your mobile phone number</li>
+            <li>Your location</li>
+          </ul>
+          <p><strong>Location Information</strong></p>
+          <p>Reserve may collect and use your location to help you discover services, businesses, appointments, and experiences near you.</p>
+          <p>Your location may be used to:</p>
+          <ul>
+            <li>Show nearby businesses and service providers</li>
+            <li>Improve search results</li>
+            <li>Help you find relevant services in your area</li>
+            <li>Improve the Reserve app experience</li>
+          </ul>
+          <p>You can control or disable location access through your device settings at any time. However, some features may not work properly if location access is disabled.</p>
+          <p><strong>Booking Information</strong></p>
+          <p>When you make a booking through Reserve, we may collect booking-related information, including:</p>
+          <ul>
+            <li>Selected service</li>
+            <li>Selected business or partner</li>
+            <li>Booking date and time</li>
+            <li>Booking status</li>
+            <li>Notes or special requests you choose to provide</li>
+          </ul>
+        </article>
+
+        <article class="policy-card">
+          <h2>2. How We Use Your Information</h2>
+          <p>Reserve uses your information to operate and improve the app.</p>
+          <p>We may use your information to:</p>
+          <ul>
+            <li>Create and manage your user profile</li>
+            <li>Allow you to discover nearby services and businesses</li>
+            <li>Process bookings and appointments</li>
+            <li>Send booking confirmations and updates</li>
+            <li>Help businesses manage your booking requests</li>
+            <li>Contact you about your bookings if needed</li>
+            <li>Improve app performance and user experience</li>
+            <li>Prevent fraud, abuse, or unauthorized activity</li>
+            <li>Provide customer support</li>
+          </ul>
+        </article>
+
+        <article class="policy-card">
+          <h2>3. Sharing of Information</h2>
+          <p>Reserve does not sell your personal information.</p>
+          <p>We may share your information only when necessary to provide our services.</p>
+          <p><strong>Partner Businesses</strong></p>
+          <p>When you make a booking, we may share relevant booking details with the selected business or service provider.</p>
+          <p>This may include:</p>
+          <ul>
+            <li>Your name</li>
+            <li>Your mobile number</li>
+            <li>Booking date and time</li>
+            <li>Selected service</li>
+            <li>Any notes or special requests you provide</li>
+          </ul>
+          <p>This allows the business to confirm, manage, and provide the booked service.</p>
+          <p><strong>Service Providers</strong></p>
+          <p>We may use trusted third-party service providers to help operate Reserve, such as:</p>
+          <ul>
+            <li>Cloud hosting providers</li>
+            <li>Database providers</li>
+            <li>Notification services</li>
+            <li>Analytics tools</li>
+            <li>Crash reporting tools</li>
+          </ul>
+          <p>These providers may process information only as needed to support Reserve.</p>
+          <p><strong>Legal Requirements</strong></p>
+          <p>We may disclose your information if required by law, regulation, legal process, or government request.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>4. Location Data</h2>
+          <p>Reserve uses location data to improve service discovery and booking convenience.</p>
+          <p>Location data may be used to:</p>
+          <ul>
+            <li>Display nearby businesses</li>
+            <li>Recommend relevant services</li>
+            <li>Improve location-based search results</li>
+            <li>Improve the accuracy and usefulness of the app</li>
+          </ul>
+          <p>Reserve does not sell your location data.</p>
+          <p>You can disable location access at any time from your device settings.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>5. Notifications and Communications</h2>
+          <p>Reserve may contact you through app notifications, phone, SMS, WhatsApp, or other communication methods where applicable.</p>
+          <p>We may send you:</p>
+          <ul>
+            <li>Booking confirmations</li>
+            <li>Appointment reminders</li>
+            <li>Booking updates</li>
+            <li>Cancellation updates</li>
+            <li>Important service messages</li>
+            <li>Customer support messages</li>
+          </ul>
+          <p>Promotional messages may only be sent where permitted. You may opt out of promotional communications where available.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>6. Data Retention</h2>
+          <p>Reserve keeps your personal information only for as long as necessary to provide the app services, manage bookings, comply with legal obligations, resolve disputes, and maintain security.</p>
+          <p>If you delete your account or request deletion of your personal data, Reserve will take reasonable steps to delete or anonymize your information, unless we are required to keep it for legal, security, or legitimate business reasons.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>7. Security</h2>
+          <p>Reserve takes reasonable technical and organizational measures to protect your personal information from unauthorized access, loss, misuse, alteration, or disclosure.</p>
+          <p>However, no electronic transmission or storage method is completely secure. While we work to protect your information, we cannot guarantee absolute security.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>8. Your Rights</h2>
+          <p>Depending on applicable laws, you may have the right to:</p>
+          <ul>
+            <li>Access the personal information we hold about you</li>
+            <li>Correct inaccurate or incomplete information</li>
+            <li>Request deletion of your personal data</li>
+            <li>Withdraw consent for location access</li>
+            <li>Object to certain uses of your information</li>
+            <li>Request information about how your data is used</li>
+          </ul>
+          <p>To exercise these rights, please contact us using the contact details below.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>9. Children’s Privacy</h2>
+          <p>Reserve is not intended for children under the age of 13.</p>
+          <p>We do not knowingly collect personal information from children under 13. If we become aware that personal information from a child under 13 has been collected, we will take reasonable steps to delete it.</p>
+        </article>
+
+        <article class="policy-card" id="terms">
+          <h2>10. Third-Party Services</h2>
+          <p>Reserve may use third-party services to help operate and improve the app.</p>
+          <p>These may include services for:</p>
+          <ul>
+            <li>Hosting</li>
+            <li>Analytics</li>
+            <li>Crash reporting</li>
+            <li>Notifications</li>
+            <li>Messaging</li>
+          </ul>
+          <p>These third-party services may collect limited technical or usage information as needed to provide their services.</p>
+          <p>Reserve may also contain links or references to third-party businesses or services. We are not responsible for the privacy practices of those third parties.</p>
+        </article>
+
+        <article class="policy-card" id="cookies">
+          <h2>11. Analytics and Crash Reporting</h2>
+          <p>Reserve may use analytics and crash reporting tools to understand how users interact with the app, detect technical issues, improve performance, and enhance the user experience.</p>
+          <p>These tools may collect technical information such as device type, app version, crash logs, and general usage activity.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>12. Changes to This Privacy Policy</h2>
+          <p>Reserve may update this Privacy Policy from time to time.</p>
+          <p>When we make changes, we will update the effective date at the top of this Privacy Policy.</p>
+          <p>Continued use of Reserve after an update means you accept the revised Privacy Policy.</p>
+        </article>
+
+        <article class="policy-card">
+          <h2>13. Contact Us</h2>
+          <p>For questions, requests, or concerns about this Privacy Policy, you can contact us at:</p>
+          <p>
+            Reserve<br />
+            Email: <a href="mailto:admin@reservemu.info">admin@reservemu.info</a><br />
+            Website: <a href="https://reservemu.com" target="_blank" rel="noreferrer">https://reservemu.com</a><br />
+            Location: Ebebe, Mauritius
+          </p>
+        </article>
+
+        <article class="policy-card">
+          <h2>14. Account and Data Deletion</h2>
+          <p>Users may request deletion of their account and personal data by contacting Reserve at:</p>
+          <p><a href="mailto:admin@reservemu.com">admin@reservemu.com</a></p>
+          <p>When submitting a deletion request, please include your mobile number linked to your Reserve account so we can identify your account.</p>
+          <p>Once verified, we will take reasonable steps to delete or anonymize your personal information, unless we are required to keep certain information for legal, security, fraud prevention, or legitimate business reasons.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer" id="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="Reserve home">
+            <img src="assets/reserve-logo.svg" alt="Reserve" />
+          </a>
+          <p>Mauritius' all-in-one booking platform connecting local businesses with customers across the island.</p>
+
+          <div class="store-row">
+            <a class="store-badge" href="https://play.google.com/store" target="_blank" rel="noreferrer">Google Play</a>
+            <a class="store-badge" href="https://apps.apple.com/" target="_blank" rel="noreferrer">App Store</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>For Customers</h3>
+          <a href="index.html#footer">Download the App</a>
+          <a href="index.html#customers">Browse Services</a>
+          <a href="index.html#home">How to Book</a>
+          <a href="index.html#support">FAQ</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>For Partners</h3>
+          <a href="partner-onboarding">Become a Partner</a>
+          <a href="index.html#how-it-works">How It Works</a>
+          <a href="index.html#partners">Pricing Plans</a>
+          <a href="partner-onboarding">Request to Join</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>Company</h3>
+          <a href="https://reservemu.com/" target="_blank" rel="noreferrer">About Reserve</a>
+          <a href="mailto:support@reservemu.com">Support</a>
+          <a href="admin-login">Admin Sign In</a>
+          <a href="mailto:support@reservemu.com">Contact Us</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>2026 Reserve — By Schedula Technologies LTD · BRN: C25228122</span>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy">Privacy Policy</a>
+          <a href="privacy-policy#terms">Terms of Service</a>
+          <a href="privacy-policy#cookies">Cookie Policy</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

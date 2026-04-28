@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserve Admin • Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&amp;family=Gantari:wght@700;800&amp;display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root{
+      --primary:#2B21BD;
+      --primary-dark:#201a94;
+      --bg:#f6f7fb;
+      --text:#171829;
+      --muted:#64748b;
+      --danger:#dc2626;
+      --border:#e5e7f0;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:
+        radial-gradient(780px 420px at 20% 8%, rgba(43,33,189,.16), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      color:var(--text);
+      font-family:"DM Sans", system-ui, sans-serif;
+    }
+
+    .card{
+      width:100%;
+      max-width:420px;
+      padding:32px;
+      border-radius:28px;
+      border:1px solid rgba(229,231,240,.96);
+      background:rgba(255,255,255,.92);
+      box-shadow:0 30px 60px rgba(15,23,42,.12);
+      backdrop-filter:blur(12px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.85), transparent 34%),
+        linear-gradient(140deg, #5c51ff 0%, #2B21BD 45%, #1a1564 100%);
+      box-shadow:0 12px 25px rgba(43,33,189,.24);
+    }
+
+    h1{
+      margin:0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:24px;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      margin:6px 0 22px;
+      font-size:14px;
+      line-height:1.6;
+      color:var(--muted);
+    }
+
+    label{
+      display:block;
+      margin-top:14px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    input{
+      width:100%;
+      margin-top:8px;
+      padding:14px 15px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      font:inherit;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:rgba(43,33,189,.42);
+      box-shadow:0 0 0 4px rgba(43,33,189,.12);
+    }
+
+    button{
+      width:100%;
+      margin-top:22px;
+      padding:14px 16px;
+      border-radius:16px;
+      border:0;
+      background:var(--primary);
+      color:#fff;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 14px 28px rgba(43,33,189,.20);
+      transition:transform .15s ease, background .15s ease;
+    }
+
+    button:hover{
+      background:var(--primary-dark);
+      transform:translateY(-1px);
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(220,38,38,.08);
+      color:var(--danger);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .links{
+      display:grid;
+      gap:10px;
+      margin-top:20px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .links a{
+      color:var(--primary);
+      font-weight:800;
+      text-decoration:none;
+    }
+
+    .links a:hover{
+      text-decoration:underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Reserve Admin</h1>
+        <div class="subtitle">Secure access to partner management, financial reporting, and onboarding review.</div>
+      </div>
+    </div>
+
+    <form>
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" placeholder="admin@reservemu.com" required />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" placeholder="••••••••" required />
+
+      <button type="submit">Sign in</button>
+      <div class="error" id="errorBox"></div>
+    </form>
+
+    <div class="links">
+      <span><a href="/">Back to Reserve homepage</a></span>
+      <span><a href="partner-onboarding">Open partner onboarding form</a></span>
+    </div>
+  </div>
+
+  <script type="module">
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { auth } from "./firebase-config.js";
+
+    const form = document.querySelector("form");
+    const errorBox = document.getElementById("errorBox");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorBox.style.display = "none";
+
+      try {
+        await signInWithEmailAndPassword(auth, form.email.value, form.password.value);
+        window.location.replace("dashboard");
+      } catch (error) {
+        errorBox.textContent = "Invalid email or password";
+        errorBox.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>

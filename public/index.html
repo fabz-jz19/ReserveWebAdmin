@@ -3,205 +3,1561 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva Admin • Login</title>
-
+  <title>Reserve • Book a service or grow your business</title>
+  <meta
+    name="description"
+    content="Reserve helps customers book local services instantly and helps businesses receive bookings without calls or WhatsApp chaos."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Gantari:ital,wght@0,600;0,700;0,800;1,300&amp;display=swap"
+    rel="stylesheet"
+  />
   <style>
     :root{
-      --primary:#2B21BD;
-      --primary-dark:#201a94;
-      --bg:#f6f7fb;
-      --text:#0f172a;
-      --muted:#64748b;
-      --danger:#dc2626;
+      --bg:#f4f5fb;
+      --surface:#ffffff;
+      --surface-soft:#f7f8ff;
+      --surface-tint:#f5f6fd;
+      --brand:#352dcc;
+      --brand-dark:#281fb5;
+      --ink:#161827;
+      --muted:#777c9a;
+      --muted-strong:#5a607f;
+      --line:#d8dbef;
+      --line-soft:#eceef7;
+      --footer:#121420;
+      --success:#1fbe87;
+      --success-soft:#c9f3db;
+      --warning:#f2b63f;
+      --warning-soft:#ffe9a7;
+      --shadow-lg:0 32px 70px rgba(27, 30, 74, .14);
+      --shadow-md:0 20px 45px rgba(25, 28, 70, .10);
+      --shadow-sm:0 12px 28px rgba(34, 35, 74, .08);
+      --page:1220px;
     }
 
     *{ box-sizing:border-box; }
 
+    html{ scroll-behavior:smooth; }
+
     body{
       margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:
-        radial-gradient(800px 400px at 20% 10%, rgba(43,33,189,.12), transparent 60%),
-        var(--bg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto;
-      color:var(--text);
+      background:#eef0f6;
+      color:var(--ink);
+      font-family:"DM Sans", system-ui, sans-serif;
     }
 
-    .card{
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    button,
+    input,
+    textarea,
+    select{
+      font:inherit;
+    }
+
+    .page{
       width:100%;
-      max-width:380px;
-      background:#fff;
-      border-radius:20px;
-      padding:28px;
-      box-shadow:0 30px 60px rgba(15,23,42,.12);
+      margin:0;
+      background:var(--surface);
+      overflow:hidden;
+      min-height:100vh;
+    }
+
+    .topbar{
+      background:var(--surface);
+      border-bottom:1px solid rgba(53,45,204,.10);
+    }
+
+    .nav{
+      min-height:82px;
+      padding:0 34px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
-      margin-bottom:18px;
+      flex:none;
     }
 
-    .logo{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      background:linear-gradient(135deg, var(--primary), #4c3cff);
-      box-shadow:0 10px 25px rgba(43,33,189,.3);
-    }
-
-    h2{
-      margin:0;
-      font-size:20px;
-      font-weight:900;
-      letter-spacing:-.02em;
-    }
-
-    .subtitle{
-      margin:6px 0 20px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    label{
+    .brand img{
       display:block;
-      margin-top:14px;
-      font-size:12px;
-      font-weight:700;
-      color:var(--muted);
+      width:auto;
+      height:38px;
     }
 
-    input{
-      width:100%;
-      margin-top:6px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #e5e7eb;
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:40px;
+      color:#3d425f;
       font-size:14px;
-      outline:none;
+      font-weight:500;
     }
 
-    input:focus{
-      border-color:rgba(43,33,189,.4);
-      box-shadow:0 0 0 4px rgba(43,33,189,.12);
+    .nav-links a:hover,
+    .nav-actions a:hover{
+      color:var(--brand);
     }
 
-    button{
-      width:100%;
-      margin-top:22px;
-      padding:12px;
-      border-radius:14px;
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:34px;
+    }
+
+    .menu-btn{
+      display:none;
+      width:46px;
+      height:46px;
+      padding:0;
       border:0;
-      background:var(--primary);
-      color:#fff;
-      font-size:14px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 12px 25px rgba(43,33,189,.25);
-      transition:.15s ease;
+      border-radius:14px;
+      background:transparent;
+      color:#505575;
+      align-items:center;
+      justify-content:center;
+      flex:none;
     }
 
-    button:hover{
-      background:var(--primary-dark);
+    .download-link{
+      color:#3d425f;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 18px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:700;
+      transition:background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .primary-btn{
+      background:var(--brand);
+      color:#fff;
+      box-shadow:0 12px 24px rgba(53,45,204,.18);
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover{
       transform:translateY(-1px);
     }
 
-    .error{
-      display:none;
-      margin-top:14px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:rgba(220,38,38,.08);
-      color:var(--danger);
+    .primary-btn:hover{
+      background:var(--brand-dark);
+      color:#fff;
+    }
+
+    .secondary-btn{
+      background:#fff;
+      color:var(--brand);
+      box-shadow:0 10px 22px rgba(35, 39, 87, .10);
+    }
+
+    .hero{
+      position:relative;
+      min-height:612px;
+      background:#1d1f38;
+      overflow:hidden;
+    }
+
+    .hero video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(78, 65, 255, .62) 0%, rgba(66, 49, 217, .54) 26%, rgba(20, 20, 44, .42) 100%);
+      z-index:1;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      top:-6%;
+      right:16%;
+      width:31%;
+      height:120%;
+      border-radius:50%;
+      background:rgba(177, 185, 218, .22);
+      z-index:1;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:2;
+      padding:44px 34px 34px;
+    }
+
+    .live-pill{
+      width:max-content;
+      margin:0 auto;
+      padding:9px 18px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(104,108,141,.38);
+      backdrop-filter:blur(8px);
+      color:#fff;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .live-pill::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#77ef90;
+      box-shadow:0 0 0 4px rgba(119,239,144,.14);
+    }
+
+    .hero-copy{
+      max-width:760px;
+      margin:34px auto 0;
+      text-align:center;
+      color:#fff;
+    }
+
+    .hero-copy h1{
+      margin:0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:72px;
+      line-height:1.05;
+      letter-spacing:-.065em;
+      font-weight:800;
+    }
+
+    .hero-copy p{
+      margin:20px 0 0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:34px;
+      line-height:1.15;
+      letter-spacing:-.04em;
+      font-style:italic;
+      font-weight:300;
+      color:rgba(255,255,255,.66);
+    }
+
+    .hero-cards{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:38px;
+      max-width:818px;
+      margin:40px auto 0;
+    }
+
+    .hero-card{
+      min-height:272px;
+      padding:28px 28px 22px;
+      border-radius:24px;
+      background:rgba(255,255,255,.97);
+      box-shadow:var(--shadow-lg);
+    }
+
+    .hero-card-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:26px;
+      padding:0 14px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:-.01em;
+    }
+
+    .pill.partner{
+      background:var(--warning-soft);
+      color:#b66c15;
+    }
+
+    .pill.business{
+      gap:8px;
+      background:var(--success-soft);
+      color:#198a5a;
+    }
+
+    .pill.business::before{
+      content:"◌";
+      font-size:12px;
+      line-height:1;
+    }
+
+    .pill.customer{
+      background:#ecefff;
+      color:var(--brand);
+    }
+
+    .icon-box{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:#f1f3ff;
+      display:grid;
+      place-items:center;
+      color:var(--brand);
+    }
+
+    .icon-box svg{
+      width:22px;
+      height:22px;
+    }
+
+    .hero-card h2{
+      margin:18px 0 0;
+      font-size:24px;
+      line-height:1.18;
+      letter-spacing:-.05em;
+      font-weight:800;
+    }
+
+    .hero-card p{
+      margin:14px 0 0;
+      color:var(--muted-strong);
+      font-size:15px;
+      line-height:1.6;
+      font-weight:400;
+    }
+
+    .hero-card .primary-btn{
+      margin-top:22px;
+      min-height:40px;
+      padding:0 16px;
+      border-radius:11px;
       font-size:13px;
       font-weight:700;
+    }
+
+    .stats-section{
+      padding:12px 34px 0;
+      background:#fff;
+    }
+
+    .stats-bar{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .stat{
+      position:relative;
+      padding:20px 18px 16px;
+      text-align:center;
+      background:#fff;
+    }
+
+    .stat:not(:last-child)::after{
+      content:"";
+      position:absolute;
+      top:18px;
+      right:0;
+      width:1px;
+      height:64px;
+      background:var(--line);
+    }
+
+    .stat strong{
+      display:block;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:46px;
+      line-height:1;
+      letter-spacing:-.07em;
+      color:var(--brand);
+      font-weight:800;
+    }
+
+    .stat span{
+      display:block;
+      margin-top:6px;
+      color:#8a8fb0;
+      font-size:15px;
+      line-height:1.2;
+      font-weight:500;
+    }
+
+    .cta-band{
+      margin-top:14px;
+      padding:58px 24px 62px;
+      background:var(--brand);
+      text-align:center;
+      color:#fff;
+    }
+
+    .cta-band h2{
+      margin:0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:56px;
+      line-height:1.02;
+      letter-spacing:-.06em;
+      font-weight:800;
+    }
+
+    .cta-band p{
+      max-width:760px;
+      margin:16px auto 0;
+      color:rgba(255,255,255,.70);
+      font-size:17px;
+      line-height:1.6;
+      font-weight:400;
+    }
+
+    .cta-band .secondary-btn{
+      margin-top:32px;
+      min-height:44px;
+      padding:0 20px;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .section{
+      padding:68px 68px;
+      background:#fff;
+    }
+
+    .section.split{
+      display:grid;
+      grid-template-columns:minmax(0, 1.04fr) minmax(360px, .96fr);
+      gap:44px;
+      align-items:center;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:26px;
+      padding:0 14px;
+      border-radius:999px;
+      background:#f1f2ff;
+      color:var(--brand);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before{
+      content:"◌";
+      font-size:11px;
+      line-height:1;
+    }
+
+    .section-copy h2{
+      margin:24px 0 0;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:68px;
+      line-height:1.02;
+      letter-spacing:-.075em;
+      font-weight:800;
+    }
+
+    .section-copy h2 em{
+      display:block;
+      color:var(--brand);
+      font-style:italic;
+      font-weight:300;
+    }
+
+    .section-copy p{
+      max-width:500px;
+      margin:26px 0 0;
+      color:var(--muted-strong);
+      font-size:18px;
+      line-height:1.6;
+      font-weight:500;
+    }
+
+    .cta-row{
+      display:flex;
+      align-items:center;
+      gap:22px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+
+    .ghost-link{
+      min-height:auto;
+      padding:0;
+      border-radius:0;
+      color:#8b90af;
+      font-size:15px;
+      font-weight:500;
+    }
+
+    .check-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:28px;
+      margin-top:34px;
+      color:#8b90af;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .check-row span::before{
+      content:"✓";
+      margin-right:8px;
+      color:#a4aac8;
+    }
+
+    .dashboard-card{
+      border-radius:22px;
+      background:#fff;
+      box-shadow:var(--shadow-md);
+      border:1px solid var(--line-soft);
+      overflow:hidden;
+    }
+
+    .dashboard-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:20px 20px 16px;
+      background:var(--brand);
+      color:#fff;
+    }
+
+    .dashboard-top h3{
+      margin:0;
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:-.04em;
+    }
+
+    .dashboard-top p{
+      margin:6px 0 0;
+      color:rgba(255,255,255,.72);
+      font-size:12px;
+      font-weight:500;
+    }
+
+    .date-pill{
+      min-height:30px;
+      padding:0 12px;
+      border-radius:10px;
+      background:rgba(255,255,255,.14);
+      display:inline-flex;
+      align-items:center;
+      color:rgba(255,255,255,.86);
+      font-size:11px;
+      font-weight:500;
+    }
+
+    .dashboard-stats{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      border-bottom:1px solid var(--line-soft);
+    }
+
+    .dashboard-stat{
+      padding:16px 18px 14px;
+      border-right:1px solid var(--line-soft);
+    }
+
+    .dashboard-stat:last-child{
+      border-right:0;
+    }
+
+    .dashboard-stat strong{
+      display:block;
+      font-size:21px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-.04em;
+    }
+
+    .dashboard-stat span{
+      display:block;
+      margin-top:8px;
+      color:#9ba1c0;
+      font-size:11px;
+      font-weight:500;
+    }
+
+    .dashboard-subhead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:16px 20px 10px;
+    }
+
+    .dashboard-subhead strong{
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:-.03em;
+    }
+
+    .dashboard-subhead a{
+      color:var(--brand);
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .booking-list{
+      display:grid;
+      gap:12px;
+      padding:0 20px 20px;
+    }
+
+    .booking{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+    }
+
+    .booking-main{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .avatar{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:14px;
+      font-weight:700;
+      flex:none;
+    }
+
+    .avatar.a{ background:#6a6ef1; }
+    .avatar.m{ background:#eb4ea2; }
+    .avatar.j{ background:#1dc08a; }
+
+    .booking-copy{
+      min-width:0;
+    }
+
+    .booking-copy strong{
+      display:block;
+      font-size:15px;
+      line-height:1.2;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .booking-copy span{
+      display:block;
+      margin-top:4px;
+      color:#969dbc;
+      font-size:12px;
+      font-weight:500;
+    }
+
+    .status{
+      min-height:26px;
+      padding:0 12px;
+      border-radius:8px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:700;
+      flex:none;
+    }
+
+    .status.confirmed{
+      background:var(--success-soft);
+      color:#16915f;
+    }
+
+    .status.pending{
+      background:var(--warning-soft);
+      color:#a87410;
+    }
+
+    .section-center{
+      text-align:center;
+      padding:66px 68px 52px;
+    }
+
+    .label{
+      color:var(--brand);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .section-center h2{
+      margin:18px auto 0;
+      max-width:760px;
+      font-family:"Gantari", "DM Sans", sans-serif;
+      font-size:54px;
+      line-height:1.08;
+      letter-spacing:-.06em;
+      font-weight:800;
+    }
+
+    .timeline{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:18px;
+      align-items:start;
+      margin-top:46px;
+      position:relative;
+    }
+
+    .timeline::before{
+      content:"";
+      position:absolute;
+      top:22px;
+      left:12%;
+      right:12%;
+      height:1px;
+      background:#dfe2fb;
+      z-index:0;
+    }
+
+    .step{
+      position:relative;
+      z-index:1;
+      text-align:center;
+    }
+
+    .step-node{
+      width:46px;
+      height:46px;
+      margin:0 auto 16px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-size:24px;
+      font-weight:700;
+      color:#fff;
+      background:var(--brand);
+      box-shadow:0 12px 22px rgba(53,45,204,.14);
+    }
+
+    .step-node.done{
+      background:var(--success);
+      font-size:26px;
+    }
+
+    .step strong{
+      display:block;
+      font-size:15px;
+      font-weight:700;
+      line-height:1.35;
+      letter-spacing:-.02em;
+    }
+
+    .step p{
+      max-width:180px;
+      margin:10px auto 0;
+      color:#9aa0bb;
+      font-size:13px;
+      line-height:1.55;
+      font-weight:500;
+    }
+
+    .features-wrap{
+      background:#f7f8fd;
+      border-top:1px solid var(--line-soft);
+      border-bottom:1px solid var(--line-soft);
+    }
+
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      margin-top:42px;
+    }
+
+    .feature-card{
+      min-height:94px;
+      padding:14px 14px 16px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--line);
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      box-shadow:0 6px 18px rgba(33, 37, 82, .04);
+    }
+
+    .feature-icon{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#f4f4ff;
+      display:grid;
+      place-items:center;
+      color:var(--brand);
+      flex:none;
+    }
+
+    .feature-icon svg{
+      width:20px;
+      height:20px;
+    }
+
+    .feature-copy strong{
+      display:block;
+      font-size:14px;
+      line-height:1.2;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .feature-copy p{
+      margin:8px 0 0;
+      color:var(--muted-strong);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:500;
+    }
+
+    .stories-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:18px;
+      margin-top:40px;
+    }
+
+    .story-card{
+      padding:18px 20px 16px;
+      border-radius:18px;
+      background:var(--surface-tint);
+      border:1px solid var(--line);
+      min-height:166px;
+    }
+
+    .stars{
+      color:#ffab07;
+      font-size:14px;
+      letter-spacing:.18em;
+    }
+
+    .story-card p{
+      margin:14px 0 0;
+      color:#292d41;
+      font-size:14px;
+      line-height:1.65;
+      font-style:italic;
+      font-weight:400;
+    }
+
+    .story-footer{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-top:26px;
+    }
+
+    .story-avatar{
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      flex:none;
+    }
+
+    .story-avatar.s{ background:#4d43d5; }
+    .story-avatar.p{ background:#f257a0; }
+    .story-avatar.d{ background:#1dc08a; }
+
+    .story-meta strong{
+      display:block;
+      font-size:14px;
+      line-height:1.15;
+      font-weight:700;
+    }
+
+    .story-meta span{
+      display:block;
+      margin-top:4px;
+      color:#9aa0bb;
+      font-size:12px;
+      line-height:1.2;
+      font-weight:500;
     }
 
     .footer{
+      background:var(--footer);
+      color:#fff;
+      padding:36px 68px 22px;
+    }
+
+    .footer-top{
+      display:grid;
+      grid-template-columns:1.2fr repeat(3, .8fr);
+      gap:28px;
+      align-items:start;
+    }
+
+    .footer-brand{
+      max-width:320px;
+    }
+
+    .footer-brand .brand{
+      color:#fff;
+    }
+
+    .footer-brand .brand img{
+      height:36px;
+      filter:brightness(0) invert(1);
+    }
+
+    .footer-brand p{
+      margin:18px 0 0;
+      color:rgba(255,255,255,.55);
+      font-size:15px;
+      line-height:1.65;
+      font-weight:400;
+    }
+
+    .store-row{
+      display:flex;
+      gap:10px;
       margin-top:18px;
-      text-align:center;
-      font-size:11px;
-      color:var(--muted);
-      font-weight:700;
+      flex-wrap:wrap;
     }
 
-    .public-link{
-      margin-top:14px;
-      text-align:center;
+    .store-badge{
+      min-width:128px;
+      min-height:36px;
+      padding:0 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      color:#fff;
       font-size:13px;
-      color:var(--muted);
+      font-weight:600;
     }
 
-    .public-link a{
-      color:var(--primary);
-      font-weight:800;
-      text-decoration:none;
+    .footer-col h3{
+      margin:0 0 18px;
+      font-size:15px;
+      line-height:1.2;
+      font-weight:700;
+      letter-spacing:-.01em;
     }
 
-    .public-link a:hover{
-      text-decoration:underline;
+    .footer-col{
+      display:grid;
+      gap:12px;
+    }
+
+    .footer-col a{
+      color:rgba(255,255,255,.56);
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .footer-col a:hover{
+      color:#fff;
+    }
+
+    .footer-bottom{
+      margin-top:28px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      color:rgba(255,255,255,.34);
+      font-size:12px;
+      font-weight:500;
+    }
+
+    .footer-bottom-links{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 1140px){
+      .nav{
+        flex-wrap:wrap;
+        justify-content:center;
+        padding-top:16px;
+        padding-bottom:16px;
+      }
+
+      .hero-copy h1{
+        font-size:60px;
+      }
+
+      .hero-copy p{
+        font-size:30px;
+      }
+
+      .hero-cards,
+      .section.split,
+      .feature-grid,
+      .stories-grid,
+      .footer-top{
+        grid-template-columns:1fr;
+      }
+
+      .timeline{
+        grid-template-columns:repeat(2, 1fr);
+      }
+
+      .timeline::before{
+        display:none;
+      }
+    }
+
+    @media (max-width: 760px){
+      .nav{
+        min-height:86px;
+        padding-left:16px;
+        padding-right:16px;
+        gap:12px;
+        flex-wrap:nowrap;
+      }
+
+      .brand img{
+        height:34px;
+      }
+
+      .nav-links,
+      .download-link{
+        display:none;
+      }
+
+      .nav-actions{
+        gap:10px;
+        flex-wrap:nowrap;
+        justify-content:flex-end;
+        flex:none;
+      }
+
+      .nav-actions .primary-btn{
+        min-height:46px;
+        padding:0 18px;
+        border-radius:14px;
+        font-size:13px;
+        white-space:nowrap;
+      }
+
+      .menu-btn{
+        display:inline-flex;
+      }
+
+      .hero-inner,
+      .stats-section,
+      .section,
+      .section-center,
+      .footer{
+        padding-left:18px;
+        padding-right:18px;
+      }
+
+      .hero{
+        min-height:auto;
+      }
+
+      .hero-copy h1{
+        font-size:44px;
+      }
+
+      .hero-copy p{
+        font-size:24px;
+      }
+
+      .hero-cards{
+        gap:20px;
+      }
+
+      .stats-bar{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .stat:nth-child(2)::after{
+        display:none;
+      }
+
+      .cta-band{
+        padding-left:18px;
+        padding-right:18px;
+      }
+
+      .cta-band h2,
+      .section-copy h2,
+      .section-center h2{
+        font-size:40px;
+      }
+
+      .timeline{
+        grid-template-columns:1fr;
+      }
+
+      .feature-grid,
+      .stories-grid,
+      .stats-bar,
+      .dashboard-stats{
+        grid-template-columns:1fr;
+      }
+
+      .dashboard-stat{
+        border-right:0;
+        border-bottom:1px solid var(--line-soft);
+      }
+
+      .dashboard-stat:last-child{
+        border-bottom:0;
+      }
+
+      .footer-bottom{
+        flex-direction:column;
+        align-items:flex-start;
+      }
     }
   </style>
 </head>
-
 <body>
+  <div class="page">
+    <header class="topbar">
+      <div class="nav">
+        <a class="brand" href="/" aria-label="Reserve home">
+          <img src="assets/reserve-logo.svg" alt="Reserve" />
+        </a>
 
-<div class="card">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#home">Home</a>
+          <a href="#partners">For Partners</a>
+          <a href="#customers">For Customers</a>
+          <a href="#support">Support</a>
+        </nav>
 
-  <div class="brand">
-    <div class="logo"></div>
-    <div>
-      <h2>Reserva Admin</h2>
-      <div class="subtitle">Secure access to partner management</div>
-    </div>
+        <div class="nav-actions">
+          <a class="download-link" href="#footer">Download App</a>
+          <a class="primary-btn" href="partner-onboarding">Become a Partner →</a>
+          <button type="button" class="menu-btn" aria-label="Open navigation">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+          <source src="assets/hero-background.mp4" type="video/mp4" />
+        </video>
+
+        <div class="hero-inner">
+          <div class="live-pill">Now live across Mauritius</div>
+
+          <div class="hero-copy">
+            <h1>Book a service.<br />or Grow your business.</h1>
+            <p>Enn klik, lavi pli fasil.</p>
+          </div>
+
+          <div class="hero-cards">
+            <article class="hero-card" id="partners">
+              <div class="hero-card-top">
+                <span class="pill partner">For Partners</span>
+                <span class="pill business">For Businesses</span>
+              </div>
+
+              <div class="icon-box" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 20V6.8C4 6.36 4.36 6 4.8 6H13.2C13.64 6 14 6.36 14 6.8V10H19.2C19.64 10 20 10.36 20 10.8V20H4ZM8 9V11H10V9H8ZM8 13V15H10V13H8ZM8 17V19H10V17H8ZM12 9V11H14V9H12ZM12 13V15H14V13H12ZM16 13V15H18V13H16ZM16 17V19H18V17H16Z"/>
+                </svg>
+              </div>
+
+              <h2>List your business.<br />Start getting bookings.</h2>
+              <p>Join Reserve and let customers book you 24/7 — no calls, no WhatsApp chaos. Just a smart dashboard.</p>
+              <a class="primary-btn" href="partner-onboarding">Start receiving bookings →</a>
+            </article>
+
+            <article class="hero-card" id="customers">
+              <div class="hero-card-top">
+                <span class="pill customer">For Customers</span>
+              </div>
+
+              <div class="icon-box" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6 3C7.93137 3 8.2 3.26863 8.2 3.6V5H15.8V3.6C15.8 3.26863 16.0686 3 16.4 3C16.7314 3 17 3.26863 17 3.6V5H18.4C19.5046 5 20.4 5.89543 20.4 7V18.4C20.4 19.5046 19.5046 20.4 18.4 20.4H5.6C4.49543 20.4 3.6 19.5046 3.6 18.4V7C3.6 5.89543 4.49543 5 5.6 5H7V3.6C7 3.26863 7.26863 3 7.6 3ZM4.8 9.2V18.4C4.8 18.8418 5.15817 19.2 5.6 19.2H18.4C18.8418 19.2 19.2 18.8418 19.2 18.4V9.2H4.8ZM8 12.2C8.44183 12.2 8.8 12.5582 8.8 13C8.8 13.4418 8.44183 13.8 8 13.8C7.55817 13.8 7.2 13.4418 7.2 13C7.2 12.5582 7.55817 12.2 8 12.2ZM12 12.2C12.4418 12.2 12.8 12.5582 12.8 13C12.8 13.4418 12.4418 13.8 12 13.8C11.5582 13.8 11.2 13.4418 11.2 13C11.2 12.5582 11.5582 12.2 12 12.2ZM16 12.2C16.4418 12.2 16.8 12.5582 16.8 13C16.8 13.4418 16.4418 13.8 16 13.8C15.5582 13.8 15.2 13.4418 15.2 13C15.2 12.5582 15.5582 12.2 16 12.2Z"/>
+                </svg>
+              </div>
+
+              <h2>Book any local service,<br />instantly.</h2>
+              <p>Salons, gyms, spas, clinics and more — find verified professionals near you, pick your slot, one tap.</p>
+              <a class="primary-btn" href="#footer">Download the app →</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-section" aria-label="Reserve platform stats">
+        <div class="stats-bar">
+          <div class="stat">
+            <strong>2,067</strong>
+            <span>App Downloads</span>
+          </div>
+          <div class="stat">
+            <strong>982</strong>
+            <span>Happy Clients</span>
+          </div>
+          <div class="stat">
+            <strong>890</strong>
+            <span>Active Users</span>
+          </div>
+          <div class="stat">
+            <strong>4.8★</strong>
+            <span>Average Rating</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <h2>Ready to grow your business?</h2>
+        <p>Join hundreds of Mauritian businesses already using Reserve to manage bookings, reduce no-shows, and grow their client base.</p>
+        <a class="secondary-btn" href="partner-onboarding">+ List your business — it’s free to start</a>
+      </section>
+
+      <section class="section split">
+        <div class="section-copy">
+          <div class="eyebrow">For Businesses</div>
+          <h2>Grow your bookings <em>with Reserve.</em></h2>
+          <p>Stop relying on calls and WhatsApp. Let customers book you 24/7, automatically.</p>
+
+          <div class="cta-row">
+            <a class="primary-btn" href="partner-onboarding">Request to join →</a>
+            <a class="ghost-link" href="#how-it-works">See pricing below ↓</a>
+          </div>
+
+          <div class="check-row">
+            <span>No long-term contract</span>
+            <span>Live in days</span>
+            <span>Dedicated support</span>
+          </div>
+        </div>
+
+        <div class="dashboard-card" aria-label="Partner dashboard preview">
+          <div class="dashboard-top">
+            <div>
+              <h3>Sarah's Hair Studio</h3>
+              <p>Partner Dashboard</p>
+            </div>
+            <div class="date-pill">Today, March 2026</div>
+          </div>
+
+          <div class="dashboard-stats">
+            <div class="dashboard-stat">
+              <strong>12</strong>
+              <span>Today's Bookings</span>
+            </div>
+            <div class="dashboard-stat">
+              <strong>Rs 8.4k</strong>
+              <span>This Week</span>
+            </div>
+            <div class="dashboard-stat">
+              <strong>96%</strong>
+              <span>Show Rate</span>
+            </div>
+          </div>
+
+          <div class="dashboard-subhead">
+            <strong>Upcoming today</strong>
+            <a href="#customers">View all →</a>
+          </div>
+
+          <div class="booking-list">
+            <div class="booking">
+              <div class="booking-main">
+                <div class="avatar a">A</div>
+                <div class="booking-copy">
+                  <strong>Aisha Ramdeeny</strong>
+                  <span>Cut &amp; Blow Dry · 9:00 AM</span>
+                </div>
+              </div>
+              <span class="status confirmed">Confirmed</span>
+            </div>
+
+            <div class="booking">
+              <div class="booking-main">
+                <div class="avatar m">M</div>
+                <div class="booking-copy">
+                  <strong>Meena Lutchmee</strong>
+                  <span>Full Colour · 10:30 AM</span>
+                </div>
+              </div>
+              <span class="status confirmed">Confirmed</span>
+            </div>
+
+            <div class="booking">
+              <div class="booking-main">
+                <div class="avatar j">J</div>
+                <div class="booking-copy">
+                  <strong>Jean-Paul Moreau</strong>
+                  <span>Haircut · 12:00 PM</span>
+                </div>
+              </div>
+              <span class="status pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-center" id="how-it-works">
+        <div class="label">How it Works</div>
+        <h2>Up and running in days, not weeks</h2>
+
+        <div class="timeline">
+          <div class="step">
+            <div class="step-node">1</div>
+            <strong>Submit your request</strong>
+            <p>Fill out the short form with your business details. 2 min.</p>
+          </div>
+          <div class="step">
+            <div class="step-node">2</div>
+            <strong>We reach out</strong>
+            <p>Our team contacts you within 24 hours to guide setup.</p>
+          </div>
+          <div class="step">
+            <div class="step-node">3</div>
+            <strong>Set up your profile</strong>
+            <p>Add your services, pricing, and availability.</p>
+          </div>
+          <div class="step">
+            <div class="step-node done">✓</div>
+            <strong>Start receiving bookings</strong>
+            <p>You’re live! Customers book you 24/7 from the app.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-center features-wrap">
+        <div class="label">What You Get</div>
+        <h2>Everything your business needs, nothing it doesn't.</h2>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.6 3C7.93137 3 8.2 3.26863 8.2 3.6V5H15.8V3.6C15.8 3.26863 16.0686 3 16.4 3C16.7314 3 17 3.26863 17 3.6V5H18.4C19.5046 5 20.4 5.89543 20.4 7V18.4C20.4 19.5046 19.5046 20.4 18.4 20.4H5.6C4.49543 20.4 3.6 19.5046 3.6 18.4V7C3.6 5.89543 4.49543 5 5.6 5H7V3.6C7 3.26863 7.26863 3 7.6 3ZM4.8 9.2V18.4C4.8 18.8418 5.15817 19.2 5.6 19.2H18.4C18.8418 19.2 19.2 18.8418 19.2 18.4V9.2H4.8ZM8 12.2C8.44183 12.2 8.8 12.5582 8.8 13C8.8 13.4418 8.44183 13.8 8 13.8C7.55817 13.8 7.2 13.4418 7.2 13C7.2 12.5582 7.55817 12.2 8 12.2ZM12 12.2C12.4418 12.2 12.8 12.5582 12.8 13C12.8 13.4418 12.4418 13.8 12 13.8C11.5582 13.8 11.2 13.4418 11.2 13C11.2 12.5582 11.5582 12.2 12 12.2ZM16 12.2C16.4418 12.2 16.8 12.5582 16.8 13C16.8 13.4418 16.4418 13.8 16 13.8C15.5582 13.8 15.2 13.4418 15.2 13C15.2 12.5582 15.5582 12.2 16 12.2Z"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>Smart Calendar</strong>
+              <p>Manage all bookings in one place. Set availability, prevent conflicts.</p>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3.6C9.12812 3.6 6.8 5.92812 6.8 8.8V10.0747C6.8 10.6386 6.57599 11.1794 6.17725 11.5781L5.33137 12.424C4.19715 13.5582 4.99934 15.5 6.60314 15.5H17.3969C19.0007 15.5 19.8028 13.5582 18.6686 12.424L17.8227 11.5781C17.424 11.1794 17.2 10.6386 17.2 10.0747V8.8C17.2 5.92812 14.8719 3.6 12 3.6ZM9.8 17.2C9.8 18.415 10.785 19.4 12 19.4C13.215 19.4 14.2 18.415 14.2 17.2H9.8Z"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>Instant Notifications</strong>
+              <p>Get notified the moment a customer books. Accept in a tap.</p>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="6" width="16" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 10.5H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>Payment Tracking</strong>
+              <p>Track revenue in your dashboard. Secure local payment methods.</p>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 7.5H9.5V12M19 16.5H14.5V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 7L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>No-Show Reduction</strong>
+              <p>Automated reminders dramatically reduce no-shows and cancellations.</p>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.5 11.2C10.2673 11.2 11.7 9.76731 11.7 8C11.7 6.23269 10.2673 4.8 8.5 4.8C6.73269 4.8 5.3 6.23269 5.3 8C5.3 9.76731 6.73269 11.2 8.5 11.2ZM15.5 11.8C17.0464 11.8 18.3 10.5464 18.3 9C18.3 7.4536 17.0464 6.2 15.5 6.2C13.9536 6.2 12.7 7.4536 12.7 9C12.7 10.5464 13.9536 11.8 15.5 11.8ZM4.3 18.9C4.3 16.4699 6.26995 14.5 8.7 14.5H8.9C11.3301 14.5 13.3 16.4699 13.3 18.9V19.2H4.3V18.9ZM14.4 19.2C14.4 17.3232 15.7832 15.7334 17.6 15.4085C19.4168 15.7334 20.8 17.3232 20.8 19.2H14.4Z"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>Multi-Staff Management</strong>
+              <p>Individual calendars per staff. Perfect for salons and clinics.</p>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 16.5L10 11.5L13.5 15L19 8.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.5 8.5H19V12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="feature-copy">
+              <strong>Business Insights</strong>
+              <p>Track busy hours, top services, and client retention rate.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-center" id="support">
+        <div class="label">Partner Stories</div>
+        <h2>Real businesses. Real results.</h2>
+
+        <div class="stories-grid">
+          <article class="story-card">
+            <div class="stars">★★★★★</div>
+            <p>“Reserve changed how I run my salon. My clients love booking online and I have cut no-shows by more than half since joining.”</p>
+            <div class="story-footer">
+              <div class="story-avatar s">S</div>
+              <div class="story-meta">
+                <strong>Sarah Moorghen</strong>
+                <span>Sarah's Hair Studio, Port Louis</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="story-card">
+            <div class="stars">★★★★★</div>
+            <p>“I was skeptical at first but the onboarding team made it so simple. Within a week I had new customers finding me through the app.”</p>
+            <div class="story-footer">
+              <div class="story-avatar p">P</div>
+              <div class="story-meta">
+                <strong>Priya Naidoo</strong>
+                <span>Priya's Nail Bar, Quatre Bornes</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="story-card">
+            <div class="stars">★★★★★</div>
+            <p>“Managing 3 physiotherapists used to be a nightmare. The multi-staff calendar alone is worth the subscription.”</p>
+            <div class="story-footer">
+              <div class="story-avatar d">D</div>
+              <div class="story-meta">
+                <strong>Dr. Dev Ramkissoon</strong>
+                <span>Wellness Physio Clinic, Ebene</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="Reserve home">
+            <img src="assets/reserve-logo.svg" alt="Reserve" />
+          </a>
+          <p>Mauritius' all-in-one booking platform connecting local businesses with customers across the island.</p>
+
+          <div class="store-row">
+            <a class="store-badge" href="https://play.google.com/store" target="_blank" rel="noreferrer">Google Play</a>
+            <a class="store-badge" href="https://apps.apple.com/" target="_blank" rel="noreferrer">App Store</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>For Customers</h3>
+          <a href="#footer">Download the App</a>
+          <a href="#customers">Browse Services</a>
+          <a href="#home">How to Book</a>
+          <a href="#support">FAQ</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>For Partners</h3>
+          <a href="partner-onboarding">Become a Partner</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#partners">Pricing Plans</a>
+          <a href="partner-onboarding">Request to Join</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>Company</h3>
+          <a href="https://reservemu.com/" target="_blank" rel="noreferrer">About Reserve</a>
+          <a href="mailto:support@reservemu.com">Support</a>
+          <a href="admin-login">Admin Sign In</a>
+          <a href="mailto:support@reservemu.com">Contact Us</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>2026 Reserve — By Schedula Technologies LTD · BRN: C25228122</span>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy">Privacy Policy</a>
+          <a href="privacy-policy#terms">Terms of Service</a>
+          <a href="privacy-policy#cookies">Cookie Policy</a>
+        </div>
+      </div>
+    </footer>
   </div>
-
-  <form>
-    <label>Email</label>
-    <input type="email" name="email" placeholder="admin@reservemu.com" required />
-
-    <label>Password</label>
-    <input type="password" name="password" placeholder="••••••••" required />
-
-    <button type="submit">Sign in</button>
-    <div class="error" id="errorBox"></div>
-  </form>
-
-  <div class="footer">Reserva • Enn klik, lavi pli fasil</div>
-  <div class="public-link">
-    Partner registration:
-    <a href="partner-onboarding">Open business onboarding form</a>
-  </div>
-</div>
-
-<script type="module">
-  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  import { auth } from "./firebase-config.js";
-
-  const form = document.querySelector("form");
-  const errorBox = document.getElementById("errorBox");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorBox.style.display = "none";
-
-    try {
-      await signInWithEmailAndPassword(
-        auth,
-        form.email.value,
-        form.password.value
-      );
-      window.location.replace("dashboard");
-    } catch (err) {
-      errorBox.textContent = "Invalid email or password";
-      errorBox.style.display = "block";
-    }
-  });
-</script>
-
 </body>
 </html>
