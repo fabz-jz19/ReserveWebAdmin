@@ -1590,7 +1590,7 @@
 
       <div class="nav-actions">
         <a class="download-link" href="index.html#footer">Download App</a>
-        <button type="button" class="nav-cta" data-start-onboarding>Register free →</button>
+        <button type="button" class="nav-cta" data-start-onboarding data-analytics-source="header_register_free">Register free →</button>
         <button type="button" class="menu-btn" aria-label="Open navigation">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1628,7 +1628,7 @@
                     Register your business in 3 minutes. No fees for registration. Complete the onboarding in one guided flow — no follow-up email, no duplicate manual entry.
                   </p>
                   <div class="hero-actions">
-                    <button type="button" class="primary" data-start-onboarding>Register my business →</button>
+                    <button type="button" class="primary" data-start-onboarding data-analytics-source="hero_register">Register my business →</button>
                     <div class="hero-note">Takes 3 minutes. No credit card required.</div>
                   </div>
                 </div>
@@ -1705,7 +1705,7 @@
                 </div>
 
                 <div class="hero-overview-actions">
-                  <button type="button" class="primary" data-start-onboarding>Register my business →</button>
+                  <button type="button" class="primary" data-start-onboarding data-analytics-source="overview_register">Register my business →</button>
                   <div class="hero-note">Takes 3 minutes. No credit card required.</div>
                 </div>
               </div>
@@ -1757,6 +1757,16 @@
                 <strong>Doctor</strong>
                 <span>Medical consultations, clinics.</span>
               </div>
+              <div class="category-card" data-category="Psychologist" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8.5" r="3.5" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M7 19c.9-2.7 2.6-4 5-4s4.1 1.3 5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Psychologist</strong>
+                <span>Mental health consultations and therapy.</span>
+              </div>
               <div class="category-card" data-category="Dental" data-theme="DENTAL">
                 <div class="card-icon" aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -1765,6 +1775,16 @@
                 </div>
                 <strong>Dental</strong>
                 <span>Dental care, orthodontics.</span>
+              </div>
+              <div class="category-card" data-category="Nails &amp; Manicure" data-theme="HAIR_SALON">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 5v8M10 4v10M13 5v8M16 7v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M6 17h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <strong>Nails &amp; Manicure</strong>
+                <span>Nail care, manicure, pedicure, beauty services.</span>
               </div>
               <div class="category-card" data-category="Activities" data-theme="OTHER">
                 <div class="card-icon" aria-hidden="true">
@@ -1775,6 +1795,18 @@
                 </div>
                 <strong>Activities</strong>
                 <span>Tours, guides, experiences.</span>
+              </div>
+              <div class="category-card" data-category="Car Renting" data-theme="OTHER">
+                <div class="card-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 14l1.4-4.2A2 2 0 0 1 9.3 8h5.4a2 2 0 0 1 1.9 1.8L18 14" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M5 14h14v3a1 1 0 0 1-1 1h-1.5M5 14v3a1 1 0 0 0 1 1H7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="8" cy="18" r="1.5" stroke="currentColor" stroke-width="1.6"/>
+                    <circle cx="16" cy="18" r="1.5" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </div>
+                <strong>Car Renting</strong>
+                <span>Vehicle rentals, airport pickup, and mobility services.</span>
               </div>
               <div class="category-card" data-category="Other" data-theme="OTHER">
                 <div class="card-icon" aria-hidden="true">
@@ -1810,12 +1842,6 @@
                 <label for="businessName">Business name</label>
                 <input id="businessName" name="businessName" required />
                 <div class="error" id="businessNameError">Business name is required.</div>
-              </div>
-
-              <div>
-                <label for="brnNumber">BRN number</label>
-                <input id="brnNumber" name="brnNumber" placeholder="C12345678" required />
-                <div class="error" id="brnError">Valid BRN is required (example: C12345678).</div>
               </div>
 
               <div class="span-2">
@@ -1999,6 +2025,15 @@
             <h2><span class="icon-badge success-badge">✓</span>Review and submit</h2>
             <p class="step-copy">Review the details below. When you submit, the full onboarding package is stored for internal review and partner creation.</p>
 
+            <div class="grid" style="margin-bottom:20px;">
+              <div>
+                <label for="brnNumber">BRN number</label>
+                <input id="brnNumber" name="brnNumber" placeholder="C12345678" required />
+                <div class="field-note">We’ll collect this at the last step so it doesn’t block earlier onboarding.</div>
+                <div class="error" id="brnError">Valid BRN is required (example: C12345678).</div>
+              </div>
+            </div>
+
             <div class="review-grid">
               <div class="summary-block">
                 <h3>Business</h3>
@@ -2075,15 +2110,15 @@
 
         <div class="tip-list">
           <div class="testimonial">
-            <strong>Skyline Barber Studio</strong>
+            <strong>Partner Studio A</strong>
             <span>"We went live in less than a week and started getting new bookings immediately."</span>
           </div>
           <div class="testimonial">
-            <strong>Lagoon Spa &amp; Wellness</strong>
+            <strong>Partner Studio B</strong>
             <span>"The onboarding was one clear flow. The Reserve team handled the rest."</span>
           </div>
           <div class="testimonial">
-            <strong>Coral Dental Clinic</strong>
+            <strong>Partner Studio C</strong>
             <span>"The profile setup was simple, and the app looks professional."</span>
           </div>
         </div>
@@ -2119,7 +2154,7 @@
         </div>
 
         <div class="footer-bottom">
-          <span>© 2026 Reserve - By Schedula Technologies LTD (BRN: C25228122)</span>
+          <span>© 2026 Reserve - By Schedura Technologies LTD</span>
           <div class="footer-bottom-links">
             <a href="privacy-policy">Privacy Policy</a>
           </div>
@@ -2266,11 +2301,26 @@
     let lastHiddenTrackedAt = 0;
     let hasSubmittedOnboarding = false;
     const trackedFieldInteractions = new Set();
+    const trackedFieldCompletions = new Set();
+    const trackedScrollDepths = new Set();
+    const trackedCompletedSteps = new Set();
+    const SCROLL_DEPTH_MARKERS = [25, 50, 75, 100];
+    let maxStepReached = 1;
+    let lastStatusEventKey = null;
+    let hasTrackedFlowStart = false;
+    let hasTrackedFlowCompletion = false;
     const stepAnalyticsName = (stepIndex) =>
       (STEP_LABELS[stepIndex] || `Step ${stepIndex + 1}`)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "_")
         .replace(/^_+|_+$/g, "");
+
+    const FUNNEL_ANALYTICS_EVENTS = new Set([
+      "partner_onboarding_view",
+      "partner_onboarding_start",
+      "partner_onboarding_step_complete",
+      "partner_onboarding_submit_success"
+    ]);
 
     const commonAnalyticsParams = () => ({
       flow_id: onboardingFlowId,
@@ -2281,6 +2331,7 @@
       ...commonAnalyticsParams(),
       step_index: stepIndex + 1,
       step_name: stepAnalyticsName(stepIndex),
+      max_step_reached: maxStepReached,
       ...extra
     });
 
@@ -2294,12 +2345,54 @@
     })();
 
     const trackEvent = (eventName, params = {}) => {
+      if (!FUNNEL_ANALYTICS_EVENTS.has(eventName)) {
+        return;
+      }
+
       void analyticsReady.then((analytics) => {
         if (!analytics) {
           return;
         }
         logEvent(analytics, eventName, params);
       }).catch(() => {});
+    };
+
+    const trackFlowStart = (source = "start") => {
+      if (hasTrackedFlowStart) {
+        return;
+      }
+
+      hasTrackedFlowStart = true;
+      trackEvent("partner_onboarding_start", {
+        ...commonAnalyticsParams(),
+        cta_source: sanitizeAnalyticsValue(source)
+      });
+    };
+
+    const trackCompletedStep = (stepIndex, reason = "continue") => {
+      const normalizedStep = Number(stepIndex);
+      if (!Number.isFinite(normalizedStep) || trackedCompletedSteps.has(normalizedStep)) {
+        return;
+      }
+
+      trackedCompletedSteps.add(normalizedStep);
+      trackEvent("partner_onboarding_step_complete", stepAnalyticsParams(normalizedStep, {
+        completion_reason: sanitizeAnalyticsValue(reason)
+      }));
+    };
+
+    const trackFlowCompletion = (extra = {}) => {
+      if (hasTrackedFlowCompletion) {
+        return;
+      }
+
+      hasTrackedFlowCompletion = true;
+      trackEvent("partner_onboarding_submit_success", {
+        ...commonAnalyticsParams(),
+        completed_all_steps: true,
+        completed_step_count: trackedCompletedSteps.size,
+        ...extra
+      });
     };
 
     const trackValidationFailure = (stepIndex, issues) => {
@@ -2361,7 +2454,14 @@
       lastHiddenTrackedAt = 0;
       hasSubmittedOnboarding = false;
       trackedFieldInteractions.clear();
+      trackedFieldCompletions.clear();
+      trackedScrollDepths.clear();
+      trackedCompletedSteps.clear();
       lastTrackedStepView = null;
+      maxStepReached = 1;
+      lastStatusEventKey = null;
+      hasTrackedFlowStart = false;
+      hasTrackedFlowCompletion = false;
 
       try {
         window.sessionStorage.setItem(FLOW_STORAGE_KEY, onboardingFlowId);
@@ -2374,6 +2474,14 @@
       lastFieldInteraction = fieldName;
       persistActiveFlow();
     };
+
+    const getElementAnalyticsFieldName = (element) => sanitizeAnalyticsValue(
+      element?.dataset?.analyticsField || element?.name || element?.id || element?.type
+    );
+
+    const getElementAnalyticsInputType = (element) => sanitizeAnalyticsValue(
+      element?.type || element?.tagName || "field"
+    );
 
     const getFieldStepIndex = (element) => {
       const raw = Number(element?.closest(".step")?.dataset.step);
@@ -2400,9 +2508,7 @@
         return;
       }
 
-      const fieldName = sanitizeAnalyticsValue(
-        element.dataset.analyticsField || element.name || element.id || element.type
-      );
+      const fieldName = getElementAnalyticsFieldName(element);
       const stepIndex = getFieldStepIndex(element);
 
       noteFieldInteraction(fieldName);
@@ -2414,7 +2520,103 @@
       trackedFieldInteractions.add(fieldName);
       trackEvent("partner_onboarding_field_interaction", stepAnalyticsParams(stepIndex, {
         field_name: fieldName,
-        input_type: sanitizeAnalyticsValue(element.type || element.tagName || "field")
+        input_type: getElementAnalyticsInputType(element)
+      }));
+    };
+
+    const hasMeaningfulFieldValue = (element) => {
+      if (!element || element.type === "hidden") {
+        return false;
+      }
+
+      if (element instanceof HTMLInputElement) {
+        if (element.type === "checkbox" || element.type === "radio") {
+          return element.checked;
+        }
+        if (element.type === "file") {
+          return Boolean(element.files?.length);
+        }
+        return Boolean(element.value?.trim());
+      }
+
+      if (element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) {
+        return Boolean(element.value?.trim());
+      }
+
+      return false;
+    };
+
+    const trackFieldCompletion = (element) => {
+      if (!hasMeaningfulFieldValue(element)) {
+        return;
+      }
+
+      const fieldName = getElementAnalyticsFieldName(element);
+      if (trackedFieldCompletions.has(fieldName)) {
+        return;
+      }
+
+      trackedFieldCompletions.add(fieldName);
+      trackEvent("partner_onboarding_field_completed", stepAnalyticsParams(getFieldStepIndex(element), {
+        field_name: fieldName,
+        input_type: getElementAnalyticsInputType(element)
+      }));
+    };
+
+    const trackStatusMessage = (message, tone, source) => {
+      if (!message) {
+        return;
+      }
+
+      const eventKey = `${source}:${tone}:${currentStep}`;
+      if (lastStatusEventKey === eventKey) {
+        return;
+      }
+
+      lastStatusEventKey = eventKey;
+      trackEvent("partner_onboarding_status_message", stepAnalyticsParams(currentStep, {
+        status_tone: sanitizeAnalyticsValue(tone || "info"),
+        status_source: sanitizeAnalyticsValue(source || "status"),
+        has_message: true
+      }));
+    };
+
+    const trackScrollDepth = () => {
+      const doc = document.documentElement;
+      const scrollableHeight = doc.scrollHeight - window.innerHeight;
+      if (scrollableHeight <= 0) {
+        return;
+      }
+
+      const depth = Math.min(100, Math.round(((window.scrollY + window.innerHeight) / doc.scrollHeight) * 100));
+      SCROLL_DEPTH_MARKERS.forEach((marker) => {
+        if (depth >= marker && !trackedScrollDepths.has(marker)) {
+          trackedScrollDepths.add(marker);
+          trackEvent("partner_onboarding_scroll_depth", stepAnalyticsParams(currentStep, {
+            depth_percent: marker
+          }));
+        }
+      });
+    };
+
+    const trackScheduleUpdate = (interactionType) => {
+      const data = getFormData();
+      const openDayCount = Object.keys(data.workingSchedule.weekly).length;
+      trackEvent("partner_onboarding_schedule_update", stepAnalyticsParams(5, {
+        interaction_type: sanitizeAnalyticsValue(interactionType),
+        open_day_count: openDayCount
+      }));
+    };
+
+    const trackPaymentMethodsUpdate = () => {
+      const selectedValues = Array.from(document.querySelectorAll('input[name="acceptedPayments"]:checked'))
+        .map((input) => sanitizeAnalyticsValue(input.value));
+      const paymentOtherValue = getValue("paymentOther");
+
+      trackEvent("partner_onboarding_payment_methods", stepAnalyticsParams(6, {
+        selected_count: selectedValues.length,
+        includes_other_text: Boolean(paymentOtherValue),
+        methods: selectedValues.slice(0, 5).join(",")
       }));
     };
 
@@ -2569,7 +2771,20 @@
               row.querySelector('input[name$="_end"]').disabled = false;
             });
           }
+
+          const isInitializing = toggle.dataset.initializing === "true";
+          if (!isInitializing) {
+            noteFieldInteraction("working_schedule");
+            trackEvent("partner_onboarding_schedule_group_toggle", stepAnalyticsParams(5, {
+              group_name: sanitizeAnalyticsValue(group),
+              same_hours_enabled: toggle.checked
+            }));
+            trackScheduleUpdate("group_toggle");
+          } else {
+            delete toggle.dataset.initializing;
+          }
         });
+        toggle.dataset.initializing = "true";
         toggle.dispatchEvent(new Event("change"));
       });
     };
@@ -2701,17 +2916,19 @@
 
     const isMobileViewport = () => window.matchMedia("(max-width: 720px)").matches;
 
-    const setStatus = (message = "", tone = "error") => {
+    const setStatus = (message = "", tone = "error", source = "status_box") => {
       if (!message) {
         statusBox.className = "status";
         statusBox.style.display = "none";
         statusBox.textContent = "";
+        lastStatusEventKey = null;
         return;
       }
 
       statusBox.className = `status ${tone}`;
       statusBox.style.display = "block";
       statusBox.textContent = message;
+      trackStatusMessage(message, tone, source);
     };
 
     const setGlobalLoading = (isLoading, message = "Please wait…") => {
@@ -2877,6 +3094,7 @@
 
     const updateStepUI = () => {
       document.body.dataset.step = String(currentStep);
+      maxStepReached = Math.max(maxStepReached, currentStep + 1);
 
       steps.forEach((step, index) => {
         step.classList.toggle("active", index === currentStep);
@@ -3085,6 +3303,13 @@
         ["MCB account", data.mcbAccountNumber || "—"],
         ["Juice number", data.juiceMobileNumber || "—"]
       ]);
+
+      trackEvent("partner_onboarding_review_rendered", stepAnalyticsParams(8, {
+        branch_count: data.branchLocations.length,
+        open_day_count: Object.keys(data.workingSchedule.weekly).length,
+        payment_method_count: data.acceptedPayments.length,
+        photo_count: data.photoFiles.length
+      }));
     };
 
     const validateStep = (stepIndex, options = {}) => {
@@ -3117,16 +3342,12 @@
 
       if (stepIndex === 2) {
         toggleError("businessNameError", !data.businessName);
-        toggleError("brnError", !brnRegex.test(data.brnNumber));
         toggleError("contactPersonNameError", !data.contactPersonName);
         toggleError("emailError", !emailRegex.test(data.email));
         toggleError("mobileError", !data.mobileE164);
 
         if (!data.businessName) {
           issues.push("business_name");
-        }
-        if (!brnRegex.test(data.brnNumber)) {
-          issues.push("brn_number");
         }
         if (!data.contactPersonName) {
           issues.push("contact_person_name");
@@ -3140,7 +3361,6 @@
 
         if (
           !data.businessName ||
-          !brnRegex.test(data.brnNumber) ||
           !data.contactPersonName ||
           !emailRegex.test(data.email) ||
           !data.mobileE164
@@ -3399,7 +3619,7 @@
         <div class="grid">
           <div class="span-2">
             <label>Branch name (optional)</label>
-            <input name="branchName" placeholder="e.g. Spa Ebene" />
+            <input name="branchName" placeholder="e.g. Branch 2" />
           </div>
           <div class="span-2">
             <label>Branch address</label>
@@ -3512,6 +3732,17 @@
       }
     });
 
+    form.addEventListener("focusout", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (target.matches("input, select, textarea")) {
+        trackFieldCompletion(target);
+      }
+    });
+
     form.addEventListener("change", (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) {
@@ -3520,6 +3751,46 @@
 
       if (target !== photoInput && target.matches("input, select, textarea")) {
         trackFieldInteraction(target);
+        trackFieldCompletion(target);
+      }
+
+      if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement)) {
+        return;
+      }
+
+      if (scheduleEl?.contains(target)) {
+        noteFieldInteraction("working_schedule");
+        trackScheduleUpdate(target instanceof HTMLInputElement && target.type === "checkbox" ? "toggle_day" : "set_hours");
+      }
+
+      if (target.name === "district" && target.value) {
+        trackEvent("partner_onboarding_district_select", stepAnalyticsParams(4, {
+          district: sanitizeAnalyticsValue(target.value)
+        }));
+      }
+
+      if (target.name === "advancePaymentRequired") {
+        trackEvent("partner_onboarding_advance_payment", stepAnalyticsParams(6, {
+          advance_payment_required: target.value === "true"
+        }));
+      }
+
+      if (target.name === "cancellationPolicy" && target.value) {
+        trackEvent("partner_onboarding_cancel_policy", stepAnalyticsParams(6, {
+          policy_name: sanitizeAnalyticsValue(target.value)
+        }));
+      }
+
+      if (target.name === "acceptedPayments" || target.name === "paymentOther") {
+        noteFieldInteraction("accepted_payments");
+        trackPaymentMethodsUpdate();
+      }
+
+      if (target.name === "termsAccepted") {
+        noteFieldInteraction("terms_accepted");
+        trackEvent("partner_onboarding_terms_toggle", stepAnalyticsParams(8, {
+          accepted: target.checked
+        }));
       }
     });
 
@@ -3532,6 +3803,10 @@
         trackNamedFieldInteraction("category", 1, {
           selection: sanitizeAnalyticsValue(card.dataset.category || "")
         });
+        trackEvent("partner_onboarding_category_selected", stepAnalyticsParams(1, {
+          category_name: sanitizeAnalyticsValue(card.dataset.category || ""),
+          partner_theme: sanitizeAnalyticsValue(card.dataset.theme || "unknown")
+        }));
         updateCategoryDetailVisibility();
 
         if (isMobileViewport() && currentStep === 1) {
@@ -3541,7 +3816,7 @@
           }
 
           if (validateStep(currentStep, { trackAnalytics: true })) {
-            trackEvent("partner_onboarding_step_complete", stepAnalyticsParams(currentStep));
+            trackCompletedStep(currentStep, "mobile_auto_advance");
             goToStep(currentStep + 1, "mobile_auto_advance");
           }
         }
@@ -3552,7 +3827,9 @@
 
     startBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        trackEvent("partner_onboarding_start", commonAnalyticsParams());
+        const source = sanitizeAnalyticsValue(btn.dataset.analyticsSource || btn.textContent || "start");
+        trackFlowStart(source);
+        trackCompletedStep(0, "start");
         goToStep(1, "start");
       });
     });
@@ -3561,17 +3838,17 @@
       if (currentStep === 3) {
         const otpVerified = await verifyOtpBeforeContinue();
         if (!otpVerified) {
-          setStatus("Please complete OTP verification before continuing.", "error");
+          setStatus("Please complete OTP verification before continuing.", "error", "otp_continue_block");
           return;
         }
       }
 
       if (!validateStep(currentStep, { trackAnalytics: true })) {
-        setStatus("Please complete the required fields before continuing.", "error");
+        setStatus("Please complete the required fields before continuing.", "error", "continue_validation");
         return;
       }
 
-      trackEvent("partner_onboarding_step_complete", stepAnalyticsParams(currentStep));
+      trackCompletedStep(currentStep, "continue");
       goToStep(currentStep + 1, "continue");
     });
 
@@ -3592,14 +3869,14 @@
       for (let stepIndex = 0; stepIndex < steps.length - 1; stepIndex += 1) {
         if (!validateStep(stepIndex, { trackAnalytics: true })) {
           goToStep(stepIndex, "submit_validation_error");
-          setStatus("Please complete the required fields before submitting.", "error");
+          setStatus("Please complete the required fields before submitting.", "error", "submit_validation");
           return;
         }
       }
 
       if (!termsAcceptedInput?.checked) {
         toggleError("termsError", true);
-        setStatus("Please accept the Terms and Conditions before submitting.", "error");
+        setStatus("Please accept the Terms and Conditions before submitting.", "error", "terms_required");
         trackEvent("partner_onboarding_validation_error", stepAnalyticsParams(steps.length - 1, {
           field_count: 1,
           fields: "terms_accepted"
@@ -3607,6 +3884,17 @@
         return;
       }
 
+      if (!brnRegex.test(getFormData().brnNumber)) {
+        toggleError("brnError", true);
+        setStatus("Please enter a valid BRN before submitting.", "error", "brn_required");
+        trackEvent("partner_onboarding_validation_error", stepAnalyticsParams(steps.length - 1, {
+          field_count: 1,
+          fields: "brn_number"
+        }));
+        return;
+      }
+
+      trackCompletedStep(steps.length - 1, "submit");
       trackEvent("partner_onboarding_submit_attempt", {
         ...stepAnalyticsParams(steps.length - 1),
         photo_count: photoFiles.length,
@@ -3653,12 +3941,12 @@
         hasSubmittedOnboarding = true;
         clearActiveFlow();
         showSuccessPage();
-        trackEvent("partner_onboarding_submit_success", {
-          ...commonAnalyticsParams(),
-          photo_count: uploads.length
+        trackFlowCompletion({
+          photo_count: uploads.length,
+          branch_count: document.querySelectorAll(".branch-card").length
         });
       } catch (error) {
-        setStatus(error?.message || "Submission failed. Please try again.", "error");
+        setStatus(error?.message || "Submission failed. Please try again.", "error", "submit_error");
         trackEvent("partner_onboarding_submit_error", {
           ...stepAnalyticsParams(steps.length - 1),
           error_code: error?.code || "unknown"
@@ -3690,6 +3978,9 @@
         trackEvent("partner_onboarding_terms_click", stepAnalyticsParams(8));
       });
     }
+
+    window.addEventListener("scroll", trackScrollDepth, { passive: true });
+    trackScrollDepth();
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") {
