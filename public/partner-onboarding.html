@@ -2304,6 +2304,7 @@
     const trackedFieldCompletions = new Set();
     const trackedScrollDepths = new Set();
     const trackedCompletedSteps = new Set();
+    const trackedMilestoneEvents = new Set();
     const SCROLL_DEPTH_MARKERS = [25, 50, 75, 100];
     let maxStepReached = 1;
     let lastStatusEventKey = null;
@@ -2319,7 +2320,15 @@
       "partner_onboarding_view",
       "partner_onboarding_start",
       "partner_onboarding_step_complete",
-      "partner_onboarding_submit_success"
+      "partner_onboarding_submit_success",
+      "partner_onboarding_step_view",
+      "partner_onboarding_category_selected",
+      "partner_onboarding_contact_details_filled",
+      "partner_onboarding_otp_success",
+      "partner_onboarding_otp_error",
+      "partner_onboarding_partner_location_filled",
+      "partner_onboarding_working_hours_filled",
+      "partner_onboarding_images_filled"
     ]);
 
     const commonAnalyticsParams = () => ({
@@ -2395,6 +2404,17 @@
       });
     };
 
+    const trackMilestoneEvent = (eventName, stepIndex, extra = {}) => {
+      const normalizedStep = Number(stepIndex);
+      const milestoneKey = `${eventName}:${normalizedStep}`;
+      if (trackedMilestoneEvents.has(milestoneKey)) {
+        return;
+      }
+
+      trackedMilestoneEvents.add(milestoneKey);
+      trackEvent(eventName, stepAnalyticsParams(normalizedStep, extra));
+    };
+
     const trackValidationFailure = (stepIndex, issues) => {
       if (!issues.length) {
         return;
@@ -2457,6 +2477,7 @@
       trackedFieldCompletions.clear();
       trackedScrollDepths.clear();
       trackedCompletedSteps.clear();
+      trackedMilestoneEvents.clear();
       lastTrackedStepView = null;
       maxStepReached = 1;
       lastStatusEventKey = null;
@@ -3026,6 +3047,7 @@
         mobileOtpVerifiedAtIso = new Date().toISOString();
         toggleError("mobileOtpError", false);
         setOtpStatus("Mobile number verified successfully.", "success");
+        trackMilestoneEvent("partner_onboarding_otp_success", 3);
         trackEvent("partner_onboarding_otp_verified", stepAnalyticsParams(3));
         return true;
       } catch (error) {
@@ -3846,6 +3868,24 @@
       if (!validateStep(currentStep, { trackAnalytics: true })) {
         setStatus("Please complete the required fields before continuing.", "error", "continue_validation");
         return;
+      }
+
+      if (currentStep === 2) {
+        trackMilestoneEvent("partner_onboarding_contact_details_filled", 2);
+      }
+
+      if (currentStep === 4) {
+        trackMilestoneEvent("partner_onboarding_partner_location_filled", 4);
+      }
+
+      if (currentStep === 5) {
+        trackMilestoneEvent("partner_onboarding_working_hours_filled", 5);
+      }
+
+      if (currentStep === 6) {
+        trackMilestoneEvent("partner_onboarding_images_filled", 6, {
+          photo_count: getFormData().photoFiles.length
+        });
       }
 
       trackCompletedStep(currentStep, "continue");
